@@ -1096,7 +1096,7 @@ Dime cuál necesitas y te muestro su tarjeta con el precio, el tiempo de entrega
 • Auditorios: Elba y Celina Ramos, Ignacio Ellacuría y Segundo Montes.
 • Edificios Jon de Cortina, Francisco Andrés Escobar, Ignacio Martín-Baró y CEDITEC.
 • Administración Central, Vicerrectoría Financiera, laboratorios de Psicología e Ingeniería y módulos de profesores.
-• Canchas, CAE, Centro de Orientación Profesional, Centro Cultural y de Servicio Social, Parroquia y Centro Monseñor Romero.
+• Canchas, CAE, Centro de Orientación Profesional, Centro Cultural y de Servicio Social, Parroquia, Centro Monseñor Romero y Mercaduca.
 Escríbeme "¿dónde queda…?" con el nombre y te lo muestro en el mapa con indicaciones para llegar.`,
     ],
     variants: [

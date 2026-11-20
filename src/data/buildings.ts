@@ -1,6 +1,17 @@
-// Los 32 edificios de la sección «cards DONDE QUEDA» del Figma.
+// Los 33 edificios de la sección «cards DONDE QUEDA» del Figma.
 // x, y y d son la forma que se resalta en rojo en cada «Mapa completo» (sobre un mapa de 330 × 346).
-export type Building = { name: string; directions: string; aliases: string[]; magna?: number; x: number; y: number; d: string }
+//  notInBaseMap: el edificio es nuevo y el dibujo base del mapa no lo trae; la app lo dibuja
+//  en gris en todos los mapas (y en rojo cuando es el pedido). Ej.: Mercaduca (b63 en el Figma).
+export type Building = {
+  name: string
+  directions: string
+  aliases: string[]
+  magna?: number
+  x: number
+  y: number
+  d: string
+  notInBaseMap?: boolean
+}
 
 export const buildingList: Building[] = [
   { name: "Biblioteca (CRAI)", directions: "Desde la Plaza de los Mártires, ve hacia la Cafetería Central y sigue al sur: la biblioteca queda justo debajo, junto al estacionamiento.", aliases: ["biblioteca", "crai", "biblio", "cry"], x: 143.9, y: 196.7, d: "M 14.5 2.1 L 13.2 20.6 L 10.4 20.4 L 10.4 21.8 L 2.6 21 L 2.6 19.9 L 0 19.8 L 1.1 1.1 L 3.8 1.3 L 3.8 0 L 11.6 0.6 L 11.6 1.9 L 14.5 2.1 Z" },
@@ -35,4 +46,6 @@ export const buildingList: Building[] = [
   { name: "Centro Cultural Universitario y Centro de Servicio Social", directions: "Entra por el Acceso Peatonal y sigue al este por la calle del Cantábrico: es el edificio amplio que sigue después del Centro de Asuntos Estudiantiles.", aliases: ["centro cultural", "servicio social"], x: 92.9, y: 283.2, d: "M 18.5 7.2 L 17.9 15.2 L 7.6 12.4 L 7.8 10.5 L 15.5 12.2 L 15.5 10.6 L 5.9 10.2 L 5.5 11.8 L 0.2 10.1 L 0.2 4.7 L 0 4.7 L 0 0 L 16.3 1.1 L 16.3 5.7 L 1.3 4.8 L 1.3 6.4 L 6.7 6.6 L 6.7 7.1 L 10.3 7.1 L 10.3 6.6 L 18.5 7.2 Z" },
   { name: "Parroquia Jesucristo Liberador", directions: "Entra por el Acceso Peatonal y sigue al este por la calle del Cantábrico: la Parroquia queda a mitad de la calle, después del Centro Cultural.", aliases: ["parroquia", "liberador"], x: 114.5, y: 284.1, d: "M 14.7 3 L 7.4 0 L 0 2.5 L 2.2 15.6 L 11.8 16.1 L 14.7 3 Z" },
   { name: "Centro Monseñor Romero", directions: "Entra por el Acceso Peatonal y sigue al este por la calle del Cantábrico, pasando la Parroquia: el Centro Romero es el edificio grande del final.", aliases: ["romero", "monsenor"], x: 132.9, y: 278.4, d: "M 0.3 0 L 0 6.1 L 14.1 6.9 L 14.1 8.9 L 12.7 8.9 L 12.5 14.3 L 17.3 14.6 L 17.3 14 L 19.7 14.1 C 19.7 14.1 19.5 12.9 21 12.9 L 21 15.2 L 22.3 15.2 L 22.3 13.3 L 25.9 13.6 L 26 9.7 L 38.4 10.4 L 38.5 4.5 L 29.2 4 L 29.1 1.6 L 22.6 1.4 L 22.5 2.4 L 20.5 2.2 L 20.5 0.8 L 14.3 0.4 L 14.3 1.1 L 0.4 0 L 0.3 0 Z" },
+  // Figma: «Card · Mercaduca» y «Mapa completo · Mercaduca» (b63: cuadrado de 4.42 × 4.42).
+  { name: "Mercaduca", directions: "Local pequeño de emprendedores: productos hechos por estudiantes y por emprendedores de afuera.", aliases: ["mercaduca", "mercadito", "mercado uca", "mercado de la uca"], x: 60.402, y: 235.141, d: "M 0 0 L 4.42 0 L 4.42 4.42 L 0 4.42 Z", notInBaseMap: true },
 ]
