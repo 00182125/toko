@@ -42,7 +42,7 @@ export const teamMembers: TeamMember[] = [
     distinctive: ['cabezas'],
     names: ['rafael'],
     common: ['alejandro', 'romero'],
-    text: 'Rafael Alejandro Cabezas Romero, el fotógrafo del equipo. Cada foto de edificio que ves por aquí pasó antes por su cámara y por su ojo de águila. Además de fotógrafo, fue el jefe de producción visual y de logística de nuestra pequeña agencia: tenía que saber dónde estar, a qué hora y con qué luz. Es capaz de esperar 40 minutos a que se vaya una nube del encuadre perfecto, y dos minutos para decidir dónde almorzar. Y tiene fama de ser la persona más fiel del mundo: tanto, que en algunos lugares lo conocen como Rafiel.',
+    text: 'Rafael Alejandro Cabezas Romero, el fotógrafo del equipo. Cada foto de edificio que ves por aquí pasó antes por su cámara y por su ojo de águila. Además de fotógrafo, fue el jefe de producción visual y de logística de nuestra pequeña agencia: tenía que saber dónde estar, a qué hora y con qué luz. Es capaz de esperar 40 minutos a que se vaya una nube del encuadre perfecto, y dos minutos para decidir dónde almorzar. Y tiene fama de ser la persona más fiel del mundo, tanto que en algunos lugares lo conocen como Rafiel.',
   },
   {
     id: 'gaby_alvarado',
@@ -57,7 +57,7 @@ export const teamMembers: TeamMember[] = [
     distinctive: ['alfaro', 'marmol'],
     names: [],
     common: [],
-    text: 'Gabriela Alejandra Alfaro Mármol diseñó la interfaz de Toko junto con Gabriela Alvarado: pantallas, tarjetas, botones y que todo quede en su lugar. Si las tarjetas se ven ordenadas y el botón está donde esperas, es trabajo suyo. Y sí, el equipo tiene dos Gabrielas Alejandras. Ya se acostumbraron: cuando alguien grita "Gaby", las dos voltean. Pero ojo con lo que se dice por ahí: que Gabriela Alfaro es una famosa basquetbolista reconocida a nivel mundial, y que le cuesta muchísimo llevar esas dos vidas. Un día juega una final internacional y al siguiente está alineando botones a las 2 de la mañana. Dicen que cada vez que un componente le queda perfecto, lo celebra con una triple.',
+    text: 'Gabriela Alejandra Alfaro Mármol diseñó la interfaz de Toko junto con Gabriela Alejandra Alvarado de la Rosa. Si las pantallas, las tarjetas y los botones están justo donde esperas, es trabajo suyo. Y sí, el equipo tiene dos Gabrielas Alejandras, así que cuando alguien grita "Gaby", las dos voltean. Pero ojo con lo que se dice por ahí, porque dicen que es una famosa basquetbolista reconocida a nivel mundial. Un día juega una final internacional y al siguiente está alineando botones a las 2 de la mañana.',
   },
 ]
 
