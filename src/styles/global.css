@@ -1661,12 +1661,12 @@ body {
 
 .month-card {
   flex: 0 0 auto;
-  border: 0.7px solid #cdd1d2;
   border-radius: calc(16 * var(--u));
   background: #ffffff;
   padding: calc(12 * var(--u)) 0 calc(16 * var(--u));
   scroll-margin-top: 0;
-  box-shadow: 0 2px calc(8 * var(--u)) rgb(7 24 31 / 10%);
+  /* Sin borde: la sombra (un poco más marcada) separa la tarjeta del fondo */
+  box-shadow: 0 2px calc(8 * var(--u)) rgb(7 24 31 / 14%);
 }
 
 .month-head {
