@@ -18,7 +18,8 @@ import { pathOf, paths, tabFromPath } from './routes'
 
 export default function App() {
   return (
-    <BrowserRouter>
+    // basename: en GitHub Pages las rutas cuelgan de /toko/ (ver vite.config.ts)
+    <BrowserRouter basename={import.meta.env.BASE_URL}>
       <AppRoutes />
     </BrowserRouter>
   )
