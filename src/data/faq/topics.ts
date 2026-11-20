@@ -695,4 +695,50 @@ Lo disponible cambia, así que si buscas algo puntual, pregunta ahí mismo. ¿Qu
     related: ['V22'],
     keywords: ['curso de ingles', 'cursos de ingles', 'clases de ingles', 'cursos de idiomas', 'clases de idiomas', 'aprender idiomas', 'aprender ingles', 'aprender otro idioma'],
   },
+  {
+    id: 'audiovisual',
+    title: 'Drones, fotos y grabaciones en el campus',
+    answer: `Para volar un dron, hacer una sesión de fotos profesional o grabar un video en el campus:
+• Necesitas autorización previa, por seguridad, privacidad e imagen institucional. Las fotos personales informales con celular no la necesitan.
+• El permiso NO se pide en Registro Académico: esa oficina solo maneja matrículas, notas y expedientes.
+• Se pide en el Edificio de Administración Central, con una carta formal que indique el motivo, las fechas, los horarios, las zonas del campus y el equipo (cámara o modelo de dron y medidas de seguridad).
+• Entrégala con 3 a 5 días hábiles de anticipación y guarda la autorización para mostrarla a vigilancia el día de la actividad.
+Si quieres, te explico paso a paso cómo hacer la solicitud, o pregúntame "¿dónde queda Administración Central?".`,
+    variants: [
+      'permisos de drones y fotos en la uca',
+      'informacion sobre drones en la uca',
+      'drones en el campus',
+      'fotos y videos en la uca',
+      'que necesito para grabar en la uca',
+      'permisos audiovisuales uca',
+      'reglas para grabar en el campus',
+      'drones fotos y grabaciones',
+      'cuentame de los permisos para grabar',
+      'todo sobre drones en la universidad',
+    ],
+    related: ['F1', 'F2', 'F3', 'F4', 'F5', 'F6', 'F7', 'F8', 'F9', 'F10'],
+    keywords: [
+      '=dron',
+      '=drones',
+      '=drone',
+      '=drons',
+      'tomas aereas',
+      'toma aerea',
+      'sesion de fotos',
+      'sesion fotografica',
+      'sesiones fotograficas',
+      'camara profesional',
+      'fotografo',
+      'tomar fotos',
+      'tomarme fotos',
+      'fotos de graduacion',
+      'cortometraje',
+      'grabar',
+      'grabacion',
+      'filmar',
+      'reportaje',
+      'permiso audiovisual',
+      'permisos audiovisuales',
+    ],
+  },
 ]

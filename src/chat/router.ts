@@ -20,8 +20,9 @@ import { findProcedureCard, procedureReply } from './procedures'
 import { NOT_FOUND_BUILDING, findBuilding, locationReply } from './locations'
 import { SOON } from './messages'
 import { identityReply } from './identity'
+import { answerGaby, isGabyPending, teamReply } from './team'
 import { answerLibraryMenu, isLibraryOnly, libraryMenu } from './libraryMenu'
-import { refOf, stepsFollowUp, stepsFor, stepsRequest } from './steps'
+import { isOfficialQuestion, refOf, stepsFollowUp, stepsFor, stepsRequest } from './steps'
 import { normalizeText } from './normalize'
 import { TOPIC_HINT, smallTalk } from './smallTalk'
 import { supportReply } from './support'
@@ -96,7 +97,7 @@ function withSteps(
     // (si la respuesta oficial ya trae los pasos, como la del trámite de diferidos, se usa esa)
     const steps = stepsFor(ref)
     const alreadySteps = /\bpasos?\b|(^|\n)1\. /i.test(routed.text)
-    if (steps && !alreadySteps) return { ...steps, pending: null, ref }
+    if (steps && !alreadySteps && !isOfficialQuestion(normalizeText(request))) return { ...steps, pending: null, ref }
   }
   return { ...routed, ref }
 }
@@ -109,6 +110,18 @@ function route(request: string, pending: Pending, lastDomain: ChatTopic | null, 
     domain,
     pending: next,
   })
+
+  // Easter egg: "¿A cuál Gaby te refieres?" (si no se entiende dos veces, sigue el flujo normal)
+  if (isGabyPending(pending)) {
+    const chosen = answerGaby(text, pending)
+    if (chosen) return chosen
+    pending = null
+  }
+
+  // Easter egg del equipo: alguien escribió el nombre de una de las personas que hicieron Toko.
+  // Va antes que todo lo demás (las reglas de cuándo cuenta un nombre están en chat/team.ts).
+  const team = teamReply(text)
+  if (team) return team
 
   // 1. Respuesta a una pregunta que Toko acaba de hacer
   if (pending) {

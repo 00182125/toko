@@ -72,6 +72,7 @@ export function ChatScreen({
                   onOpenCalendar={onOpenCalendar}
                   onCreateAccount={onCreateAccount}
                   onSuggestQuestion={onSuggestQuestion}
+                  onSend={onSend}
                 />
               </ResponseWithCard>
             )

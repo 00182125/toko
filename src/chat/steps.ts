@@ -1,4 +1,5 @@
 import { faqEntries, faqTopics } from '@/data/faq'
+import { normalizeText } from './normalize'
 import { procedureCards, type ProcedureCard } from '@/data/procedures'
 import { reservationCards, type ReservationCard } from '@/data/reservations'
 import { stepGuides, type StepGuide } from '@/data/steps'
@@ -50,6 +51,11 @@ export function stepsRequest(text: string): StepsRequest {
   const rest = text.split(' ').filter((word) => word && !FILLER.has(word))
   return rest.length >= 1 ? 'own' : 'follow-up'
 }
+
+// Una pregunta oficial escrita tal cual (de los PDF) siempre recibe su respuesta oficial,
+// aunque diga "¿cuál es el procedimiento?"; los pasos se pueden pedir después.
+const officialQuestions = new Set(faqEntries.map((entry) => normalizeText(entry.question)))
+export const isOfficialQuestion = (text: string) => officialQuestions.has(text)
 
 // ── Qué respondió Toko ─────────────────────────────────────────────────────
 // Cada respuesta del reglamento se reconoce por su texto ("entry:P2", "topic:withdrawals").

@@ -2,6 +2,8 @@
 // Cada tema tiene varias formas de preguntarlo (variants) y varias respuestas (answers):
 // Toko elige una al azar para no sonar siempre igual.
 //  {skills} se reemplaza por lo que Toko puede hacer en esa sesión (el invitado ve menos).
+import { TEAM_SUMMARY } from './team'
+
 //  guestOnly: solo se responde en modo invitado
 //  guestAnswers: respuestas para el modo invitado (si el tema necesita cuenta UCA)
 export type IdentityIntent = {
@@ -338,11 +340,16 @@ export const identityIntents: IdentityIntent[] = [
   },
   {
     id: 'creator',
-    answers: [
-      'Me diseñaron y programaron personas que querían que la información de la UCA fuera fácil de encontrar. Mi trabajo es que no tengas que buscar entre reglamentos y páginas para resolver una duda.',
-      'Me creó un equipo que quería facilitarle la vida a la comunidad UCA. Desde entonces me siguen enseñando preguntas nuevas, muchas sugeridas por personas como tú.',
-    ],
+    // Resumen del equipo del easter egg (src/data/team.ts)
+    answers: [TEAM_SUMMARY],
     variants: [
+      'quien programo esta app',
+      'quien diseno la app',
+      'quien diseno esta aplicacion',
+      'quienes hicieron toko',
+      'quien es el equipo de toko',
+      'quienes son tu equipo',
+      'tu equipo',
       'quien te creo',
       'quien te hizo',
       'quien te programo',

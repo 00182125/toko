@@ -302,3 +302,30 @@ if (verbose) console.log(suggestions.join('\n'))
   }
   console.log(`   conversaciones "respuesta → explícame cómo lo hago": ${okTalks}/${talks.length}`)
 }
+
+// 6. Easter egg del equipo ("Toko_easter_egg_equipo.pdf", lista de comprobación)
+{
+  const who = (t: string) =>
+    t.split('\n\n').map((p) =>
+      p.startsWith('Ah, preguntas por Rodrigo') ? 'rodrigo'
+      : p.startsWith('Rafael Alejandro') ? 'rafael'
+      : p.startsWith('Gabriela Alejandra Alvarado') ? 'alvarado'
+      : p.startsWith('Gabriela Alejandra Alfaro') ? 'alfaro'
+      : p.startsWith('Las dos Gabys') ? 'las-dos'
+      : p.startsWith('¿A cuál Gaby') ? 'pregunta'
+      : 'otro').join('+')
+  const cases: [string, string][] = [
+    ['Rodrigo Javier Minero Dubón', 'rodrigo'], ['rodri', 'rodrigo'], ['Minero Dubón', 'rodrigo'], ['javier', 'rodrigo'], ['dubonn', 'rodrigo'],
+    ['Rafa', 'rafael'], ['Cabezas', 'rafael'], ['Rafael Romero', 'rafael'], ['quién es Rafael Alejandro Cabezas Romero?', 'rafael'],
+    ['Gaby', 'pregunta'], ['Gabriela', 'pregunta'], ['Alejandra', 'pregunta'],
+    ['Gaby Alvarado', 'alvarado'], ['Gabriela Alfaro', 'alfaro'], ['Gabriela Alejandra Alvarado de la Rosa', 'alvarado'],
+    ['Rodrigo y Rafael', 'rodrigo+rafael'],
+    ['Centro Monseñor Romero', 'otro'], ['me duele la cabeza', 'otro'], ['Javier me dijo que la constancia de notas cuesta 25', 'otro'],
+  ]
+  const failed = cases.filter(([q, want]) => who(routeMessage(q, null, null).text) !== want)
+  const gaby = routeMessage('gaby', null, null)
+  const followUps: [string, string][] = [['la primera', 'alvarado'], ['Alfaro', 'alfaro'], ['las dos', 'las-dos']]
+  const failedFollow = followUps.filter(([q, want]) => who(routeMessage(q, gaby.pending, null).text) !== want)
+  console.log(`\n6. Easter egg del equipo: nombres ${cases.length - failed.length}/${cases.length} · respuestas a "¿a cuál Gaby?" ${followUps.length - failedFollow.length}/${followUps.length}`)
+  for (const [q, want] of [...failed, ...failedFollow]) console.log(`  ✗ "${q}" → esperaba ${want}`)
+}

@@ -65,7 +65,9 @@ export function findReservationCard(request: string): ReservationMatch {
   if (text.includes('radio')) {
     return { type: 'card', card: card('radio-studios') }
   }
-  if (text.includes('fotografia') || text.includes('fotografico')) {
+  // El estudio de fotografía, no "una sesión fotográfica en el campus" (eso es un permiso
+  // en Administración Central: ver data/faq/15-permisos-audiovisuales.ts).
+  if ((text.includes('fotografia') || text.includes('fotografico')) && /(estudio|reserv|apartar|labs?( |$)|laboratorio)/.test(text)) {
     return { type: 'card', card: card('photo-studio') }
   }
   if (text.includes('ciclorama')) {

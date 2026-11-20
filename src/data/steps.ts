@@ -387,4 +387,16 @@ export const stepGuides: StepGuide[] = [
       'Inscríbete en el que más te guste.',
     ],
   },
+  // ── Permisos de drones, fotos y grabaciones ────────────────────────────
+  {
+    id: 'audiovisual-permit',
+    title: 'pedir permiso para volar un dron, hacer fotos o grabar en el campus',
+    refs: ['topic:audiovisual', 'entry:F1', 'entry:F3', 'entry:F4', 'entry:F5', 'entry:F7', 'entry:F8', 'entry:F9', 'entry:F10'],
+    steps: [
+      'Redacta una carta formal firmada con: tu nombre completo, carné y carrera o departamento; la descripción del proyecto o actividad; las fechas, horarios exactos y zonas del campus que usarás; y el equipo (tipo de cámara, modelo de dron y medidas de seguridad del vuelo).',
+      'Entrégala en las oficinas del Edificio de Administración Central (no en Registro Académico), mínimo de 3 a 5 días hábiles antes de la actividad.',
+      'Cuando la aprueben, guarda la autorización (física o digital) y muéstrala al personal de seguridad y vigilancia el día de la actividad.',
+    ],
+    note: 'Si combinas dron y fotos o video, pide una sola solicitud que incluya ambas actividades.',
+  },
 ]

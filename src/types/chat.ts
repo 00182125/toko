@@ -38,6 +38,8 @@ export type ChatCard =
   | { kind: 'suggest-question'; question: string }
   // Tarjeta del Directorio UCA (oficina o persona)
   | { kind: 'directory'; entry: DirectoryEntry }
+  // Botones de respuesta rápida: al tocar uno, se envía su texto como mensaje
+  | { kind: 'quick-replies'; options: string[] }
   // Función bloqueada para invitados: invita a crear una cuenta.
   | { kind: 'guest-locked'; feature: LockedFeature }
 

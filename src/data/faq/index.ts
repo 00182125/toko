@@ -13,6 +13,7 @@ import { escalafonFaq } from './11-escalafon'
 import { trabajoFaq } from './12-trabajo'
 import { diferidosFaq } from './13-diferidos'
 import { vidaEstudiantilFaq } from './14-vida-estudiantil'
+import { permisosAudiovisualesFaq } from './15-permisos-audiovisuales'
 
 export { faqTopics } from './topics'
 
@@ -33,6 +34,7 @@ export const faqRegulations: FaqRegulation[] = [
   trabajoFaq,
   diferidosFaq,
   vidaEstudiantilFaq,
+  permisosAudiovisualesFaq,
 ]
 
 // Todas las preguntas en una sola lista, con el reglamento al que pertenecen.

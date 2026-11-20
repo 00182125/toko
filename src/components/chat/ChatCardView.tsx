@@ -44,18 +44,31 @@ const lockedTitle = {
 //  onOpenCalendar: lo usa la tarjeta "Ver calendario"
 //  onCreateAccount: lo usa la tarjeta de función bloqueada (modo invitado)
 //  onSuggestQuestion: lo usa la tarjeta "No entendí tu pregunta" (lleva a Ayuda con la pregunta)
+//  onSend: lo usan los botones de respuesta rápida (envían su texto como mensaje)
 export function ChatCardView({
   card,
   onOpenCalendar,
   onCreateAccount,
   onSuggestQuestion,
+  onSend,
 }: {
   card: ChatCard
   onOpenCalendar: () => void
   onCreateAccount?: () => void
   onSuggestQuestion?: (question: string) => void
+  onSend?: (text: string) => void
 }) {
   switch (card.kind) {
+    case 'quick-replies':
+      return (
+        <div className="quick-replies">
+          {card.options.map((option) => (
+            <button key={option} type="button" className="quick-reply" onClick={() => onSend?.(option)}>
+              {option}
+            </button>
+          ))}
+        </div>
+      )
     case 'suggest-question':
       return <SuggestQuestionCard onSuggest={() => onSuggestQuestion?.(card.question)} />
     case 'directory':
