@@ -157,8 +157,8 @@ export function answerGaby(text: string, pending: Pending): Routed | null {
   const done = (reply: string): Routed => ({ text: reply, domain: null, pending: null })
 
   if (/ (las dos|los dos|ambas|ambos|las 2|las gabriela|las gabrielas|las dos gabrielas|las dos gabriela) /.test(words)) return done(BOTH_GABYS_TEXT)
-  if (/ (alvarado|rosa|buho|logo|primera|1) /.test(words)) return done(member('gaby_alvarado'))
-  if (/ (alfaro|marmol|interfaz|segunda|2) /.test(words)) return done(member('gaby_alfaro'))
+  if (/ (alvarado|rosa|buho|logo|interfaz|pantallas|disenadora|diseno|primera|1) /.test(words)) return done(member('gaby_alvarado'))
+  if (/ (alfaro|marmol|presupuesto|contadora|numeros|cuentas|basquetbolista|basquet|segunda|2) /.test(words)) return done(member('gaby_alfaro'))
   if (tries === 0) return askGabyReply([], 1)
   return null
 }

@@ -42,7 +42,7 @@ export const teamMembers: TeamMember[] = [
     distinctive: ['cabezas'],
     names: ['rafael'],
     common: ['alejandro', 'romero'],
-    text: 'Rafael Alejandro Cabezas Romero, el fotógrafo del equipo. Cada foto de edificio que ves por aquí pasó antes por su cámara y por su ojo de águila. Además de fotógrafo, fue el jefe de producción visual y de logística de nuestra pequeña agencia: tenía que saber dónde estar, a qué hora y con qué luz. Es capaz de esperar 40 minutos a que se vaya una nube del encuadre perfecto, y dos minutos para decidir dónde almorzar. Y tiene fama de ser la persona más fiel del mundo, tanto que en algunos lugares lo conocen como Rafiel.',
+    text: 'Rafael Alejandro Cabezas Romero, el fotógrafo del equipo. Cada foto de edificio que ves por aquí pasó antes por su cámara y por su ojo de águila. Además de fotógrafo, fue el jefe de producción visual y de logística de nuestra pequeña agencia, así que siempre tenía que saber dónde estar, a qué hora y con qué luz. Es capaz de esperar 40 minutos a que se vaya una nube del encuadre perfecto, y dos minutos para decidir dónde almorzar. Y tiene fama de ser la persona más fiel del mundo, tanto que en algunos lugares lo conocen como Rafiel.',
   },
   {
     id: 'gaby_alvarado',
@@ -50,14 +50,14 @@ export const teamMembers: TeamMember[] = [
     distinctive: ['alvarado'],
     names: [],
     common: ['rosa'],
-    text: 'Gabriela Alejandra Alvarado de la Rosa es la mente visual de Toko. Diseñó mi logo, me dibujó como búho y creó casi todo lo que ves bonito por aquí. También diseñó la interfaz, junto con la otra Gabriela. Si tengo estos ojitos y esta carita simpática, es gracias a ella. Cualquier cosa que se vea rara no fue ella: seguramente fue el programador. Dicen que ve tipografías torcidas hasta en los letreros de la calle, y que no puede evitarlo.',
+    text: 'Gabriela Alejandra Alvarado de la Rosa es la mente visual de Toko. Diseñó mi logo, me dibujó como búho y además diseñó toda la interfaz y la experiencia de usuario, desde cada pantalla hasta cada botón. Si tengo estos ojitos y esta carita simpática, y si todo está justo donde lo esperas, es gracias a ella. Cualquier cosa que se vea rara no fue ella, seguramente fue el programador. Dicen que ve tipografías torcidas hasta en los letreros de la calle, y que no puede evitarlo.',
   },
   {
     id: 'gaby_alfaro',
     distinctive: ['alfaro', 'marmol'],
     names: [],
     common: [],
-    text: 'Gabriela Alejandra Alfaro Mármol diseñó la interfaz de Toko junto con Gabriela Alejandra Alvarado de la Rosa. Si las pantallas, las tarjetas y los botones están justo donde esperas, es trabajo suyo. Y sí, el equipo tiene dos Gabrielas Alejandras, así que cuando alguien grita "Gaby", las dos voltean. Pero ojo con lo que se dice por ahí, porque dicen que es una famosa basquetbolista reconocida a nivel mundial. Un día juega una final internacional y al siguiente está alineando botones a las 2 de la mañana.',
+    text: 'Gabriela Alejandra Alfaro Mármol es la contadora del equipo. Hizo el presupuesto de Toko, se encargó de los números y cuidó que el proyecto fuera rentable, porque alguien tenía que hacer las cuentas mientras los demás pedían más café. Y sí, el equipo tiene dos Gabrielas Alejandras, así que cuando alguien grita "Gaby", las dos voltean. Pero ojo con lo que se dice por ahí, porque dicen que es una famosa basquetbolista reconocida a nivel mundial. Un día juega una final internacional y al siguiente está cuadrando el presupuesto a las 2 de la mañana.',
   },
 ]
 
@@ -65,14 +65,14 @@ export const teamMembers: TeamMember[] = [
 export const GABY_WORDS = ['gabriela', 'alejandra']
 
 export const GABY_QUESTION =
-  '¿A cuál Gaby te refieres? En el equipo hay dos: Gabriela Alvarado, la del logo, el búho y los visuales, y Gabriela Alfaro, la de la interfaz. Elige una, o dime "las dos".'
+  '¿A cuál Gaby te refieres? En el equipo hay dos, Gabriela Alvarado, la del logo, el búho y la interfaz, y Gabriela Alfaro, la del presupuesto. Elige una, o dime "las dos".'
 
 // Botones rápidos bajo la pregunta
 export const GABY_OPTIONS = ['Gabriela Alvarado', 'Gabriela Alfaro', 'Las dos']
 
 export const BOTH_GABYS_TEXT =
-  'Las dos Gabys: Gabriela Alvarado me dibujó, me puso logo y me dio cara de búho, y Gabriela Alfaro acomodó cada pantalla, tarjeta y botón para que yo no me vea desordenado. Juntas forman el equipo de diseño de Toko. Entre las dos, tienen cuatro nombres iguales y cero confusiones (eso dicen). Y mientras una dibuja búhos, la otra, según los rumores, anda de gira mundial con una pelota de basquetbol.'
+  'Las dos Gabys. Gabriela Alvarado me dibujó, me puso logo, me dio cara de búho y diseñó cada pantalla y cada botón, y Gabriela Alfaro hizo el presupuesto y cuidó que el proyecto saliera rentable. Entre las dos tienen cuatro nombres iguales y cero confusiones (eso dicen). Y mientras una dibuja búhos, la otra, según los rumores, cuadra cuentas entre partido y partido de su gira mundial de basquetbol.'
 
 // Resumen del equipo (respuesta a "¿quién te hizo?", "¿quiénes son tus creadores?"...)
 export const TEAM_SUMMARY =
-  'Me hizo un equipo pequeño con mucha paciencia: Rodrigo en el código (dicen que con ayuda de Claude, pero él lo niega), Rafael en fotografía y producción visual, Gabriela Alvarado en logo, búho y visuales, y Gabriela Alfaro en el diseño de la interfaz. Pregúntame por cualquiera de ellos y te cuento más.'
+  'Me hizo un equipo pequeño con mucha paciencia, con Rodrigo en el código (dicen que con ayuda de Claude, pero él lo niega), Rafael en fotografía y producción visual, Gabriela Alvarado en el logo, el búho y el diseño de la interfaz, y Gabriela Alfaro en el presupuesto. Pregúntame por cualquiera de ellos y te cuento más.'
