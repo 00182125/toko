@@ -2,8 +2,7 @@ import { procedureCards } from '@/data/procedures'
 import type { ChatTopic, Pending, Reply, Routed } from '@/types/chat'
 import {
   FAQ_CLOSE,
-  FAQ_COVERAGE,
-  FAQ_STRONG,
+  FAQ_WEAK,
   type FaqMatch,
   canSuggestFaq,
   faqBelongsTo,
@@ -14,11 +13,14 @@ import {
   isSureFaq,
   matchFaq,
 } from './faq'
+import { directoryListReply, directoryReply, findDirectoryEntry } from './directory'
 import { GUEST_LOCKED, guestLockedReply } from './guest'
 import { findReservationCard, reservationReply } from './reservations'
 import { findProcedureCard, procedureReply } from './procedures'
 import { NOT_FOUND_BUILDING, findBuilding, locationReply } from './locations'
 import { SOON } from './messages'
+import { identityReply } from './identity'
+import { refOf, stepsFollowUp, stepsFor, stepsRequest } from './steps'
 import { normalizeText } from './normalize'
 import { TOPIC_HINT, smallTalk } from './smallTalk'
 import { supportReply } from './support'
@@ -56,16 +58,46 @@ function faqSuggestion(match: FaqMatch): { reply: Reply; next: Pending } {
 //  pending: pregunta que Toko dejó abierta ("¿cuál de los dos?")
 //  lastDomain: tema del que se venía hablando
 //  guest: true en modo invitado → calendario, reservas y trámites quedan bloqueados
+//  lastRef: qué fue lo último que respondió Toko ("entry:P2", "procedure:grades"...),
+//    para "explícame cómo lo hago" (ver chat/steps.ts)
 export function routeMessage(
   request: string,
   pending: Pending,
   lastDomain: ChatTopic | null,
-  { guest = false }: { guest?: boolean } = {},
+  { guest = false, lastRef = null }: { guest?: boolean; lastRef?: string | null } = {},
 ): Routed {
-  const routed = route(request, pending, lastDomain, guest)
+  const routed = withSteps(request, pending, lastDomain, guest, lastRef)
   const locked = guest && routed.domain ? GUEST_LOCKED[routed.domain] : undefined
   if (locked) return { ...guestLockedReply(locked), domain: routed.domain, pending: null }
   return routed
+}
+
+// Paso a paso: "dime los pasos para pedir un diferido" o "explícame cómo lo hago".
+// Cada respuesta lleva su "ref" para que la siguiente pueda pedir sus pasos.
+function withSteps(
+  request: string,
+  pending: Pending,
+  lastDomain: ChatTopic | null,
+  guest: boolean,
+  lastRef: string | null,
+): Routed {
+  const asks = stepsRequest(normalizeText(request))
+  // Solo pide los pasos de lo anterior: no hay tema nuevo que buscar.
+  if (asks === 'follow-up') {
+    const steps = stepsFollowUp(lastRef)
+    return { ...steps, pending: null, ref: stepsFor(lastRef) ? lastRef : null }
+  }
+  const routed = route(request, pending, lastDomain, guest)
+  const ref = refOf(routed)
+  if (asks === 'own') {
+    // Trae su propio tema: si ese tema es un trámite, se dan sus pasos;
+    // si no (es solo información), se responde normal.
+    // (si la respuesta oficial ya trae los pasos, como la del trámite de diferidos, se usa esa)
+    const steps = stepsFor(ref)
+    const alreadySteps = /\bpasos?\b|(^|\n)1\. /i.test(routed.text)
+    if (steps && !alreadySteps) return { ...steps, pending: null, ref }
+  }
+  return { ...routed, ref }
 }
 
 function route(request: string, pending: Pending, lastDomain: ChatTopic | null, guest: boolean): Routed {
@@ -111,10 +143,9 @@ function route(request: string, pending: Pending, lastDomain: ChatTopic | null, 
         return done('rules', pick(first))
       }
       if (second && /^(la |el |opcion |numero )?(2|dos|segunda|segundo)$/.test(text)) return done('rules', pick(second))
+      // "No" a las opciones: Toko no entendió la pregunta (cuenta como intento fallido).
       if (/^(no|ninguna|ninguno|nop|ni una)$/.test(text)) {
-        return done('rules', {
-          text: 'Entendido. Intenta escribir tu pregunta con otras palabras, o pregúntame por un tema, como becas, servicio social o biblioteca.',
-        })
+        return { text: SOON, domain: null, pending: null, miss: true }
       }
       // Si escribió otra cosa, se toma como una pregunta nueva.
       pending = null
@@ -123,6 +154,11 @@ function route(request: string, pending: Pending, lastDomain: ChatTopic | null, 
 
   // Tema del reglamento por palabra clave ("acoso", "beca", "plagio"...)
   const keyword = keywordTopic(request)
+
+  // Preguntas sobre Toko mismo: "¿eres una IA?", "¿cómo funcionas?", "¿de qué me sirves?"
+  // (no si trae un tema del reglamento: "¿qué sabes del acoso?")
+  const about = keyword ? null : identityReply(text, guest)
+  if (about) return { ...about, domain: null, pending }
 
   // Conversación amigable: saludos, gracias, "¿cómo estás?"...
   // (no si el mensaje trae un tema: "¿qué sabes del acoso?" es una pregunta, no charla)
@@ -140,12 +176,22 @@ function route(request: string, pending: Pending, lastDomain: ChatTopic | null, 
   }
   if (faq && isSureFaq(faq)) return answerFaq(faq)
 
-  // 2. Contacto
+  const sensitive = ['harassment', 'substances', 'cheating', 'conduct', 'due-process', 'complaints', 'deferred']
+  const asksPlace = has('magna', 'edificio', 'donde queda', 'donde esta', 'donde encuentro', 'ubicacion', 'como llego')
+
+  // 2. Contacto y Directorio UCA
+  //  · Si nombra una oficina o persona ("teléfono de Admisiones", "rectoría") → su tarjeta.
+  //    No si pregunta dónde queda (eso es ubicación) ni si el mensaje es de un tema delicado.
+  //  · "directorio" a secas → lista de oficinas; otro pedido de contacto → central telefónica.
+  const office = findDirectoryEntry(request)
+  if (office && !asksPlace && !(keyword && sensitive.includes(keyword))) {
+    return done('support', directoryReply(office))
+  }
   if (
     has('atencion', 'telefono', 'llamar', 'llamada', 'contactar', 'contacto', 'comunicarme') ||
     has('hablar con', 'directorio')
   ) {
-    return done('support', supportReply())
+    return done('support', /^(el )?directorio( uca)?$/.test(text) ? directoryListReply() : supportReply())
   }
 
   // ¿Se responde el tema de la palabra clave? (se usa en los pasos 3 y 4)
@@ -154,7 +200,7 @@ function route(request: string, pending: Pending, lastDomain: ChatTopic | null, 
   //    ("constancia pa' la beca" → trámite; "renovar un libro" → enlace para renovar).
   //  · Exámenes, retiros, graduación y salud ceden al calendario si preguntan "cuándo".
   //  · La biblioteca cede si preguntan el horario (el reglamento no lo trae).
-  const sensitive = ['harassment', 'substances', 'cheating', 'conduct', 'due-process', 'complaints']
+  //  (los diferidos también: "diferido" es tan específico que nunca es un trámite ni una reserva)
   const hasServiceCard =
     findReservationCard(text).type !== 'unavailable' || findProcedureCard(text).type !== 'unavailable'
   const asksWhen = has('fecha', 'cuando', 'calendario', 'periodo')
@@ -165,7 +211,6 @@ function route(request: string, pending: Pending, lastDomain: ChatTopic | null, 
   const useKeyword = keyword !== null && (sensitive.includes(keyword) || (!hasServiceCard && !yields))
 
   // 3. Dónde queda
-  const asksPlace = has('magna', 'edificio', 'donde queda', 'donde esta', 'donde encuentro', 'ubicacion', 'como llego')
   const otherTopic = has('reserv', 'sala', 'renov', 'prestamo', 'prestar', 'tablet', 'cubiculo', 'tramite', 'constancia', 'certificado', 'fecha', 'cuando', 'calendario', 'reglamento', 'periodo', 'multimedia', 'radio', 'estudio', 'ciclorama', 'taller')
   // Si el mensaje no pide un lugar y trae un tema del reglamento ("servicio social"),
   // se responde el tema aunque coincida con el nombre de un edificio.
@@ -179,12 +224,10 @@ function route(request: string, pending: Pending, lastDomain: ChatTopic | null, 
   // Si además la pregunta coincide claramente con una pregunta puntual de ese tema,
   // se da esa respuesta concreta; si no, el resumen del tema.
   if (keyword && useKeyword) {
-    const specific =
-      faq &&
-      faq.kind === 'entry' &&
-      faqBelongsTo(faq, keyword) &&
-      faq.score >= FAQ_STRONG &&
-      faq.coverage >= FAQ_COVERAGE
+    // (con la palabra clave ya se sabe el tema, así que basta un parecido razonable aunque
+    //  el mensaje traiga relleno: "oye, este mes me cobraron 20 dólares más" → "¿por qué me
+    //  cobraron más?", no el resumen de pagos)
+    const specific = faq && faq.kind === 'entry' && faqBelongsTo(faq, keyword) && faq.score >= FAQ_WEAK
     if (specific) return answerFaq(faq)
     return done('rules', faqReply(`topic:${keyword}`)!)
   }
@@ -228,8 +271,10 @@ function route(request: string, pending: Pending, lastDomain: ChatTopic | null, 
   // 7. Reglamentos con menos seguridad: solo si ningún otro tema la reconoció.
   if (faq && isGoodFaq(faq)) return answerFaq(faq)
 
-  // Si Toko estaba esperando una respuesta, la sigue esperando.
-  if (pending) {
+  // Si Toko estaba esperando una respuesta y le contestaron algo corto ("la tercera"),
+  // la sigue esperando. Una pregunta completa ("¿cómo pago la mensualidad?") ya es otra
+  // conversación: sigue al paso 8 como cualquier pregunta nueva.
+  if (pending && text.split(' ').length <= 3) {
     return {
       text: 'No logré entenderte. Puedes responder con una de las opciones que te mencioné o preguntarme otra cosa.',
       domain: null,
@@ -244,5 +289,6 @@ function route(request: string, pending: Pending, lastDomain: ChatTopic | null, 
     return done('rules', reply, next)
   }
 
-  return { text: SOON, domain: null, pending: null }
+  // No se entendió: chat/misses.ts decide si pedir que lo repita o sugerir la pregunta.
+  return { text: SOON, domain: null, pending: null, miss: true }
 }

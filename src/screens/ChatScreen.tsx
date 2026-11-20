@@ -22,6 +22,7 @@ export function ChatScreen({
   onOpenCalendar,
   guest = false,
   onCreateAccount,
+  onSuggestQuestion,
 }: {
   messages: ChatMessage[]
   typing: boolean
@@ -29,6 +30,7 @@ export function ChatScreen({
   onOpenCalendar: () => void
   guest?: boolean
   onCreateAccount?: () => void
+  onSuggestQuestion?: (question: string) => void
 }) {
   const [input, setInput] = useState('')
   const endRef = useRef<HTMLDivElement | null>(null)
@@ -65,7 +67,12 @@ export function ChatScreen({
           if (message.card) {
             return (
               <ResponseWithCard key={message.id} text={message.text} animate={animate}>
-                <ChatCardView card={message.card} onOpenCalendar={onOpenCalendar} onCreateAccount={onCreateAccount} />
+                <ChatCardView
+                  card={message.card}
+                  onOpenCalendar={onOpenCalendar}
+                  onCreateAccount={onCreateAccount}
+                  onSuggestQuestion={onSuggestQuestion}
+                />
               </ResponseWithCard>
             )
           }

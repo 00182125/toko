@@ -1,6 +1,8 @@
 import { procedureLinks, type ProcedureCard } from '@/data/procedures'
 import type { ChatCard, InfoRow } from '@/types/chat'
+import { DirectoryCard } from '@/components/cards/DirectoryCard'
 import { InfoCard } from '@/components/cards/InfoCard'
+import { SuggestQuestionCard } from '@/components/cards/SuggestQuestionCard'
 import { BuildingCard } from '@/components/map/BuildingCard'
 
 // Convierte un trámite en las filas de su tarjeta: costo (si tiene), entrega y correo.
@@ -41,16 +43,23 @@ const lockedTitle = {
 // Dibuja la tarjeta que el motor del chat eligió.
 //  onOpenCalendar: lo usa la tarjeta "Ver calendario"
 //  onCreateAccount: lo usa la tarjeta de función bloqueada (modo invitado)
+//  onSuggestQuestion: lo usa la tarjeta "No entendí tu pregunta" (lleva a Ayuda con la pregunta)
 export function ChatCardView({
   card,
   onOpenCalendar,
   onCreateAccount,
+  onSuggestQuestion,
 }: {
   card: ChatCard
   onOpenCalendar: () => void
   onCreateAccount?: () => void
+  onSuggestQuestion?: (question: string) => void
 }) {
   switch (card.kind) {
+    case 'suggest-question':
+      return <SuggestQuestionCard onSuggest={() => onSuggestQuestion?.(card.question)} />
+    case 'directory':
+      return <DirectoryCard entry={card.entry} />
     case 'guest-locked':
       return (
         <InfoCard

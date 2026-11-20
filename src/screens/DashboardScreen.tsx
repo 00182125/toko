@@ -17,6 +17,7 @@ export function DashboardScreen({ onBack, onContent }: { onBack: () => void; onC
           tone="dark"
           label="Total Consultas"
           value="2,804"
+          delay={150}
           caption={
             <>
               <Icon name="arrow-up" size={16} />
@@ -24,7 +25,7 @@ export function DashboardScreen({ onBack, onContent }: { onBack: () => void; onC
             </>
           }
         />
-        <StatCard tone="blue" label="Edificio Más Consultado" value="867" caption="Biblioteca CRAI" />
+        <StatCard tone="blue" label="Edificio Más Consultado" value="867" caption="Biblioteca CRAI" delay={250} />
 
         <SectionTitle className="activity-title">Actividad Reciente</SectionTitle>
         <ActivityList items={recentActivity} />

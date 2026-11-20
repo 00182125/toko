@@ -11,6 +11,8 @@ import { posgradoFaq } from './09-posgrado'
 import { ceucaFaq } from './10-ceuca'
 import { escalafonFaq } from './11-escalafon'
 import { trabajoFaq } from './12-trabajo'
+import { diferidosFaq } from './13-diferidos'
+import { vidaEstudiantilFaq } from './14-vida-estudiantil'
 
 export { faqTopics } from './topics'
 
@@ -29,6 +31,8 @@ export const faqRegulations: FaqRegulation[] = [
   ceucaFaq,
   escalafonFaq,
   trabajoFaq,
+  diferidosFaq,
+  vidaEstudiantilFaq,
 ]
 
 // Todas las preguntas en una sola lista, con el reglamento al que pertenecen.

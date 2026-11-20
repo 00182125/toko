@@ -108,7 +108,8 @@ export function findProcedureCard(request: string): ProcedureMatch {
   ) {
     return { type: 'card', card: card('online-payments') }
   }
-  if (text.includes('parqueo') || text.includes('estacionamiento')) {
+  // "parqueo", "parquear", "estacionamiento", "estacionar", "marchamo", "tickets de parqueo"...
+  if (text.includes('parque') || text.includes('estaciona') || text.includes('marchamo')) {
     return { type: 'card', card: card('parking-payment') }
   }
   if (text.includes('carnet') || text.includes('carne estudiantil')) {
@@ -164,13 +165,27 @@ export function findProcedureCard(request: string): ProcedureMatch {
   return { type: 'unavailable' }
 }
 
+// Lo que dice Toko antes de la tarjeta: los servicios no son "documentos".
+const INTRO: Record<string, string> = {
+  'parking-payment':
+    'El parqueo se paga con tickets que compras en el portal de estudiantes. Ahí también consultas tu saldo disponible. Aquí tienes el enlace:',
+  'online-payments': '¡Claro! Desde aquí pagas tus cuotas, aranceles y trámites en línea:',
+  mercaduca: '¡Claro! Aquí registras tu emprendimiento para Mercaduca:',
+  'internships-jobs': '¡Claro! Aquí encuentras pasantías y ofertas de empleo:',
+  'student-id-issue': '¡Claro! Aquí tienes el enlace para tramitar tu carné:',
+  'student-id-validation': '¡Claro! Aquí tienes el enlace para validar tu carné:',
+}
+const DOCUMENT_INTRO = '¡Claro! Acá tienes el enlace para solicitar tu documento.'
+const SERVICE_INTRO = '¡Claro! Aquí tienes el enlace:'
+
 // Convierte el resultado de la búsqueda en la respuesta de Toko.
 export function procedureReply(match: ProcedureMatch): Reply | null {
   if (match.type === 'card') {
-    return {
-      text: '¡Claro! Acá tienes el enlace para solicitar tu documento.',
-      card: { kind: 'procedure', card: match.card },
-    }
+    const { card } = match
+    const intro =
+      INTRO[card.id] ??
+      (card.title.startsWith('Servicios') || card.title.startsWith('Asignaturas') ? SERVICE_INTRO : DOCUMENT_INTRO)
+    return { text: intro, card: { kind: 'procedure', card } }
   }
   if (match.type === 'clarify') return { text: match.text }
   return null

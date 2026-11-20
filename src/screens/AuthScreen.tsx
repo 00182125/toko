@@ -18,14 +18,17 @@ const errorIcon = (
 // Iniciar sesión (estudiante o administrativo) y crear cuenta.
 //  mode: 'login' o 'signup'
 //  role: quién entra; cambia el ejemplo de correo y a dónde va después
+//  onAuthenticated: avisa a la app quién entró (al crear cuenta se entra como estudiante)
 export function AuthScreen({
   mode,
   role = 'student',
   navigate,
+  onAuthenticated,
 }: {
   mode: 'login' | 'signup'
   role?: Role
   navigate: Navigate
+  onAuthenticated: (role: Role) => void
 }) {
   const [passwordFocused, setPasswordFocused] = useState(false)
   const [passwordVisible, setPasswordVisible] = useState(false)
@@ -50,7 +53,9 @@ export function AuthScreen({
       setTriedToSend(true)
       return
     }
-    navigate(!isSignup && !isStudent ? 'dashboard' : 'home')
+    const admin = !isSignup && !isStudent
+    onAuthenticated(admin ? 'admin' : 'student')
+    navigate(admin ? 'dashboard' : 'home')
   }
 
   return (

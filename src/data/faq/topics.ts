@@ -5,6 +5,47 @@ import type { FaqTopic } from '@/types/faq'
 // (ver "related"); no agrega datos nuevos.
 export const faqTopics: FaqTopic[] = [
   {
+    id: 'deferred',
+    title: 'Parciales diferidos',
+    answer: `Sobre los parciales diferidos (evaluaciones extraordinarias):
+• Solo se autorizan por fuerza mayor: enfermedad o accidente, trabajo ineludible o un viaje grave. No estudiar, quedarse dormido, olvidar la fecha o tener muchos exámenes no cuenta, y la falta se califica con 0.0.
+• Se piden por escrito al Decanato de tu Facultad (o al de Postgrados) en los 3 días hábiles después del examen, con los comprobantes y pagando el arancel. No se gestionan directo con el docente.
+• El diferido es diferente pero equivalente al original, nunca acumulativo, y se hace en las 2 semanas posteriores al periodo ordinario.
+• Si abandonas el examen ordinario o no te presentas al diferido autorizado, pierdes la oportunidad de reponerlo.
+• En maestrías y doctorados: máximo 2 evaluaciones diferidas por asignatura, y los debates o discusiones grupales no se reponen.
+Cuéntame tu caso y te digo qué aplica.`,
+    variants: [
+      'que es un parcial diferido',
+      'como funcionan los diferidos',
+      'informacion sobre examenes diferidos',
+      'que dice el reglamento de los diferidos',
+      'reglas de evaluaciones extraordinarias',
+      'todo sobre diferidos',
+      'cuando puedo pedir un diferido',
+      'requisitos para un examen diferido',
+      'reposicion de examenes',
+      'perdi un parcial que hago',
+    ],
+    related: ['D1', 'D2', 'D3', 'D4', 'D5', 'D6', 'D7', 'P10'],
+    keywords: [
+      'diferid',
+      'diferir',
+      'difieren',
+      'extraordinari',
+      'reposicion',
+      'reponer el examen',
+      'reponer el parcial',
+      'reponerlo',
+      'perdi el parcial',
+      'perdi el examen',
+      'falte al parcial',
+      'falte al examen',
+      'no hice el parcial',
+      'no llegue al parcial',
+      'no llegue al examen',
+    ],
+  },
+  {
     id: 'overview',
     title: 'Reglamentos UCA en general',
     answer: `La UCA tiene 12 reglamentos oficiales vigentes:
@@ -466,7 +507,7 @@ Las fechas oficiales están en el Calendario Académico.`,
     answer: `Sobre exámenes y notas:
 • En grado apruebas con 6.0; en posgrado, con 7.0.
 • Si no estás de acuerdo con una nota, pide revisión al docente dentro de los 3 días hábiles después de publicada.
-• Si faltas a un examen por enfermedad o emergencia, presenta la justificación a la Jefatura del Departamento dentro de 3 días hábiles para que te autoricen el diferido.
+• Si faltas a un examen por enfermedad o emergencia, presenta la solicitud con la justificación al Decanato de tu Facultad dentro de 3 días hábiles y paga el arancel para que te autoricen el diferido.
 • Copiar anula el examen (0.0) y genera una amonestación.
 • Solo el profesor titular asigna las notas finales; los instructores no pueden hacerlo.`,
     variants: [
@@ -482,7 +523,7 @@ Las fechas oficiales están en el Calendario Académico.`,
       'evaluaciones reglamento',
     ],
     related: ['P18', 'P163', 'P9', 'P10', 'P122', 'P84'],
-    keywords: ['diferido', 'revision de nota', 'revision de examen', 'nota minima', 'con cuanto se pasa', 'con cuanto paso'],
+    keywords: ['revision de nota', 'revision de examen', 'nota minima', 'con cuanto se pasa', 'con cuanto paso'],
   },
   {
     id: 'teachers',
@@ -536,7 +577,7 @@ Las fechas oficiales están en el Calendario Académico.`,
     id: 'health',
     title: 'Salud y emergencias',
     answer: `Si tienes un problema de salud o una emergencia:
-• Si faltas a un examen, presenta la justificación médica a la Jefatura del Departamento dentro de 3 días hábiles para hacer el examen diferido.
+• Si faltas a un examen, presenta la solicitud con la constancia médica al Decanato de tu Facultad dentro de 3 días hábiles y paga el arancel para hacer el examen diferido.
 • Si es un motivo personal, puedes pedir el retiro del ciclo completo en las fechas establecidas.
 • Si un trabajador se accidenta en el campus, se le atiende en la Clínica Médica y se notifica al ISSS.`,
     variants: [
@@ -551,7 +592,107 @@ Las fechas oficiales están en el Calendario Académico.`,
       'estoy enfermo y tengo examen',
       'problema de salud durante el ciclo',
     ],
-    related: ['P10', 'P3', 'P237'],
+    related: ['P10', 'P3', 'P237', 'D1'],
     keywords: ['enferm', 'emergencia', 'hospital', 'accidente', 'incapacidad medica', 'constancia medica'],
+  },
+  {
+    id: 'payments',
+    title: 'Pagos y mensualidades',
+    answer: `Sobre los pagos en la UCA:
+• La cuota mensual es diferenciada: se asigna según la situación socioeconómica de cada estudiante, por eso no todos pagan lo mismo.
+• Cada cuota tiene fecha de vencimiento (en tu estado de cuenta y en el Calendario Académico). Si pagas tarde, se suman $5 de recargo por mora.
+• La matrícula y la mensualidad van subiendo conforme avanzas en tu carrera, y depende de cada carrera.
+• El interciclo sale entre un 20% y un 35% más caro por UV que un ciclo normal.
+• Si tu cuota vino más alta, revisa si es por mora, por el arancel de un trámite (retiro, diferido…) o por un cambio en tu beca.
+• Si no puedes pagar, consulta en la Vicerrectoría Financiera un arreglo de pago, o pide en Cuotas diferenciadas que revisen tu cuota.
+• Estar solvente se pide para trámites como el cambio de carrera y la graduación.
+¿Qué quieres saber: cómo pagar, la mora o por qué te cobraron más?`,
+    variants: [
+      'pagos en la uca',
+      'informacion sobre pagos',
+      'dudas sobre la mensualidad',
+      'tengo una duda con mi cuota',
+      'quiero saber de las cuotas',
+      'como funcionan los pagos en la uca',
+      'mensualidades',
+      'todo sobre pagos',
+      'cuentame de los pagos',
+      'pagos y cuotas',
+    ],
+    related: ['V1', 'V2', 'V3', 'V4', 'V5', 'V6', 'V7', 'V8', 'V9', 'V27', 'V28'],
+    keywords: [
+      'mensualidad',
+      'colegiatura',
+      '=mora',
+      'recargo',
+      'talonario',
+      'estado de cuenta',
+      '=cuota',
+      '=cuotas',
+      'pago tarde',
+      'pagar tarde',
+      'pague tarde',
+      'cobraron',
+      'arreglo de pago',
+      'solvente',
+      '=pisto',
+    ],
+  },
+  {
+    id: 'bookstore',
+    title: 'Librería y Papelería UCA',
+    answer: `La Librería y Papelería UCA está dentro del campus, arriba de la Plaza de los Estudiantes por la Paz. Ahí encuentras:
+• Libros, como publicaciones de UCA Editores y material de lectura para tus materias.
+• Útiles y artículos de papelería para el día a día.
+• Puedes consultar si tienen artículos con la identidad de la UCA.
+Lo disponible cambia, así que si buscas algo puntual, pregunta ahí mismo. ¿Quieres que te la muestre en el mapa? Escribe "¿dónde queda la librería?".`,
+    variants: [
+      'libreria uca',
+      'la libreria',
+      'informacion de la libreria',
+      'cuentame de la libreria',
+      'papeleria de la uca',
+      'libreria y papeleria',
+      'que onda con la libreria',
+      'hay libreria en la uca',
+      'la uca tiene libreria',
+      'tienda de la uca',
+    ],
+    related: ['V10', 'V11', 'V12'],
+    keywords: ['libreria', 'papeleria', 'uca editores', '=utiles', 'souvenir', 'logo de la uca', 'cuaderno', 'sudadera', 'ropa de la uca'],
+  },
+  {
+    id: 'new-students',
+    title: 'Nuevo ingreso',
+    answer: `¡Bienvenido a la UCA! Lo básico para tus primeros ciclos:
+• Calendario Académico: inscripciones, pagos, exámenes y vacaciones. Pregúntame cualquier fecha.
+• UV y CUM: cada materia vale cierto número de UV, y tu CUM es tu promedio ponderado. De él depende cuántas UV puedes inscribir.
+• Pagos: tu cuota es diferenciada; págala antes del vencimiento para evitar la mora.
+• Campus: pregúntame "¿dónde queda…?" para la Biblioteca (CRAI), la Cafetería Central, tu Facultad o cualquier edificio.
+• Vida estudiantil: el CAE te conecta con grupos y actividades, y la Escuela de Idiomas tiene cursos.
+• Reglas clave: conoce lo básico del reglamento, como el plagio, los retiros y los diferidos. Pregúntame cuando quieras.`,
+    variants: [
+      'soy de primer ingreso',
+      'nuevo ingreso',
+      'informacion para nuevo ingreso',
+      'que necesito saber como nuevo',
+      'ayuda para estudiantes nuevos',
+      'primer ano en la uca',
+      'estudiante nuevo',
+      'recien entro a la uca',
+      'guia de nuevo ingreso',
+      'cosas que debe saber un estudiante nuevo',
+    ],
+    related: ['V13', 'V14', 'V15', 'V17', 'V19', 'V24'],
+    keywords: ['nuevo ingreso', 'primer ingreso', 'soy nuevo', 'soy nueva', 'primer ciclo', 'recien entr', 'acabo de entrar', 'estudiante nuevo', '=uv', '=uvs', 'unidades valorativas'],
+  },
+  {
+    id: 'languages',
+    title: 'Cursos de idiomas',
+    answer:
+      'Sí, la UCA tiene una Escuela de Idiomas, en el edificio de Aulas C. Ahí puedes informarte sobre cursos y niveles. Si tu carrera exige un idioma para graduarte, pregúntame "requisito de inglés para graduarme".',
+    variants: ['escuela de idiomas uca', 'idiomas en la uca', 'cursos de idiomas', 'aprender ingles', 'clases de idiomas'],
+    related: ['V22'],
+    keywords: ['curso de ingles', 'cursos de ingles', 'clases de ingles', 'cursos de idiomas', 'clases de idiomas', 'aprender idiomas', 'aprender ingles', 'aprender otro idioma'],
   },
 ]

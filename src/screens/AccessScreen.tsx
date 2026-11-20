@@ -5,7 +5,8 @@ import { Button } from '@/ui/Button'
 import { ScreenLayout } from '@/ui/ScreenLayout'
 
 // Pantalla para elegir cómo entrar: estudiante, administrativo o invitado.
-export function AccessScreen({ navigate }: { navigate: Navigate }) {
+//  onGuest: entra en modo invitado (acceso limitado, sin cuenta)
+export function AccessScreen({ navigate, onGuest }: { navigate: Navigate; onGuest: () => void }) {
   return (
     <ScreenLayout variant="access">
       <div className="access-content">
@@ -32,7 +33,7 @@ export function AccessScreen({ navigate }: { navigate: Navigate }) {
             variant="access"
             className="guest-access"
             icon={<Asset name="cc17c.svg" />}
-            onClick={() => navigate('home')}
+            onClick={onGuest}
           >
             Soy invitado
           </Button>

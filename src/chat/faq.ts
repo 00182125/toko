@@ -248,6 +248,8 @@ export function matchFaq(
   // Palabra muy propia de un reglamento ("biblioteca", "ceuca", "beca"...):
   // aparece en varias frases y casi siempre del mismo reglamento.
   const ownerOf = (f: string): string | null => {
+    // Los números ("20 dólares", "3 días") no son de ningún reglamento.
+    if (/^w:\d+$/.test(f)) return null
     const counts = idx.regulationOf.get(f)
     if (!counts || (idx.stemCount.get(f) ?? 0) < 3) return null
     for (const [reg, share] of counts) if (share >= 0.6) return reg
@@ -278,7 +280,8 @@ export function matchFaq(
       if (scores[0] >= 0.97) score = Math.max(score, scores[0])
       return { target, score: Math.min(score, 1), closest: scores[0] }
     })
-    .sort((a, b) => b.score - a.score)
+    // Empate: gana la que tiene la forma de preguntar más parecida.
+    .sort((a, b) => b.score - a.score || b.closest - a.closest)
 
   if (ranked.length === 0) return null
   const toCandidate = ({ target, score }: (typeof ranked)[number]): FaqCandidate => ({
@@ -362,7 +365,8 @@ export const FAQ_SUGGEST = 0.35
 // ese tema se responde sin importar cómo esté redactado el mensaje.
 
 // Si un mensaje toca varios temas, ganan primero los delicados.
-const KEYWORD_PRIORITY = ['harassment', 'substances', 'cheating', 'conduct', 'due-process', 'complaints']
+// Después, los diferidos: "me enfermé y perdí el parcial" es sobre diferidos antes que sobre salud.
+const KEYWORD_PRIORITY = ['harassment', 'substances', 'cheating', 'conduct', 'due-process', 'complaints', 'deferred']
 
 function keywordHits(text: string, keywords: string[]): number {
   const wordList = text.split(/[^a-z0-9]+/).filter(Boolean)

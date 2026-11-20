@@ -47,7 +47,8 @@ export function smallTalk(text: string, guest = false): Reply | null {
   const sorry = is(/(perdon|disculpa|lo siento|perdona)/)
   const joke = is(/(chiste|hazme reir|algo gracioso)/)
   const today = is(/(que dia es|a que dia estamos|a cuanto estamos)/)
-  const clock = is(/(que hora es|la hora)/)
+  // Solo "¿qué hora es?", no "a la hora del parcial"
+  const clock = is(/(^| )que hora es|^(dime|me dices|me das|sabes) la hora/)
 
   const hi = text.includes('buenos dias')
     ? '¡Buenos días!'

@@ -2460,7 +2460,7 @@ button {
     opacity 200ms ease-out;
 }
 
-button:active:not(:disabled):not(.help-head):not(.switch) {
+button:active:not(:disabled):not(.help-head):not(.suggest-head):not(.switch) {
   transform: scale(0.96);
 }
 
@@ -2563,6 +2563,370 @@ button:active:not(:disabled):not(.help-head):not(.switch) {
   }
   60% {
     transform: scale(1.14);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* ---------- Directorio UCA (Figma: Tarjeta – Contacto) ----------
+   Usa la base de las tarjetas del chat (.chat-info-card, .info-row) con los ajustes del Figma. */
+
+.directory-card {
+  box-shadow: 0 1px 2px rgb(7 24 31 / 10%);
+}
+
+.directory-link {
+  color: inherit;
+  text-decoration: none;
+}
+
+.directory-card .info-row p {
+  overflow-wrap: anywhere;
+}
+
+.directory-card .info-row p.directory-email {
+  flex: 1;
+  font-size: calc(13 * var(--u));
+  letter-spacing: 0.26px;
+}
+
+.directory-card .info-row p.directory-web {
+  font-size: calc(12 * var(--u));
+  letter-spacing: 0.24px;
+}
+
+/* Flecha ↗ de las filas que abren algo (correo, página web) */
+.directory-go {
+  display: flex;
+  flex: 0 0 auto;
+  padding: calc(6 * var(--u));
+}
+
+.directory-go img {
+  width: calc(16 * var(--u));
+  height: calc(16 * var(--u));
+}
+
+.directory-card .chat-card-action {
+  min-height: calc(42 * var(--u));
+}
+
+/* ---------- Chat: "No entendí tu pregunta" (Figma: Card · Sin respuesta) ---------- */
+
+.suggest-question-card {
+  box-shadow: 0 1px 2px rgb(7 24 31 / 10%);
+}
+
+.suggest-question-card .chat-card-action {
+  min-height: calc(42 * var(--u));
+}
+
+/* ---------- Ayuda: "Sugerir una pregunta" ---------- */
+
+.suggest-card {
+  color: #07181f;
+  background: #f5f6f6;
+}
+
+.suggest-head {
+  display: flex;
+  width: 100%;
+  min-height: calc(108 * var(--u));
+  flex-direction: column;
+  justify-content: center;
+  gap: calc(4 * var(--u));
+  padding: 0 calc(16 * var(--u)) 0 calc(18 * var(--u));
+  color: inherit;
+  text-align: left;
+}
+
+.suggest-card-expanded .suggest-head {
+  min-height: 0;
+  padding: calc(18 * var(--u)) calc(16 * var(--u)) calc(8 * var(--u)) calc(18 * var(--u));
+}
+
+.suggest-title {
+  display: flex;
+  align-items: center;
+  gap: calc(4 * var(--u));
+}
+
+.suggest-title strong {
+  font-family: 'Inter:Semi Bold', Inter, sans-serif;
+  font-size: calc(15 * var(--u));
+  font-weight: 600;
+  line-height: calc(20 * var(--u));
+}
+
+.suggest-chevron {
+  display: flex;
+  transition: transform 300ms cubic-bezier(0.34, 1.3, 0.5, 1);
+}
+
+.suggest-chevron img {
+  width: calc(16 * var(--u));
+  height: calc(16 * var(--u));
+}
+
+.suggest-chevron-up {
+  transform: rotate(-90deg);
+}
+
+.suggest-desc {
+  color: #434f55;
+}
+
+.suggest-body {
+  display: flex;
+  flex-direction: column;
+  gap: calc(12 * var(--u));
+  padding: 0 calc(18 * var(--u)) calc(18 * var(--u));
+  animation: fadeUp 320ms cubic-bezier(0.22, 1, 0.36, 1) backwards;
+}
+
+.suggest-field {
+  width: 100%;
+  height: calc(88 * var(--u));
+  resize: none;
+  border: 0;
+  border-radius: calc(20 * var(--u));
+  background: #ffffff;
+  padding: calc(14 * var(--u)) calc(16 * var(--u));
+  color: #07181f;
+  font-family: 'Inter:Regular', Inter, sans-serif;
+  font-size: calc(14 * var(--u));
+  line-height: calc(20 * var(--u));
+  outline: none;
+}
+
+.suggest-field::placeholder {
+  color: #5b676b;
+  opacity: 1;
+}
+
+.suggest-field:focus {
+  box-shadow: inset 0 0 0 2px #2e7da6;
+}
+
+.primary-action.suggest-send {
+  height: calc(48 * var(--u));
+  flex: 0 0 calc(48 * var(--u));
+  font-size: calc(14 * var(--u));
+  line-height: calc(20 * var(--u));
+}
+
+.primary-action.suggest-send:disabled {
+  cursor: default;
+  opacity: 0.5;
+}
+
+/* Burbuja "¡Pregunta enviada correctamente!" */
+.sent-bubble {
+  display: flex;
+  align-items: center;
+  gap: calc(10 * var(--u));
+  border-radius: calc(20 * var(--u)) calc(20 * var(--u)) calc(20 * var(--u)) calc(6 * var(--u));
+  background: #2e7da6;
+  padding: calc(12 * var(--u)) calc(16 * var(--u)) calc(12 * var(--u)) calc(14 * var(--u));
+  transform-origin: left bottom;
+  animation: pop 420ms cubic-bezier(0.34, 1.4, 0.5, 1) backwards;
+}
+
+.sent-check {
+  display: flex;
+  width: calc(24 * var(--u));
+  height: calc(24 * var(--u));
+  flex: 0 0 calc(24 * var(--u));
+  align-items: center;
+  justify-content: center;
+  border-radius: calc(12 * var(--u));
+  background: #ffffff;
+}
+
+.sent-check img {
+  width: calc(14 * var(--u));
+  height: calc(14 * var(--u));
+}
+
+.sent-bubble p {
+  color: #ffffff;
+  font-family: 'Inter:Semi Bold', Inter, sans-serif;
+  font-size: calc(13 * var(--u));
+  font-weight: 600;
+  line-height: calc(18 * var(--u));
+}
+
+/* ---------- Dashboards del administrativo: animaciones ----------
+   Todo entra escalonado: primero las tarjetas, luego títulos, listas y el botón.
+   Las cifras que cuentan y la dona que se dibuja están en src/ui/motion.tsx. */
+
+/* 1. Cada bloque de la pantalla sube suavemente, uno tras otro */
+.dashboard-body > * {
+  animation: fadeUp 520ms cubic-bezier(0.22, 1, 0.36, 1) backwards;
+}
+
+.dashboard-body > :nth-child(2) {
+  animation-delay: 90ms;
+}
+
+.dashboard-body > :nth-child(3) {
+  animation-delay: 170ms;
+}
+
+.dashboard-body > :nth-child(4) {
+  animation-delay: 230ms;
+}
+
+.dashboard-body > :nth-child(n + 5) {
+  animation-delay: 380ms;
+}
+
+/* 2. Tarjetas de cifras: un brillo recorre la tarjeta al aparecer y se hunden un poco al tocarlas */
+.metric-card {
+  position: relative;
+  overflow: hidden;
+  transition: transform 180ms ease-out;
+}
+
+.metric-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(110deg, transparent 30%, rgb(255 255 255 / 16%) 50%, transparent 70%);
+  transform: translateX(-100%);
+  animation: cardShine 1100ms 550ms ease-out forwards;
+  pointer-events: none;
+}
+
+.metric-card:active {
+  transform: scale(0.985);
+}
+
+@keyframes cardShine {
+  to {
+    transform: translateX(100%);
+  }
+}
+
+/* 3. Filas de "Actividad reciente" y de la tabla: entran deslizándose desde la izquierda */
+.activity-list li,
+.query-row {
+  animation: slideIn 460ms cubic-bezier(0.22, 1, 0.36, 1) backwards;
+}
+
+.activity-list li:nth-child(1),
+.query-row:nth-child(2) {
+  animation-delay: 300ms;
+}
+
+.activity-list li:nth-child(2),
+.query-row:nth-child(3) {
+  animation-delay: 380ms;
+}
+
+.activity-list li:nth-child(3),
+.query-row:nth-child(4) {
+  animation-delay: 460ms;
+}
+
+.activity-list li:nth-child(n + 4),
+.query-row:nth-child(n + 5) {
+  animation-delay: 540ms;
+}
+
+/* El ícono de cada actividad aparece con un pequeño rebote */
+.activity-icon {
+  animation: pop 420ms cubic-bezier(0.34, 1.4, 0.5, 1) backwards;
+  animation-delay: inherit;
+}
+
+.activity-list li:nth-child(1) .activity-icon {
+  animation-delay: 360ms;
+}
+
+.activity-list li:nth-child(2) .activity-icon {
+  animation-delay: 440ms;
+}
+
+.activity-list li:nth-child(n + 3) .activity-icon {
+  animation-delay: 520ms;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(calc(-14 * var(--u)));
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* 4. Dona: entra girando un poco mientras se dibuja; la leyenda aparece al terminar */
+.donut-wrap {
+  animation: donutIn 700ms 150ms cubic-bezier(0.22, 1, 0.36, 1) backwards;
+}
+
+@keyframes donutIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9) rotate(-12deg);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.donut-legend li {
+  animation: fadeUp 400ms cubic-bezier(0.22, 1, 0.36, 1) backwards;
+  animation-delay: calc(1100ms + var(--legend-i, 0) * 70ms);
+}
+
+.donut-legend li:nth-child(1) {
+  --legend-i: 0;
+}
+
+.donut-legend li:nth-child(2) {
+  --legend-i: 1;
+}
+
+.donut-legend li:nth-child(3) {
+  --legend-i: 2;
+}
+
+.donut-legend li:nth-child(4) {
+  --legend-i: 3;
+}
+
+.donut-legend li:nth-child(5) {
+  --legend-i: 4;
+}
+
+.donut-legend li:nth-child(n + 6) {
+  --legend-i: 5;
+}
+
+/* 5. Botón "Exportar": se vuelve verde con un pequeño rebote al confirmar */
+.primary-action {
+  transition:
+    transform 140ms ease-out,
+    background-color 300ms ease-out;
+}
+
+.primary-action.is-done {
+  background: #2ea693;
+  animation: donePop 420ms cubic-bezier(0.34, 1.4, 0.5, 1);
+}
+
+@keyframes donePop {
+  0% {
+    transform: scale(0.96);
+  }
+  60% {
+    transform: scale(1.03);
   }
   100% {
     transform: scale(1);

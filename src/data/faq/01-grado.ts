@@ -171,7 +171,9 @@ export const gradoFaq: FaqRegulation = {
       id: 'P10',
       question: '¿Qué pasa si no me presento a un examen parcial por una enfermedad o emergencia?',
       answer:
-        'Debes presentar una justificación médica o documental ante la Jefatura del Departamento dentro de los tres días hábiles siguientes para que te autoricen realizar la evaluación diferida.',
+        // Corregido con el banco de parciales diferidos (Reglamento de Grado, Arts. 151 y 152):
+        // la solicitud va al Decanato, no a la Jefatura del Departamento como decía la guía FAQ.
+        'Debes presentar la solicitud por escrito en el Decanato de tu Facultad dentro de los tres días hábiles siguientes a la fecha del examen, adjuntando la justificación médica o documental y cancelando el arancel correspondiente, para que te autoricen realizar la evaluación diferida.',
       variants: [
         'me enfermé y no hice el parcial',
         'como pido un examen diferido',
@@ -268,7 +270,6 @@ export const gradoFaq: FaqRegulation = {
         'ciclo de verano UCA',
         'ciclo extraordinario',
         'cuantas materias puedo llevar en interciclo',
-        'cuanto cuesta el interciclo',
         'se puede adelantar materias en verano',
         'interciclo como funciona',
         'materias en ciclo 03',

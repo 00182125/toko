@@ -76,7 +76,7 @@ export function SettingsScreen(props: SettingsProps) {
           <>
             <div className="profile">
               <div className="profile-avatar" />
-              <h2>Rodrigo Dubón</h2>
+              <h2>Username</h2>
               <p>00123425@uca.edu.sv</p>
             </div>
 

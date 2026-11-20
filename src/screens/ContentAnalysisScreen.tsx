@@ -41,7 +41,7 @@ export function ContentAnalysisScreen({ onBack }: { onBack: () => void }) {
         />
 
         <div className="settings-spacer" />
-        <Button variant="primary" onClick={exportReport}>
+        <Button variant="primary" className={exported ? 'is-done' : undefined} onClick={exportReport}>
           {exported ? 'Reporte exportado' : 'Exportar Reporte de Contenido'}
         </Button>
       </div>

@@ -1,6 +1,9 @@
+import { CountUp, useProgress } from './motion'
+
 export type DonutSegment = { label: string; value: number; color: string }
 
 // Gráfica de dona. Cada segmento ocupa su porcentaje (value) del círculo.
+// Al aparecer, los segmentos se dibujan en orden alrededor del círculo y la cifra central cuenta.
 export function DonutChart({
   segments,
   centerValue,
@@ -14,6 +17,8 @@ export function DonutChart({
 }) {
   const radius = 58
   const circumference = 2 * Math.PI * radius
+  // Cuánto del círculo ya está dibujado (0 a 1)
+  const drawn = useProgress(1200, 250) * circumference
   let offset = 0
 
   return (
@@ -21,6 +26,8 @@ export function DonutChart({
       <svg width="144" height="144" viewBox="0 0 144 144" role="img" aria-label={ariaLabel}>
         {segments.map((segment) => {
           const length = (segment.value / 100) * circumference
+          // Parte visible de este segmento: crece cuando el trazo llega a su posición.
+          const visible = Math.min(Math.max(drawn - offset, 0), length)
           const circle = (
             <circle
               key={segment.label}
@@ -30,7 +37,7 @@ export function DonutChart({
               fill="none"
               stroke={segment.color}
               strokeWidth="24"
-              strokeDasharray={`${length - 4} ${circumference - length + 4}`}
+              strokeDasharray={`${Math.max(visible - 4, 0)} ${circumference}`}
               strokeDashoffset={-offset}
               transform="rotate(-90 72 72)"
             />
@@ -40,7 +47,9 @@ export function DonutChart({
         })}
       </svg>
       <div className="donut-center">
-        <strong>{centerValue}</strong>
+        <strong>
+          <CountUp value={centerValue} duration={1200} delay={250} />
+        </strong>
         <span>{centerLabel}</span>
       </div>
     </div>

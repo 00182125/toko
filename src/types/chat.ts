@@ -1,4 +1,5 @@
 import type { Building } from '@/data/buildings'
+import type { DirectoryEntry } from '@/data/directory'
 import type { ProcedureCard } from '@/data/procedures'
 import type { ReservationCard } from '@/data/reservations'
 
@@ -33,6 +34,10 @@ export type ChatCard =
   | { kind: 'info'; data: InfoCardData }
   | { kind: 'building'; building: Building }
   | { kind: 'calendar-link' }
+  // Toko no supo responder: invita a sugerir la pregunta en Ayuda
+  | { kind: 'suggest-question'; question: string }
+  // Tarjeta del Directorio UCA (oficina o persona)
+  | { kind: 'directory'; entry: DirectoryEntry }
   // Función bloqueada para invitados: invita a crear una cuenta.
   | { kind: 'guest-locked'; feature: LockedFeature }
 
@@ -51,4 +56,12 @@ export type ChatMessage = {
 // Pregunta que Toko dejó pendiente ("¿cuál de los dos?") y espera respuesta.
 export type Pending = { domain: ChatTopic; text: string } | null
 
-export type Routed = Reply & { domain: ChatTopic | null; pending: Pending; autoOpen?: boolean }
+// miss: Toko no entendió el mensaje (la respuesta final la decide chat/misses.ts según los intentos)
+//  ref: qué se respondió ("entry:P2", "procedure:grades"...), para poder pedir sus pasos después
+export type Routed = Reply & {
+  domain: ChatTopic | null
+  pending: Pending
+  autoOpen?: boolean
+  miss?: boolean
+  ref?: string | null
+}

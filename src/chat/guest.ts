@@ -14,7 +14,8 @@ export const GUEST_LOCKED: Partial<Record<ChatTopic, LockedFeature>> = {
 const lockedText: Record<LockedFeature, string> = {
   dates:
     'El calendario académico es solo para estudiantes UCA. Si quieres estudiar en la UCA, la información de nuevo ingreso se publica en el sitio oficial uca.edu.sv, o puedes llamar a la central al 2210-6600.',
-  reservation: 'Reservar salas y espacios es solo para estudiantes y personal UCA con cuenta.',
+  reservation:
+    'Las reservas de salas y espacios, y los préstamos del CRAI (libros, tablets, cubículos), son solo para estudiantes y personal UCA con cuenta.',
   procedures:
     'Los trámites (constancias, notas, certificados…) son solo para estudiantes UCA, porque se hacen con tu cuenta institucional.',
 }
@@ -30,5 +31,5 @@ export const GUEST_WELCOME =
 // Qué sabe hacer Toko, según quién pregunta (se usa en la conversación casual).
 export const skillsFor = (guest: boolean) =>
   guest
-    ? 'ubicar edificios del campus, darte contactos de la UCA y contarte lo que dicen los reglamentos'
+    ? 'la ubicación de edificios del campus, los contactos de la UCA y lo que dicen los reglamentos'
     : 'trámites, reglamento, fechas importantes, reservar espacios, ubicar edificios y darte contactos de la UCA'
