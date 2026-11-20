@@ -220,6 +220,18 @@ if (verbose) console.log(suggestions.join('\n'))
     ['Do you speak English?', 'languages'],
     ['¿Me puedes hacer la tarea de cálculo?', 'homework'],
     ['¿Cómo te tengo que preguntar las cosas?', 'how-to-ask'],
+    ['qué trámites me ayudas a sacar?', 'which-procedures'],
+    ['cuales son los tramites que tienes', 'which-procedures'],
+    ['qué lugares del campus sabes ubicar', 'which-buildings'],
+    ['puedes decirme dónde están los edificios?', 'which-buildings'],
+    ['para qué es la tarjeta que me mandaste', 'how-cards'],
+    ['¿Cómo funciona lo del calendario?', 'how-calendar'],
+    ['qué significan los colores en el calendario?', 'how-calendar'],
+    ['qué cosas me puedes reservar', 'which-reservations'],
+    ['qué contactos tienes de la UCA', 'which-contacts'],
+    ['para qué sirve cada pestaña', 'app-tabs'],
+    ['me puedes explicar trámites paso a paso?', 'how-steps'],
+    ['qué fechas importantes me puedes decir', 'which-dates'],
   ]
   const missed = unseen.filter(([text, id]) => matchIdentity(asked(text))?.id !== id)
   console.log(`   frases escritas a mano: ${unseen.length - missed.length}/${unseen.length}`)

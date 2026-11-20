@@ -356,7 +356,7 @@ Las fechas oficiales están en el Calendario Académico.`,
       'que debo saber de la biblioteca',
     ],
     related: ['P61', 'P62', 'P63', 'P64', 'P65', 'P68', 'P74', 'P77'],
-    keywords: ['bibliotec', 'biblio', '=crai', 'libro', 'florentino idoate'],
+    keywords: ['bibliotec', 'biblio', '=crai', '=cry', 'libro', 'florentino idoate'],
   },
   {
     id: 'tutoring',

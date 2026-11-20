@@ -126,6 +126,7 @@ const TO_TOKO = new RegExp(
       'saludas|sepas|sientes|sigues|sirves|suenas|tapas|tapaste|tienes|trabajas|usas|vas|vendes|ves|vienes|vives|vuelves',
       'podes|sabe|presentate|hazme|resuelve|resuelveme|escribeme|redactame|pasame|traduce|buscame|busca|dime quien|dime que',
       'ia|ias|inteligencia artificial|chat ?gpt|gpt|gemini|copilot|siri|alexa|llm|robot|bot|chatbot|buho|tecolote|lechuza|animalito',
+      'las tarjetas|la tarjeta|tarjetas del chat|pestanas?|que edificios|cuales edificios|que lugares|que tramites|cuales tramites|lista de tramites|que reservas|que fechas|que contactos|que oficinas|paso a paso|instrucciones|el calendario|del calendario|boton hoy',
       'invitad[oa]s?|sin cuenta|sin registrarme|sin iniciar sesion|cuenta uca|una cuenta|bloquead[oa]s?',
       'esta app|esta aplicacion|la app|esto|este chat|el chat|gratis|gratuit[oa]|premium|suscripcion|english|speak',
       'tarea|programar|2 mas 2|clima|noticias|google|wikipedia',
@@ -171,5 +172,6 @@ export function identityReply(text: string, guest = false): Reply | null {
   const match = matchIdentity(text, undefined, MIN_SCORE, guest)
   if (!match) return null
   const intent = identityIntents.find((item) => item.id === match.id)!
-  return { text: pick(intent.answers).split('{skills}').join(skillsFor(guest)) }
+  const answers = guest && intent.guestAnswers ? intent.guestAnswers : intent.answers
+  return { text: pick(answers).split('{skills}').join(skillsFor(guest)) }
 }

@@ -7,6 +7,14 @@ export type ReservationMatch =
   | { type: 'clarify'; text: string }
   | { type: 'unavailable' }
 
+const word = (alternatives: string) => new RegExp(`(^| )(${alternatives})( |$)`)
+const EQUIPMENT = word(
+  'smart ?tv|tv|tele|teles|televisor(es)?|television(es)?|pantallas?|tablets?|tabletas?|ipads?|' +
+    'mobiliario|muebles?|equipos?|equipo multimedia',
+)
+const SPORTS = /(futbol|deport|basquet|volei|seleccion|torneo|jugar)/
+const BOOK = word('libros?|ejemplar(es)?|material bibliografico|prestamos?')
+
 export function findReservationCard(request: string): ReservationMatch {
   const text = normalizeText(request)
   const card = (id: string) => reservationCards.find((item) => item.id === id)!
@@ -23,7 +31,12 @@ export function findReservationCard(request: string): ReservationMatch {
   if (
     text.includes('sala de reunion') ||
     text.includes('sala en la biblioteca') ||
+    text.includes('sala de la biblioteca') ||
     text.includes('sala del crai') ||
+    text.includes('sala en el crai') ||
+    text.includes('sala de estudio') ||
+    text.includes('sala grupal') ||
+    text.includes('sala para estudiar') ||
     text.includes('cubiculo')
   ) {
     return {
@@ -31,24 +44,19 @@ export function findReservationCard(request: string): ReservationMatch {
       text: 'Claro, ¿en qué nivel lo necesitas? Primer nivel, segundo nivel o tercer nivel.',
     }
   }
-  if (
-    text.includes('tablet') ||
-    text.includes('smart tv') ||
-    text.includes('mobiliario') ||
-    text.includes('equipo')
-  ) {
+  // Mobiliario y equipo del CRAI: tablets, Smart TV y muebles, con sus sinónimos
+  // ("tele", "televisor", "pantalla", "tableta", "iPad", "mesas", "sillas"...).
+  // "equipo" no cuenta si habla de deportes ("equipo de fútbol").
+  if (EQUIPMENT.test(text) && !SPORTS.test(text)) {
     return { type: 'card', card: card('crai-equipment') }
   }
-  if (text.includes('renov') && (text.includes('libro') || text.includes('prestamo'))) {
+  if (text.includes('renov') && BOOK.test(text)) {
     return { type: 'card', card: card('crai-renewal') }
   }
-  if (
-    (text.includes('reserv') || text.includes('pedir')) &&
-    (text.includes('libro') || text.includes('material bibliografico'))
-  ) {
+  if ((text.includes('reserv') || text.includes('pedir') || text.includes('apartar')) && BOOK.test(text)) {
     return { type: 'card', card: card('crai-book') }
   }
-  if (text.includes('libro') || text.includes('prestamo')) {
+  if (BOOK.test(text)) {
     return {
       type: 'clarify',
       text: '¿Quieres reservar un libro prestado o renovar un préstamo?',
@@ -90,11 +98,11 @@ export function findReservationCard(request: string): ReservationMatch {
   // Pedidos de reserva más generales: Toko pregunta qué necesita en vez de rendirse.
   if (
     /(reserv|apartar|agendar)/.test(text) &&
-    (text.includes('crai') || text.includes('biblioteca'))
+    /(crai|cry|biblio)/.test(text)
   ) {
     return {
       type: 'clarify',
-      text: 'Claro, ¿qué necesitas reservar en el CRAI? Una sala de reuniones, equipo (tablets, Smart TV o mobiliario) o un libro.',
+      text: 'Claro, ¿qué necesitas reservar en el CRAI? Una sala de reuniones, equipo (tablets, TV o mobiliario) o un libro.',
     }
   }
   if (/(reserv|apartar|agendar)/.test(text) && /(sala|espacio|lugar|cancha|auditorio|aula)/.test(text)) {

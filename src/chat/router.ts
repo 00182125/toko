@@ -20,6 +20,7 @@ import { findProcedureCard, procedureReply } from './procedures'
 import { NOT_FOUND_BUILDING, findBuilding, locationReply } from './locations'
 import { SOON } from './messages'
 import { identityReply } from './identity'
+import { answerLibraryMenu, isLibraryOnly, libraryMenu } from './libraryMenu'
 import { refOf, stepsFollowUp, stepsFor, stepsRequest } from './steps'
 import { normalizeText } from './normalize'
 import { TOPIC_HINT, smallTalk } from './smallTalk'
@@ -133,7 +134,14 @@ function route(request: string, pending: Pending, lastDomain: ChatTopic | null, 
       const match = findReservationCard(combined)
       if (match.type === 'card') return done('reservation', reservationReply(match)!)
     }
-    if (pending.domain === 'rules' && pending.text.startsWith('faq|')) {
+    // Menú de la biblioteca ("biblioteca" a secas → ¿qué quieres saber?)
+    if (pending.domain === 'rules' && pending.text === 'menu|library') {
+      const chosen = answerLibraryMenu(text, guest)
+      if (chosen) return chosen
+      // Escribió otra cosa: se toma como una pregunta nueva.
+      pending = null
+    }
+    if (pending && pending.domain === 'rules' && pending.text.startsWith('faq|')) {
       const [first, second] = pending.text.split('|').slice(1)
       const pick = (key: string) => faqReply(key)!
       if (second && /(^| )(ambas|ambos|las dos|los dos|las 2|los 2)( |$)/.test(text)) {
@@ -151,6 +159,9 @@ function route(request: string, pending: Pending, lastDomain: ChatTopic | null, 
       pending = null
     }
   }
+
+  // "Biblioteca" o "CRAI" a secas: Toko pregunta qué quiere saber de ahí y da opciones.
+  if (isLibraryOnly(text)) return libraryMenu(guest)
 
   // Tema del reglamento por palabra clave ("acoso", "beca", "plagio"...)
   const keyword = keywordTopic(request)
@@ -214,7 +225,7 @@ function route(request: string, pending: Pending, lastDomain: ChatTopic | null, 
   const otherTopic = has('reserv', 'sala', 'renov', 'prestamo', 'prestar', 'tablet', 'cubiculo', 'tramite', 'constancia', 'certificado', 'fecha', 'cuando', 'calendario', 'reglamento', 'periodo', 'multimedia', 'radio', 'estudio', 'ciclorama', 'taller')
   // Si el mensaje no pide un lugar y trae un tema del reglamento ("servicio social"),
   // se responde el tema aunque coincida con el nombre de un edificio.
-  if (asksPlace || (!otherTopic && !useKeyword && (findBuilding(text) || has('aula', 'modulo', 'auditorio')))) {
+  if (asksPlace || (!otherTopic && !hasServiceCard && !useKeyword && (findBuilding(text) || has('aula', 'modulo', 'auditorio')))) {
     const found = locationReply(text)
     if (found) return done('location', found.reply, found.waiting ? { domain: 'location', text } : null)
     return done('location', { text: NOT_FOUND_BUILDING }, { domain: 'location', text: '' })

@@ -3,7 +3,14 @@
 // Toko elige una al azar para no sonar siempre igual.
 //  {skills} se reemplaza por lo que Toko puede hacer en esa sesión (el invitado ve menos).
 //  guestOnly: solo se responde en modo invitado
-export type IdentityIntent = { id: string; answers: string[]; variants: string[]; guestOnly?: boolean }
+//  guestAnswers: respuestas para el modo invitado (si el tema necesita cuenta UCA)
+export type IdentityIntent = {
+  id: string
+  answers: string[]
+  variants: string[]
+  guestOnly?: boolean
+  guestAnswers?: string[]
+}
 
 export const identityIntents: IdentityIntent[] = [
   {
@@ -1041,6 +1048,274 @@ export const identityIntents: IdentityIntent[] = [
       'donde se come bien en la uca',
       'te gusta el campus',
       'el campus es bonito',
+    ],
+  },
+  // ── Funciones de Toko: qué trámites, qué edificios, cómo funcionan las tarjetas y el calendario ──
+  {
+    id: 'which-procedures',
+    answers: [
+      `Te ayudo con estos trámites:
+• Constancias: estudiante inscrito, horario de clases, egresado, graduado, porcentaje de carrera, plan de estudio cursado, para ISS o AFP, INPEP, rankings y más.
+• Certificados de notas: autenticado (con validez oficial) o sin autenticar.
+• Asignaturas: preinscripción, inscripción, adición y retiro de materias.
+• Servicios: pagos en línea, pago de parqueo, emisión y validación del carné, Mercaduca y pasantías y empleos.
+Dime cuál necesitas y te muestro su tarjeta con el precio, el tiempo de entrega y el botón para solicitarlo. Si quieres, también te explico paso a paso cómo hacerlo.`,
+    ],
+    guestAnswers: [
+      'Los trámites en línea (constancias, certificados, inscripción de materias, pagos y carné) necesitan una cuenta UCA, así que en modo invitado no te los puedo abrir. Lo que sí puedo es explicarte cómo funcionan según el reglamento: retiros, parciales diferidos, becas, servicio social, graduación y más. Pregúntame por el que te interese.',
+    ],
+    variants: [
+      'en que tramites me puedes ayudar',
+      'que tramites me puedes ayudar a hacer',
+      'que tramites puedo hacer contigo',
+      'que tramites haces',
+      'que tramites conoces',
+      'cuales tramites manejas',
+      'que tramites tienes',
+      'que tramites puedo pedirte',
+      'con que tramites me ayudas',
+      'que constancias puedo sacar contigo',
+      'que documentos me puedes ayudar a pedir',
+      'me ayudas con tramites',
+      'puedes ayudarme con mis tramites',
+      'haces tramites de la uca',
+      'lista de tramites que puedes hacer',
+      'dame la lista de tramites',
+      'que certificados me puedes conseguir',
+      'que tramites tienes disponibles',
+      'que papeles puedo pedir contigo',
+      'que tramites me ayudas a sacar',
+    ],
+  },
+  {
+    id: 'which-buildings',
+    answers: [
+      `Te ayudo a encontrar cualquier edificio del campus, por ejemplo:
+• Biblioteca (CRAI), Cafetería Central y Librería y Papelería.
+• Edificios de Aulas A, B, C y D, y las Magnas I a VI.
+• Auditorios: Elba y Celina Ramos, Ignacio Ellacuría y Segundo Montes.
+• Edificios Jon de Cortina, Francisco Andrés Escobar, Ignacio Martín-Baró y CEDITEC.
+• Administración Central, Vicerrectoría Financiera, laboratorios de Psicología e Ingeniería y módulos de profesores.
+• Canchas, CAE, Centro de Orientación Profesional, Centro Cultural y de Servicio Social, Parroquia y Centro Monseñor Romero.
+Escríbeme "¿dónde queda…?" con el nombre y te lo muestro en el mapa con indicaciones para llegar.`,
+    ],
+    variants: [
+      'que edificios puedes ayudarme a encontrar',
+      'que edificios conoces',
+      'que lugares de la uca conoces',
+      'que edificios me puedes ubicar',
+      'cuales edificios sabes donde estan',
+      'que lugares puedo buscar contigo',
+      'me puedes ayudar a encontrar edificios',
+      'puedes ubicar edificios',
+      'sabes donde queda cada edificio',
+      'conoces todo el campus',
+      'que hay en el campus que puedas ubicar',
+      'que edificios tienes en el mapa',
+      'como funciona lo de ubicar edificios',
+      'como me ayudas a encontrar un lugar',
+      'me puedes guiar en el campus',
+      'que lugares sabes encontrar',
+      'tienes mapa del campus',
+    ],
+  },
+  {
+    id: 'how-cards',
+    answers: [
+      `Las tarjetas son respuestas rápidas con botón, para que no tengas que buscar nada:
+• Trámite: el nombre, el precio, el tiempo de entrega y un botón que te lleva directo a solicitarlo.
+• Reserva: el espacio o equipo, sus reglas y el botón para reservarlo.
+• Edificio: dónde queda en el mapa del campus y cómo llegar.
+• Directorio: teléfono, correo y página de una oficina, con el botón "Llamar".
+• Calendario: te lleva al calendario académico.
+Solo pregúntame lo que necesitas y, si hay una tarjeta para eso, te la muestro.`,
+    ],
+    variants: [
+      'como funcionan las tarjetas',
+      'para que sirven las tarjetas',
+      'que son las tarjetas',
+      'que son las tarjetas que me mandas',
+      'como uso las tarjetas',
+      'que hace el boton de la tarjeta',
+      'para que es el boton de la tarjeta',
+      'que significa la tarjeta que me diste',
+      'que tipos de tarjetas hay',
+      'que tarjetas me puedes mostrar',
+      'que informacion trae la tarjeta',
+      'como leo la tarjeta',
+      'por que me salio una tarjeta',
+      'que hago con la tarjeta',
+      'la tarjeta para que sirve',
+      'explicame las tarjetas',
+      'como funcionan las tarjetas del chat',
+    ],
+  },
+  {
+    id: 'how-calendar',
+    answers: [
+      `El calendario académico está en la pestaña Calendario:
+• Verás los meses uno debajo de otro, cada uno con sus días marcados por colores.
+• Cada color es un tipo de fecha: clases, evaluaciones, preinscripción, vacaciones, asuetos, inicio y fin de ciclo, y fechas especiales de la UCA.
+• Debajo de cada mes está la leyenda, que te dice qué significa cada color.
+• El botón "Hoy" te lleva directo al mes actual.
+También puedes preguntarme "¿cuándo son los parciales?" o "¿cuándo empieza el ciclo?" y te abro el calendario.`,
+    ],
+    guestAnswers: [
+      'El calendario académico es solo para estudiantes UCA, por eso no aparece en modo invitado. Ahí se ven los meses del ciclo con las clases, evaluaciones, preinscripción, vacaciones y asuetos marcados por colores, con un botón "Hoy" para ir al mes actual. Si eres estudiante, crea tu cuenta desde Ajustes para verlo.',
+    ],
+    variants: [
+      'como funciona el calendario',
+      'como funciona lo del calendario',
+      'como uso el calendario',
+      'para que sirve el calendario',
+      'que tiene el calendario',
+      'que fechas tiene el calendario',
+      'que significan los colores del calendario',
+      'que son los colores del calendario',
+      'como leo el calendario',
+      'como veo las fechas en el calendario',
+      'como encuentro una fecha en el calendario',
+      'para que es el boton hoy',
+      'que hace el boton hoy del calendario',
+      'explicame el calendario',
+    ],
+  },
+  {
+    id: 'which-reservations',
+    answers: [
+      `Te ayudo a reservar:
+• En el CRAI (biblioteca): salas de reuniones, mobiliario y equipo (tablets y Smart TV), libros y la renovación de tus préstamos.
+• En los laboratorios: laboratorios multimedia, estudios de radio, estudio de fotografía y ciclorama.
+Dime qué necesitas y te muestro su tarjeta con las reglas y el botón para reservarlo.`,
+    ],
+    guestAnswers: [
+      'Las reservas (salas del CRAI, equipo, laboratorios multimedia, estudios de radio y fotografía) necesitan una cuenta UCA, así que en modo invitado no están disponibles. Si eres estudiante, crea tu cuenta desde Ajustes.',
+    ],
+    variants: [
+      'que puedo reservar contigo',
+      'que espacios puedo reservar',
+      'que me puedes ayudar a reservar',
+      'que salas puedes reservar',
+      'que reservas puedes hacer',
+      'que reservas haces',
+      'puedes reservar salas',
+      'me ayudas a reservar algo',
+      'que lugares se pueden reservar',
+      'que equipo puedo reservar',
+      'que cosas se reservan contigo',
+      'como funcionan las reservas',
+      'como reservo contigo',
+      'se pueden reservar laboratorios',
+      'que opciones de reserva tienes',
+      'lista de lo que puedo reservar',
+    ],
+  },
+  {
+    id: 'which-contacts',
+    answers: [
+      `En el Directorio UCA tengo los contactos de oficinas como Admisiones, el CAE, Cuotas diferenciadas, Tesorería (UCFT), los decanatos de cada facultad, el Decanato de Postgrados, Formación Continua (CFC), Vigilancia, Mantenimiento (UIM), Rectoría, Comunicaciones y la Clínica ISSS.
+Escribe el nombre de la oficina, por ejemplo "teléfono de Admisiones", y te muestro su tarjeta con teléfono, correo, página y el botón "Llamar". Escribe "directorio" para ver la lista completa.`,
+    ],
+    variants: [
+      'que contactos tienes',
+      'que contactos me puedes dar',
+      'de que oficinas tienes contacto',
+      'que oficinas conoces',
+      'como funciona el directorio',
+      'para que sirve el directorio',
+      'que tiene el directorio',
+      'a quien me puedes contactar',
+      'con quien me puedes conectar',
+      'que telefonos tienes',
+      'tienes los telefonos de las oficinas',
+      'tienes correos de la uca',
+      'me puedes dar contactos de la uca',
+      'que numeros de la uca tienes',
+      'a que oficinas puedo llamar',
+      'como uso el directorio',
+    ],
+  },
+  {
+    id: 'app-tabs',
+    answers: [
+      `La app tiene cuatro pestañas abajo:
+• Chat: aquí hablas conmigo.
+• Calendario: el calendario académico con las fechas importantes (solo con cuenta UCA).
+• Ayuda: lo que puedo hacer, explicado tema por tema, y "Sugerir una pregunta" si algo no lo sé.
+• Ajustes: tu perfil, las notificaciones, cambiar tu contraseña y cerrar sesión.`,
+    ],
+    guestAnswers: [
+      `En modo invitado la app tiene tres pestañas abajo:
+• Chat: aquí hablas conmigo.
+• Ayuda: lo que puedo hacer, explicado tema por tema, y "Sugerir una pregunta" si algo no lo sé.
+• Ajustes: crear tu cuenta, iniciar sesión o salir del modo invitado.
+El Calendario aparece cuando entras con tu cuenta UCA.`,
+    ],
+    variants: [
+      'que hay en cada pestana',
+      'para que sirve cada pestana',
+      'que pestanas tiene la app',
+      'como me muevo en la app',
+      'que hay en la app',
+      'que secciones tiene la app',
+      'para que sirve la pestana ayuda',
+      'que hay en ayuda',
+      'para que sirve ajustes',
+      'que hay en ajustes',
+      'que tiene el menu de abajo',
+      'que son los botones de abajo',
+      'explicame la app',
+      'como esta organizada la app',
+      'donde encuentro cada cosa en la app',
+    ],
+  },
+  {
+    id: 'how-steps',
+    answers: [
+      'Sí. Cuando te responda algo que sea un trámite (retirar una materia, pedir un diferido, sacar una constancia, pagar la mensualidad, solicitar una beca…), escríbeme "explícame cómo lo hago" o "dime los pasos" y te lo explico paso a paso. También puedes pedirlo directo, por ejemplo: "dime los pasos para pedir un parcial diferido".',
+    ],
+    variants: [
+      'me puedes explicar los tramites paso a paso',
+      'puedes darme pasos para hacer un tramite',
+      'me explicas como hacer las cosas',
+      'me puedes guiar en un tramite',
+      'puedes decirme como hacer un tramite',
+      'como te pido los pasos de algo',
+      'sabes explicar procesos',
+      'me ayudas paso a paso',
+      'puedes explicarme procesos de la uca',
+      'como hago para que me expliques los pasos',
+      'das instrucciones paso a paso',
+      'me puedes dar instrucciones',
+      'me guias para hacer tramites',
+      'explicas como hacer los tramites',
+      'puedes decirme los pasos de un proceso',
+    ],
+  },
+  {
+    id: 'which-dates',
+    answers: [
+      'Te ayudo con las fechas del calendario académico: inicio y fin de ciclo, clases, primeras y segundas evaluaciones, evaluaciones finales, preinscripción de asignaturas, vacaciones, asuetos y fechas especiales de la UCA. Pregúntame, por ejemplo, "¿cuándo son los parciales?" o "¿cuándo son las vacaciones?", y te abro el calendario.',
+    ],
+    guestAnswers: [
+      'Las fechas del calendario académico (inicio de ciclo, evaluaciones, preinscripción, vacaciones y asuetos) son para estudiantes UCA, así que en modo invitado no te las puedo mostrar. Si eres estudiante, crea tu cuenta desde Ajustes.',
+    ],
+    variants: [
+      'que fechas me puedes decir',
+      'que fechas conoces',
+      'que fechas importantes sabes',
+      'sabes las fechas de la uca',
+      'me puedes decir fechas importantes',
+      'que fechas tienes',
+      'me ayudas con las fechas',
+      'puedes recordarme fechas',
+      'tienes las fechas de los parciales',
+      'sabes cuando son las cosas en la uca',
+      'que eventos del calendario conoces',
+      'me puedes avisar de fechas',
+      'que fechas del ciclo sabes',
+      'puedes decirme fechas del ciclo',
+      'que fechas importantes me puedes dar',
     ],
   },
   {
