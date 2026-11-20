@@ -1,0 +1,9 @@
+TOKO APP - proyecto listo para Antigravity
+
+1. Abre esta carpeta en Antigravity (File > Open Folder).
+2. Copia las imagenes de Figma Make dentro de public/assets (ver instrucciones de Claude).
+3. Abre la terminal (Terminal > New Terminal) y escribe:
+      npm install
+      npm run dev
+4. Abre el enlace que sale (http://localhost:5173).
+Necesitas tener Node.js instalado (nodejs.org, version LTS).

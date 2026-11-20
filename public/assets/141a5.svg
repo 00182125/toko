@@ -1,0 +1,14 @@
+<svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="20" height="18" viewBox="0 0 20 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="car">
+<g id="tires">
+<path id="Vector" d="M3 15V16C3 16.2652 3.10536 16.5196 3.29289 16.7071C3.48043 16.8947 3.73478 17 4 17H5C5.26522 17 5.51957 16.8947 5.70711 16.7071C5.89464 16.5196 6 16.2652 6 16V15" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" stroke="#205975"/>
+<path id="Vector_2" d="M14 15V16C14 16.2652 14.1054 16.5196 14.2929 16.7071C14.4804 16.8947 14.7348 17 15 17H16C16.2652 17 16.5196 16.8947 16.7071 16.7071C16.8946 16.5196 17 16.2652 17 16V15" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" stroke="#205975"/>
+</g>
+<path id="windshield" d="M3 7.00001L4.5 2.40001C4.62727 1.9953 4.87994 1.64154 5.22149 1.38988C5.56303 1.13822 5.97575 1.00168 6.4 1.00001H13.6C14.0242 1.00168 14.437 1.13822 14.7785 1.38988C15.1201 1.64154 15.3727 1.9953 15.5 2.40001L17 7.00001" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" stroke="#205975"/>
+<path id="body" d="M4 7.00001H16C17.6569 7.00001 19 8.34315 19 10V12C19 13.6569 17.6569 15 16 15H4C2.34315 15 1 13.6569 1 12V10C1 8.34315 2.34315 7.00001 4 7.00001Z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" stroke="#205975"/>
+<g id="headlights">
+<path id="Vector_3" d="M4 11H6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" stroke="#205975"/>
+<path id="Vector_4" d="M14 11H16" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" stroke="#205975"/>
+</g>
+</g>
+</svg>

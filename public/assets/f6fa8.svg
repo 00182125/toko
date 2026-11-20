@@ -1,0 +1,23 @@
+<svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="69" height="13" viewBox="0 0 69 13" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="Iconos del sistema" clip-path="url(#clip0_0_33)">
+<g id="Group">
+<path id="Vector" d="M2 8H1C0.447715 8 0 8.44772 0 9V11C0 11.5523 0.447715 12 1 12H2C2.55228 12 3 11.5523 3 11V9C3 8.44772 2.55228 8 2 8Z" fill="#07181F"/>
+<path id="Vector_2" d="M7 6H6C5.44772 6 5 6.44772 5 7V11C5 11.5523 5.44772 12 6 12H7C7.55228 12 8 11.5523 8 11V7C8 6.44772 7.55228 6 7 6Z" fill="#07181F"/>
+<path id="Vector_3" d="M12 3.5H11C10.4477 3.5 10 3.94772 10 4.5V11C10 11.5523 10.4477 12 11 12H12C12.5523 12 13 11.5523 13 11V4.5C13 3.94772 12.5523 3.5 12 3.5Z" fill="#07181F"/>
+<path id="Vector_4" d="M17 1H16C15.4477 1 15 1.44772 15 2V11C15 11.5523 15.4477 12 16 12H17C17.5523 12 18 11.5523 18 11V2C18 1.44772 17.5523 1 17 1Z" fill="#07181F"/>
+</g>
+<g id="Group_2">
+<path id="Vector_5" d="M23.2 4.2C27.7333 0.6 32.2667 0.6 36.8 4.2" stroke-width="1.7" stroke-linecap="round" stroke="#07181F"/>
+<path id="Vector_6" d="M25.6 6.9C28.5333 4.5 31.4667 4.5 34.4 6.9" stroke-width="1.7" stroke-linecap="round" stroke="#07181F"/>
+</g>
+<path id="Vector_7" d="M30 11.3C30.718 11.3 31.3 10.718 31.3 10C31.3 9.28203 30.718 8.7 30 8.7C29.282 8.7 28.7 9.28203 28.7 10C28.7 10.718 29.282 11.3 30 11.3Z" fill="#07181F"/>
+<path id="Vector_8" d="M47.1 0.5H61.9C63.8882 0.5 65.5 2.11177 65.5 4.1V8.9C65.5 10.8882 63.8882 12.5 61.9 12.5H47.1C45.1118 12.5 43.5 10.8882 43.5 8.9V4.1C43.5 2.11177 45.1118 0.5 47.1 0.5Z" stroke="#07181F"/>
+<path id="Vector_9" d="M61.4 2.2H47.6C46.2745 2.2 45.2 3.27452 45.2 4.6V8.4C45.2 9.72548 46.2745 10.8 47.6 10.8H61.4C62.7255 10.8 63.8 9.72548 63.8 8.4V4.6C63.8 3.27452 62.7255 2.2 61.4 2.2Z" fill="#07181F"/>
+<path id="Vector_10" d="M67.6 4.5V8.5" stroke-linecap="round" stroke="#07181F"/>
+</g>
+<defs>
+<clipPath id="clip0_0_33">
+<rect width="69" height="13" fill="white"/>
+</clipPath>
+</defs>
+</svg>
