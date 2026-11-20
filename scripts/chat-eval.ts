@@ -182,7 +182,7 @@ if (verbose) console.log(suggestions.join('\n'))
   const idLog: string[] = []
   for (const intent of identityIntents) {
     for (const variant of intent.variants) {
-      const m = matchIdentity(asked(variant), variant)
+      const m = matchIdentity(asked(variant), variant, undefined, Boolean(intent.guestOnly))
       if (!m) {
         none++
         idLog.push(`  ? "${variant}" → ${intent.id}`)

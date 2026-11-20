@@ -2,7 +2,8 @@
 // Cada tema tiene varias formas de preguntarlo (variants) y varias respuestas (answers):
 // Toko elige una al azar para no sonar siempre igual.
 //  {skills} se reemplaza por lo que Toko puede hacer en esa sesión (el invitado ve menos).
-export type IdentityIntent = { id: string; answers: string[]; variants: string[] }
+//  guestOnly: solo se responde en modo invitado
+export type IdentityIntent = { id: string; answers: string[]; variants: string[]; guestOnly?: boolean }
 
 export const identityIntents: IdentityIntent[] = [
   {
@@ -1040,6 +1041,72 @@ export const identityIntents: IdentityIntent[] = [
       'donde se come bien en la uca',
       'te gusta el campus',
       'el campus es bonito',
+    ],
+  },
+  {
+    // Solo en modo invitado: qué puede y qué no puede hacer sin cuenta UCA.
+    id: 'guest-mode',
+    guestOnly: true,
+    answers: [
+      `En modo invitado puedes:
+• Preguntarme por los reglamentos de la UCA (becas, parciales diferidos, servicio social, plagio, acoso…), incluso paso a paso cómo funcionan.
+• Ubicar cualquier edificio del campus en el mapa.
+• Ver los contactos del Directorio UCA.
+• Resolver dudas de vida estudiantil: pagos y mensualidades, la librería, nuevo ingreso y más.
+• Sugerir una pregunta en la pestaña Ayuda si no sé responderla.
+Lo que necesita una cuenta UCA es el calendario académico, reservar salas y equipo, y los trámites en línea (constancias, certificados, pagos y carné). Si eres estudiante, crea tu cuenta desde Ajustes.`,
+    ],
+    variants: [
+      'que puedo hacer en modo invitado',
+      'que puedo hacer como invitado',
+      'que puedo hacer si soy invitado',
+      'que hago en modo invitado',
+      'que me deja hacer el modo invitado',
+      'que permite el modo invitado',
+      'para que sirve el modo invitado',
+      'que incluye el modo invitado',
+      'que funciones tiene el modo invitado',
+      'que funciones tengo como invitado',
+      'que opciones tengo como invitado',
+      'que puedo usar como invitado',
+      'que puedo usar en modo invitado',
+      'a que tengo acceso como invitado',
+      'a que tengo acceso en modo invitado',
+      'que acceso tengo sin cuenta',
+      'que puedo hacer sin cuenta',
+      'que puedo hacer sin registrarme',
+      'que puedo hacer sin iniciar sesion',
+      'que puedo hacer si no tengo cuenta',
+      'que puedo preguntar como invitado',
+      'que te puedo preguntar en modo invitado',
+      'que me puedes responder si soy invitado',
+      'en que me ayudas como invitado',
+      'en que me puedes ayudar en modo invitado',
+      'como invitado que puedo hacer',
+      'siendo invitado que puedo hacer',
+      'modo invitado que puedo hacer',
+      'modo invitado que incluye',
+      'como funciona el modo invitado',
+      'que es el modo invitado',
+      'que no puedo hacer como invitado',
+      'que no puedo hacer en modo invitado',
+      'que esta bloqueado en modo invitado',
+      'que cosas estan bloqueadas para invitados',
+      'que me falta por ser invitado',
+      'que limitaciones tiene el modo invitado',
+      'cuales son los limites del modo invitado',
+      'por que no puedo usar todo como invitado',
+      'por que hay cosas bloqueadas',
+      'que necesito cuenta para usar',
+      'para que necesito una cuenta uca',
+      'que gano si creo una cuenta',
+      'que diferencia hay entre invitado y estudiante',
+      'que puede hacer un invitado',
+      'que pueden hacer los invitados',
+      'un invitado puede reservar salas',
+      'como invitado puedo ver el calendario',
+      'como invitado puedo hacer tramites',
+      'puedo usar toko sin cuenta',
     ],
   },
 ]

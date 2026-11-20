@@ -126,8 +126,9 @@ const TO_TOKO = new RegExp(
       'saludas|sepas|sientes|sigues|sirves|suenas|tapas|tapaste|tienes|trabajas|usas|vas|vendes|ves|vienes|vives|vuelves',
       'podes|sabe|presentate|hazme|resuelve|resuelveme|escribeme|redactame|pasame|traduce|buscame|busca|dime quien|dime que',
       'ia|ias|inteligencia artificial|chat ?gpt|gpt|gemini|copilot|siri|alexa|llm|robot|bot|chatbot|buho|tecolote|lechuza|animalito',
+      'invitad[oa]s?|sin cuenta|sin registrarme|sin iniciar sesion|cuenta uca|una cuenta|bloquead[oa]s?',
       'esta app|esta aplicacion|la app|esto|este chat|el chat|gratis|gratuit[oa]|premium|suscripcion|english|speak',
-      'tarea|ensayo|tesis|ejercicio|ecuacion|programar|2 mas 2|clima|noticias|google|wikipedia',
+      'tarea|programar|2 mas 2|clima|noticias|google|wikipedia',
     ].join('|') +
     ')( |$)',
 )
@@ -138,7 +139,8 @@ export type IdentityMatch = { id: string; score: number; variant: string }
 
 // text: mensaje ya normalizado (sin tildes, en minúsculas)
 //  exclude: ignora esa forma de preguntar (la evaluación la usa para probar frases "nuevas")
-export function matchIdentity(text: string, exclude?: string, min = MIN_SCORE): IdentityMatch | null {
+//  guest: modo invitado (solo entonces cuentan los temas guestOnly)
+export function matchIdentity(text: string, exclude?: string, min = MIN_SCORE, guest = false): IdentityMatch | null {
   if (!text || text.split(' ').length > MAX_WORDS) return null
   if (!TO_TOKO.test(text) || COMPLAINT.test(text)) return null
   const words = tokens(text)
@@ -151,7 +153,7 @@ export function matchIdentity(text: string, exclude?: string, min = MIN_SCORE): 
   // (un tema con varias frases cercanas es más probable que uno con una sola).
   const byIntent = new Map<string, { first: number; second: number; variant: string }>()
   for (const item of index) {
-    if (item.variant === exclude || (topical && !item.topical)) continue
+    if (item.variant === exclude || (topical && !item.topical) || (item.intent.guestOnly && !guest)) continue
     const score = similarity(words, item.words)
     const top = byIntent.get(item.intent.id) ?? { first: 0, second: 0, variant: '' }
     if (score > top.first) byIntent.set(item.intent.id, { first: score, second: top.first, variant: item.variant })
@@ -166,7 +168,7 @@ export function matchIdentity(text: string, exclude?: string, min = MIN_SCORE): 
 }
 
 export function identityReply(text: string, guest = false): Reply | null {
-  const match = matchIdentity(text)
+  const match = matchIdentity(text, undefined, MIN_SCORE, guest)
   if (!match) return null
   const intent = identityIntents.find((item) => item.id === match.id)!
   return { text: pick(intent.answers).split('{skills}').join(skillsFor(guest)) }
