@@ -13,11 +13,11 @@ import {
   isSureFaq,
   matchFaq,
 } from './faq'
-import { directoryListReply, directoryReply, findDirectoryEntry } from './directory'
+import { directoryListReply, directoryReply, findDirectoryByName, findDirectoryEntry, findPersonByFullName } from './directory'
 import { GUEST_LOCKED, guestLockedReply } from './guest'
 import { findReservationCard, reservationReply } from './reservations'
 import { findProcedureCard, procedureReply } from './procedures'
-import { NOT_FOUND_BUILDING, findBuilding, locationReply } from './locations'
+import { ASKS_WAY, NOT_FOUND_BUILDING, findBuilding, locationReply, looksForBuilding } from './locations'
 import { SOON } from './messages'
 import { identityReply } from './identity'
 import { answerGaby, isGabyPending, teamReply } from './team'
@@ -26,6 +26,9 @@ import { isOfficialQuestion, refOf, stepsFollowUp, stepsFor, stepsRequest } from
 import { normalizeText } from './normalize'
 import { TOPIC_HINT, smallTalk } from './smallTalk'
 import { supportReply } from './support'
+
+// Palabras de lugar: con ellas, "¿dónde queda…?" sí busca un sitio aunque no esté en el mapa.
+const PLACE_WORDS = /(edificio|oficina|lugar|salon|local|aula|modulo|auditorio|laboratorio|cafeteria|biblioteca|plaza|parqueo|cancha|entrada|porton|acceso)/
 
 // Respuesta del reglamento. Si hay dos preguntas casi igual de parecidas,
 // Toko pregunta cuál de las dos es (y lo recuerda en "pending").
@@ -173,6 +176,18 @@ function route(request: string, pending: Pending, lastDomain: ChatTopic | null, 
     }
   }
 
+  // Cómo llegar: "¿cómo llego a Mercaduca?", "¿por dónde se va a la biblioteca?", "llévame a CEDITEC".
+  // Si pregunta claramente por un lugar del mapa, su tarjeta gana sobre cualquier otro tema
+  // (si no, "Mercaduca" daría el trámite del emprendimiento y "biblioteca" sus normas).
+  // (no si nombra a una persona del directorio: "¿dónde está Celina Andino?" es su contacto)
+  const personEntry = has('auditorio', 'elba', 'ramos') ? null : findPersonByFullName(request)
+  const person = personEntry !== null
+  if (personEntry && (ASKS_WAY.test(text) || has('donde'))) return done('support', directoryReply(personEntry))
+  if (!person && (ASKS_WAY.test(text) || looksForBuilding(text))) {
+    const found = locationReply(text)
+    if (found) return done('location', found.reply, found.waiting ? { domain: 'location', text } : null)
+  }
+
   // "Biblioteca" o "CRAI" a secas: Toko pregunta qué quiere saber de ahí y da opciones.
   if (isLibraryOnly(text)) return libraryMenu(guest)
 
@@ -241,7 +256,20 @@ function route(request: string, pending: Pending, lastDomain: ChatTopic | null, 
   if (asksPlace || (!otherTopic && !hasServiceCard && !useKeyword && (findBuilding(text) || has('aula', 'modulo', 'auditorio')))) {
     const found = locationReply(text)
     if (found) return done('location', found.reply, found.waiting ? { domain: 'location', text } : null)
-    return done('location', { text: NOT_FOUND_BUILDING }, { domain: 'location', text: '' })
+    // Una oficina del directorio que no está en el mapa ("¿dónde queda Admisiones?"): su contacto.
+    const known = office ?? findDirectoryByName(request)
+    if (known) {
+      return done('support', {
+        ...directoryReply(known),
+        text: 'No la tengo marcada en el mapa, pero aquí tienes su contacto para que te indiquen cómo llegar:',
+      })
+    }
+    // "No encontré ese edificio" solo si de verdad buscaba un lugar. "¿Cómo llego a graduarme?"
+    // o "¿cómo llego a ser instructor?" no son lugares: siguen al resto del chat.
+    const endsInVerb = /(ar|er|ir|arme|erme|irme|arte|erte|irte)$/.test(text)
+    if (PLACE_WORDS.test(text) || (text.split(' ').length <= 4 && !endsInVerb)) {
+      return done('location', { text: NOT_FOUND_BUILDING }, { domain: 'location', text: '' })
+    }
   }
 
   // 4. Tema del reglamento por palabra clave: se responde sea como sea la redacción.

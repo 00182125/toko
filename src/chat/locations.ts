@@ -54,6 +54,12 @@ export function findBuilding(text: string): Building | 'ask-magna' | null {
     const found = buildingList.find((b) => b.aliases.includes(`aulas ${letter}`))
     if (found) return found
   }
+  // Módulos de profesores A y B (el nombre del B incluye "Martín-Baró", que es otro edificio)
+  const module = text.match(/\bmodulo\s+([ab])\b/)?.[1]
+  if (module) {
+    const found = buildingList.find((b) => b.aliases.includes(`modulo ${module}`))
+    if (found) return found
+  }
   // El alias más largo que aparezca en el texto gana.
   let best: Building | null = null
   let bestLength = 0
@@ -65,8 +71,53 @@ export function findBuilding(text: string): Building | 'ask-magna' | null {
       }
     }
   }
-  return best
+  if (best) return best
+  // Un error de una letra en un nombre de 6 letras o más ("mercaduka", "ceditek", "parroquía").
+  for (const word of text.split(' ')) {
+    if (word.length < 6) continue
+    const near = buildingList.find((b) => b.aliases.some((alias) => !alias.includes(' ') && alias.length >= 6 && oneEditAway(word, alias)))
+    if (near) return near
+  }
+  return null
 }
+
+// ¿Están a una letra de distancia? (una letra cambiada, de más o de menos)
+function oneEditAway(a: string, b: string): boolean {
+  if (a === b || Math.abs(a.length - b.length) > 1) return false
+  let i = 0
+  let j = 0
+  let edits = 0
+  while (i < a.length && j < b.length) {
+    if (a[i] === b[j]) {
+      i++
+      j++
+      continue
+    }
+    if (++edits > 1) return false
+    if (a.length > b.length) i++
+    else if (a.length < b.length) j++
+    else {
+      i++
+      j++
+    }
+  }
+  return edits + (a.length - i) + (b.length - j) <= 1
+}
+
+// "Busco la biblioteca", "¿cómo encuentro Mercaduca?": también es buscar un lugar, pero solo si
+// el mensaje es corto y lo que sigue es el nombre de un edificio ("busco una beca" no lo es).
+export const LOOKS_FOR = /^(busco|ando buscando|estoy buscando|necesito encontrar|como encuentro|no encuentro) /
+export const looksForBuilding = (text: string) => {
+  if (!LOOKS_FOR.test(text) || text.split(' ').length > 14) return false
+  const found = findBuilding(text)
+  return found !== null && found !== 'ask-magna'
+}
+
+// El mensaje pregunta claramente cómo llegar a un lugar: "¿cómo llego a…?", "¿dónde queda…?",
+// "¿por dónde se va a…?", "llévame a…", "necesito ir a…", "indicaciones para…".
+// Si además nombra un edificio, su tarjeta gana sobre cualquier otro tema.
+export const ASKS_WAY =
+  /(donde (queda|quedan|esta|estan|se encuentra|se encuentran|se ubica|lo encuentro|la encuentro)|como (llego|llegar|voy|se llega|puedo llegar|hago para (llegar|ir)|lo encuentro|la encuentro)|por donde (se va|queda|esta|llego|se llega)|(^| )(llegar|ir|irme|llego) (a|al|hasta|hacia)( |$)|llevame|guiame (a|al|hasta|hacia)|ubicacion|ubicame|indicaciones|en que parte (queda|esta)|como encuentro (el|la|al|a) )/
 
 // Devuelve null si el mensaje no habla de un edificio.
 // `before` es lo que la persona dijo antes cuando Toko le preguntó "¿cuál?".

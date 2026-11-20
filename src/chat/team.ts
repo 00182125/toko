@@ -25,7 +25,7 @@ import { TOPIC_HINT } from './smallTalk'
 
 const SHORT = 5
 // Palabras de otras funciones de la app: con ellas, los nombres comunes no activan el easter egg.
-const OTHER_TOPIC = /(centro|monsenor|oscar|arnulfo|mapa|magna|parroquia|edificio|aula|reserv|tramite|constancia)/
+const OTHER_TOPIC = /(centro|monsenor|oscar|arnulfo|mapa|magna|parroquia|edificio|aula|reserv|tramite|constancia|llego|llegar|queda|ubica|como voy|llevame|ir a|ir al|busco|buscando|encuentro|guiame|se llega|donde)/
 const NEAR_ROMERO = /(^| )(monsenor|centro|oscar|arnulfo|monse)( |$)/
 // Pregunta por una persona: "¿quién es…?", "cuéntame de…", "¿conoces a…?"
 const ASKS_ABOUT = /(^| )(quien|quienes|conoces|cuentame|hablame|sabes de|que hizo|que hace|es)( |$)/

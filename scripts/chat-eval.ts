@@ -17,6 +17,7 @@ import { stepsFor, stepsRequest } from '../src/chat/steps'
 import { procedureCards } from '../src/data/procedures'
 import { reservationCards } from '../src/data/reservations'
 import { stepGuides } from '../src/data/steps'
+import { buildingList } from '../src/data/buildings'
 
 const pct = (n: number, total: number) => `${((n / total) * 100).toFixed(1)}%`
 const verbose = process.argv.includes('--verbose')
@@ -328,4 +329,34 @@ if (verbose) console.log(suggestions.join('\n'))
   const failedFollow = followUps.filter(([q, want]) => who(routeMessage(q, gaby.pending, null).text) !== want)
   console.log(`\n6. Easter egg del equipo: nombres ${cases.length - failed.length}/${cases.length} · respuestas a "¿a cuál Gaby?" ${followUps.length - failedFollow.length}/${followUps.length}`)
   for (const [q, want] of [...failed, ...failedFollow]) console.log(`  ✗ "${q}" → esperaba ${want}`)
+}
+
+// 7. Cómo llegar: 30 formas de preguntar por un lugar, con cada nombre de cada edificio.
+// Todas deben dar la tarjeta de ESE edificio (con su mapa e indicaciones).
+{
+  const ways = [
+    'como llego a {x}', '¿cómo llego al {x}?', 'donde queda {x}', 'dónde está el {x}', 'como encuentro {x}',
+    'me ayudas a llegar a {x}', 'ubicación de {x}', 'como hago para llegar a {x}', 'por donde se va a {x}',
+    'donde se encuentra {x}', 'indicaciones para llegar a {x}', 'llevame a {x}', 'necesito ir a {x}',
+    'en que parte queda {x}', '{x} donde queda?', 'busco {x}', 'quiero ir a {x}', 'como voy a {x}',
+    'estoy perdido, como llego a {x}', 'como llegar a {x}', 'me puedes decir como llegar a {x}',
+    'oye toko donde esta {x}', 'por donde queda {x}', 'tengo que ir a {x}, como llego?', 'guiame a {x}',
+    'como puedo llegar a {x}', 'donde queda ubicado {x}', 'no encuentro {x}', 'ando buscando {x}', 'como se llega a {x}',
+  ]
+  let ok = 0
+  let total = 0
+  const misses: string[] = []
+  for (const building of buildingList) {
+    for (const name of [building.name, ...building.aliases]) {
+      for (const way of ways) {
+        const q = way.replace('{x}', name)
+        total++
+        const r = routeMessage(q, null, null)
+        if (r.card?.kind === 'building' && r.card.building.name === building.name) ok++
+        else misses.push(`  ✗ "${q}" → ${r.card?.kind === 'building' ? r.card.building.name : r.text.slice(0, 60)}`)
+      }
+    }
+  }
+  console.log(`\n7. Cómo llegar a los ${buildingList.length} edificios (${ways.length} formas × cada nombre): ${ok}/${total}`)
+  console.log(misses.slice(0, verbose ? misses.length : 10).join('\n'))
 }

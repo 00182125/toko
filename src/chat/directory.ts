@@ -34,6 +34,24 @@ export function findDirectoryEntry(request: string): DirectoryEntry | null {
   return best?.entry ?? null
 }
 
+// Una oficina o persona nombrada por su nombre propio ("Admisiones", "Celina Andino"),
+// sin importar lo largo del mensaje. La usa "¿dónde queda…?" cuando el lugar no está en el mapa.
+export function findDirectoryByName(request: string): DirectoryEntry | null {
+  const text = normalizeText(request)
+  return directory.find((entry) => entry.aliases.strong.some((a) => matches(text, a))) ?? null
+}
+
+// Una persona del directorio nombrada con nombre y apellido ("Celina Andino", "Pedro Sorto").
+// "Celina" sola puede ser el Auditorio Elba y Celina Ramos, así que no cuenta.
+export function findPersonByFullName(request: string): DirectoryEntry | null {
+  const text = normalizeText(request)
+  return (
+    directory.find(
+      (entry) => entry.kind === 'person' && entry.aliases.strong.some((a) => a.includes(' ') && matches(text, a)),
+    ) ?? null
+  )
+}
+
 // ¿Pide un contacto, aunque no diga de quién?
 export const wantsContact = (request: string) => CONTACT_INTENT.test(normalizeText(request))
 
