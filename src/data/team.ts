@@ -22,6 +22,7 @@ export const NICKNAMES: Record<string, string> = {
   rodri: 'rodrigo',
   javi: 'javier',
   rafa: 'rafael',
+  rafiel: 'rafael',
   gaby: 'gabriela',
   gabi: 'gabriela',
   gabys: 'gabriela',
@@ -41,7 +42,7 @@ export const teamMembers: TeamMember[] = [
     distinctive: ['cabezas'],
     names: ['rafael'],
     common: ['alejandro', 'romero'],
-    text: 'Rafael Alejandro Cabezas Romero, el fotógrafo del equipo. Cada foto de edificio que ves por aquí pasó antes por su cámara y por su ojo de águila. Además de fotógrafo, fue el jefe de producción visual y de logística de nuestra pequeña agencia: tenía que saber dónde estar, a qué hora y con qué luz. Es capaz de esperar 40 minutos a que se vaya una nube del encuadre perfecto, y dos minutos para decidir dónde almorzar. Dicen que ve todo el mundo en formato horizontal y que a veces se le olvida soltar la cámara para comer.',
+    text: 'Rafael Alejandro Cabezas Romero, el fotógrafo del equipo. Cada foto de edificio que ves por aquí pasó antes por su cámara y por su ojo de águila. Además de fotógrafo, fue el jefe de producción visual y de logística de nuestra pequeña agencia: tenía que saber dónde estar, a qué hora y con qué luz. Es capaz de esperar 40 minutos a que se vaya una nube del encuadre perfecto, y dos minutos para decidir dónde almorzar. Y tiene fama de ser la persona más fiel del mundo: tanto, que en algunos lugares lo conocen como Rafiel.',
   },
   {
     id: 'gaby_alvarado',
