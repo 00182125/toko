@@ -52,7 +52,7 @@ Cuéntame tu caso y te digo qué aplica.`,
 • Carreras de Grado (inscripción, retiros, matrículas, CUM y graduación)
 • Becas P. José María Gondra
 • Servicio Social Estudiantil
-• Biblioteca "Florentino Idoate"
+• Biblioteca (CRAI)
 • Instructorías Estudiantiles
 • Sala de Lactancia Materna
 • Faltas y Sanciones Estudiantiles
@@ -337,7 +337,7 @@ Las fechas oficiales están en el Calendario Académico.`,
   {
     id: 'library',
     title: 'Biblioteca',
-    answer: `Normas principales de la Biblioteca "Florentino Idoate":
+    answer: `Normas principales de la Biblioteca (CRAI):
 • Necesitas tu carné estudiantil vigente para entrar y pedir préstamos. Es personal: prestarlo implica el decomiso y 30 días de suspensión.
 • Si devuelves tarde, pagas una multa por día y no puedes pedir más préstamos hasta pagar. Una multa sin pagar te impide inscribir, tramitar certificaciones o graduarte.
 • Si pierdes o dañas un libro, debes reponerlo o pagarlo.

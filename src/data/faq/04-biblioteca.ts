@@ -1,9 +1,9 @@
 import type { FaqRegulation } from '@/types/faq'
 
-// 4. Reglamento de la Biblioteca "Florentino Idoate"
+// 4. Reglamento de la Biblioteca (CRAI) — oficialmente, Biblioteca "Florentino Idoate"
 export const bibliotecaFaq: FaqRegulation = {
   id: 'biblioteca',
-  title: 'Reglamento de la Biblioteca "Florentino Idoate"',
+  title: 'Reglamento de la Biblioteca (CRAI)',
   entries: [
     {
       id: 'P61',
@@ -351,7 +351,7 @@ export const bibliotecaFaq: FaqRegulation = {
       id: 'P80',
       question: '¿Dónde me puedo quejar si me trataron mal en la biblioteca o no me dieron buen servicio?',
       answer:
-        'Puedes presentar un recurso o queja por escrito dirigido a la Dirección de la Biblioteca Florentino Idoate.',
+        'Puedes presentar un recurso o queja por escrito dirigido a la Dirección de la Biblioteca (CRAI).',
       variants: [
         'queja de la biblioteca',
         'me trataron mal en la biblioteca',
