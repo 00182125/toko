@@ -28,7 +28,7 @@ function Logo() {
     <div className="toko-logo" aria-label="Toko">
       <img className="logo-word w-[50px]" src={`${assets}/22d8f.svg`} alt="" />
       <img className="logo-cap" src={`${assets}/1a574.svg`} alt="" />
-    </div>
+    </div> 
   )
 }
 
