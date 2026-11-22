@@ -12,7 +12,7 @@ export const cambioCarreraFaq: FaqRegulation = {
       id: 'C1',
       question: '¿Cómo me cambio de carrera en la UCA?',
       answer:
-        'Para cambiarte de carrera debes solicitarlo en admisiones.uca.edu.sv. Lo resuelve el Decanato de la carrera a la que quieres entrar. Si quieres, te explico paso a paso cómo hacerlo.',
+        'Para cambiarte de carrera debes enviar tu solicitud en el portal de Admisiones. La resuelve el Decanato de la carrera a la que quieres entrar. Si quieres, te explico paso a paso cómo hacerlo.',
       variants: [
         'como me cambio de carrera',
         'como puedo cambiarme de carrera',

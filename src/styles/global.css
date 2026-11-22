@@ -3057,6 +3057,21 @@ button:active:not(:disabled):not(.help-head):not(.suggest-head):not(.switch) {
   }
 }
 
+/* iPhone y iPad: Safari hace zoom al tocar un campo con letra menor de 16 px, y la página
+   queda movible hacia los lados. Solo ahí los campos usan 16 px como mínimo. */
+@supports (-webkit-touch-callout: none) {
+  .field input,
+  .composer-field input,
+  .suggest-field,
+  .code-box {
+    font-size: max(16px, calc(16 * var(--u)));
+  }
+
+  .code-box {
+    font-size: max(16px, calc(22 * var(--u)));
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

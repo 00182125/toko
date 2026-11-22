@@ -11,7 +11,7 @@ export const reingresoFaq: FaqRegulation = {
       id: 'R1',
       question: 'Dejé de estudiar y quiero regresar a la UCA, ¿cómo hago el reingreso?',
       answer:
-        'Para regresar a la UCA debes solicitar tu reingreso en admisiones.uca.edu.sv. Lo resuelve el Decanato de tu facultad. Si quieres, te explico paso a paso cómo hacerlo.',
+        'Para regresar a la UCA debes enviar tu solicitud de reingreso en el portal de Admisiones. La resuelve el Decanato de tu facultad. Si quieres, te explico paso a paso cómo hacerlo.',
       variants: [
         'quiero regresar a la uca',
         'quiero volver a la uca',
