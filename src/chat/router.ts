@@ -19,6 +19,7 @@ import { findReservationCard, reservationReply } from './reservations'
 import { findProcedureCard, procedureReply } from './procedures'
 import { ASKS_WAY, NOT_FOUND_BUILDING, findBuilding, locationReply, looksForBuilding } from './locations'
 import { SOON } from './messages'
+import { admissionsReply, isAdmissionsCard } from './admissions'
 import { identityReply } from './identity'
 import { answerGaby, isGabyPending, teamReply } from './team'
 import { answerLibraryMenu, isLibraryOnly, libraryMenu } from './libraryMenu'
@@ -74,6 +75,8 @@ export function routeMessage(
   const routed = withSteps(request, pending, lastDomain, guest, lastRef)
   const locked = guest && routed.domain ? GUEST_LOCKED[routed.domain] : undefined
   if (locked) return { ...guestLockedReply(locked), domain: routed.domain, pending: null }
+  // El invitado recibe la información de cambio de carrera y reingreso en texto, sin el botón.
+  if (guest && isAdmissionsCard(routed.card)) return { ...routed, card: undefined }
   return routed
 }
 
@@ -99,7 +102,7 @@ function withSteps(
     // si no (es solo información), se responde normal.
     // (si la respuesta oficial ya trae los pasos, como la del trámite de diferidos, se usa esa)
     const steps = stepsFor(ref)
-    const alreadySteps = /\bpasos?\b|(^|\n)1\. /i.test(routed.text)
+    const alreadySteps = /pasos obligatorios|(^|\n)1\. /i.test(routed.text)
     if (steps && !alreadySteps && !isOfficialQuestion(normalizeText(request))) return { ...steps, pending: null, ref }
   }
   return { ...routed, ref }
@@ -187,6 +190,10 @@ function route(request: string, pending: Pending, lastDomain: ChatTopic | null, 
     const found = locationReply(text)
     if (found) return done('location', found.reply, found.waiting ? { domain: 'location', text } : null)
   }
+
+  // Cambio de carrera y reingreso: la pregunta general da su tarjeta; las puntuales, su respuesta.
+  const admissions = admissionsReply(text)
+  if (admissions) return done('rules', admissions)
 
   // "Biblioteca" o "CRAI" a secas: Toko pregunta qué quiere saber de ahí y da opciones.
   if (isLibraryOnly(text)) return libraryMenu(guest)

@@ -138,7 +138,7 @@ function guideReply(guide: StepGuide): StepsReply {
   const card = guide.card ? procedure(guide.card) : undefined
   return {
     text: `Claro, así puedes ${guide.title}:\n${numbered(guide.steps)}${guide.note ? `\n\n${guide.note}` : ''}`,
-    card: card ? { kind: 'procedure', card } : undefined,
+    card: guide.infoCard ? { kind: 'info', data: guide.infoCard } : card ? { kind: 'procedure', card } : undefined,
     domain: card ? 'procedures' : 'rules',
   }
 }

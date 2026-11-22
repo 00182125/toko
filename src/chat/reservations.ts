@@ -80,7 +80,11 @@ export function findReservationCard(request: string): ReservationMatch {
   ) {
     return { type: 'card', card: card('multimedia-labs') }
   }
-  if (text.includes('laboratorio') || text.includes('labs') || text.includes('comunicaciones')) {
+  // "Laboratorios de Ingeniería/Psicología" son edificios del mapa, no laboratorios para reservar.
+  if (
+    (text.includes('laboratorio') || text.includes('labs') || text.includes('comunicaciones')) &&
+    !/(ingenieria|psicologia)/.test(text)
+  ) {
     return {
       type: 'clarify',
       text: '¿Necesitas laboratorios multimedia, estudios de radio, estudio de fotografía o ciclorama?',

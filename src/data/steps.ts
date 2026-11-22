@@ -8,6 +8,9 @@
 //        respuestas y pide los pasos, se le da esta guía.
 //  card: tarjeta de trámite que se muestra junto a los pasos (id de src/data/procedures.ts)
 //  note: aviso final (opcional)
+import type { InfoCardData } from '@/types/chat'
+import { careerChangeCard, readmissionCard } from './admissionsCards'
+
 export type StepGuide = {
   id: string
   title: string
@@ -15,6 +18,8 @@ export type StepGuide = {
   steps: string[]
   note?: string
   card?: string
+  // Tarjeta propia que no es de la lista de trámites (cambio de carrera, reingreso)
+  infoCard?: InfoCardData
 }
 
 export const stepGuides: StepGuide[] = [
@@ -74,7 +79,7 @@ export const stepGuides: StepGuide[] = [
   {
     id: 'readmission',
     title: 'regresar a la UCA después de dejar de estudiar',
-    refs: ['entry:P19', 'entry:P174'],
+    refs: ['entry:P174'],
     steps: [
       'Solicita el trámite de reingreso ante la Administración Académica (en posgrado, ante tu programa).',
       'Ellos verifican si tu plan de estudios sigue vigente o qué equivalencias necesitas.',
@@ -85,12 +90,57 @@ export const stepGuides: StepGuide[] = [
   {
     id: 'career-change',
     title: 'cambiarte de carrera',
-    refs: ['entry:P13', 'entry:P39'],
+    refs: [
+      'topic:career-change',
+      'entry:P13',
+      'entry:P39',
+      'entry:C1',
+      'entry:C2',
+      'entry:C3',
+      'entry:C4',
+      'entry:C5',
+      'entry:C6',
+      'entry:C7',
+    ],
     steps: [
-      'Asegúrate de estar solvente con todos tus pagos académicos: es requisito.',
-      'Presenta la solicitud de cambio de carrera cumpliendo los requisitos administrativos.',
-      'Espera la evaluación del plan de estudios de la carrera a la que quieres pasar (qué materias te valen).',
+      'Revisa que puedas cambiarte: no se acepta con CUM menor a 6.0 y una materia reprobada en tercera matrícula o más, si la nueva carrera incluye esa materia.',
+      'Ponte solvente con todos tus pagos académicos.',
+      'Entra a admisiones.uca.edu.sv con tu cuenta UCA e inicia la solicitud, explicando tus razones. La resuelve el Decanato de la carrera a la que quieres entrar.',
+      'Hazlo con anticipación y paga el arancel de cambio de carrera. Confirma con el Decanato el plazo y el monto vigentes.',
+      'Si te lo piden, asiste a la entrevista y haz la evaluación de diagnóstico vocacional.',
+      'Si te aprueban, la Dirección de la carrera prepara tu reporte de equivalencias antes de que empiecen las clases y queda registrado en tu expediente.',
       'Si tienes beca, el Comité de Becas debe reevaluarla para pasarla a tu nueva carrera.',
+    ],
+    note: 'Si dejaste de estudiar dos o más ciclos seguidos, debes tramitar también el reingreso al mismo tiempo.',
+    infoCard: careerChangeCard,
+  },
+  {
+    id: 'grade-readmission',
+    title: 'hacer tu reingreso a la UCA',
+    refs: ['entry:R1', 'entry:R2', 'entry:R3', 'entry:R4', 'entry:R5', 'entry:R6', 'entry:P19'],
+    steps: [
+      'Confirma que te toca reingreso: dejaste de estudiar dos o más ciclos ordinarios seguidos (los interciclos no cuentan).',
+      'Ponte solvente con Tesorería, Registro Académico y Biblioteca.',
+      'Verifica que tu correo UCA siga activo.',
+      'Completa el formulario en admisiones.uca.edu.sv dentro del período: para el ciclo 01/2027, del 18 de noviembre de 2026 al 25 de enero de 2027.',
+      'Paga el arancel de la solicitud.',
+      'Espera la respuesta del Decanato, que llega por correo o se consulta en admisiones.uca.edu.sv.',
+      'Si te aceptan, inscribe tus materias en las fechas del Calendario Académico.',
+    ],
+    note: 'Si quieres volver a una carrera diferente, también debes tramitar el cambio de carrera.',
+    infoCard: readmissionCard,
+  },
+  {
+    id: 'career-readmission',
+    title: 'regresar a la UCA en otra carrera',
+    refs: ['entry:C8'],
+    steps: [
+      'Ponte solvente con Tesorería, Registro Académico y Biblioteca.',
+      'Verifica que tu correo UCA siga activo.',
+      'Completa el formulario de reingreso en admisiones.uca.edu.sv dentro del período del calendario académico.',
+      'Tramita al mismo tiempo el cambio de carrera con el Decanato de la carrera a la que quieres entrar.',
+      'Paga el arancel del reingreso y el del cambio de carrera.',
+      'Espera la respuesta, que llega por correo o se consulta en admisiones.uca.edu.sv. El Decanato puede entrevistarte antes de decidir.',
     ],
   },
 

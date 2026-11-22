@@ -31,7 +31,7 @@
 :root {
   --u: calc(min(100vw, 430px) / 393);
   color: #07181f;
-  background: #e6e8e9;
+  background: #ffffff;
   font-family: 'Inter:Regular', Inter, sans-serif;
   font-synthesis: none;
 }
@@ -40,7 +40,7 @@
   html,
   body {
     min-height: 100dvh;
-    background: #e6e8e9;
+    background: #ffffff;
   }
 
   body {
@@ -81,6 +81,14 @@ body {
   height: 100dvh;
   overflow: hidden;
   overscroll-behavior: none;
+}
+
+/* En computadora la app (máx. 900 px) sigue centrada sobre el fondo gris */
+@media (min-width: 901px) {
+  :root,
+  body {
+    background: #e6e8e9;
+  }
 }
 
 .splash-screen,

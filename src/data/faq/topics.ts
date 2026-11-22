@@ -741,4 +741,41 @@ Si quieres, te explico paso a paso cómo hacer la solicitud, o pregúntame "¿d�
       'permisos audiovisuales',
     ],
   },
+  {
+    id: 'career-change',
+    title: 'Cambio de carrera',
+    answer: `Para cambiarte de carrera en la UCA:
+• Presenta una solicitud escrita al Decanato de la facultad que administra la carrera a la que quieres entrar.
+• El Decanato considera tus razones, el cupo, tu CUM y tu expediente, y puede entrevistarte o pedirte una evaluación de diagnóstico vocacional.
+• No se acepta con CUM menor a 6.0 y una materia reprobada en tercera matrícula o más, si la nueva carrera incluye esa materia.
+• Si te aprueban, recibes equivalencias. De otra facultad, solo de materias aprobadas.
+• Debes estar solvente y pagar el arancel del trámite.
+Si quieres, te explico paso a paso cómo hacerlo.`,
+    variants: [
+      'informacion sobre cambio de carrera',
+      'dudas sobre cambio de carrera',
+      'cuentame del cambio de carrera',
+      'que dice el reglamento del cambio de carrera',
+      'todo sobre cambiarse de carrera',
+      'reglas para cambiarse de carrera',
+      'se puede cambiar de carrera en la uca',
+      'cambiar carrera uca',
+      'hablame del cambio de carrera',
+      'que debo saber para cambiarme de carrera',
+    ],
+    related: ['C1', 'C2', 'C3', 'C4', 'C5', 'C6', 'C7', 'C8', 'C9', 'P13'],
+    keywords: [
+      'cambio de carrera',
+      'cambiar de carrera',
+      'cambiarme de carrera',
+      'cambiarse de carrera',
+      'cambio carrera',
+      'cambiar carrera',
+      'me cambio de carrera',
+      'otra carrera',
+      'carrera diferente',
+      'carrera distinta',
+      'equivalencias internas',
+    ],
+  },
 ]
