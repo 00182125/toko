@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState, type ReactNode } from 'react'
+import { useCallback, useRef, useState, type ReactNode } from 'react'
 import { BrowserRouter, Navigate as Redirect, Outlet, Route, Routes, useLocation, useNavigate } from 'react-router'
 import { NavBar } from '@/components/navigation/NavBar'
 import { useChat } from '@/hooks/useChat'
@@ -19,11 +19,18 @@ import { allowed, fallbackFor, useSession } from './session'
 import { saveSuggestion } from './suggestions'
 
 export default function App() {
+  // La pantalla de carga sale cada vez que se entra o se recarga el sitio, en cualquier ruta.
+  const [intro, setIntro] = useState(true)
+  const endIntro = useCallback(() => setIntro(false), [])
+
   return (
-    // basename: en GitHub Pages las rutas cuelgan de /toko/ (ver vite.config.ts)
-    <BrowserRouter basename={import.meta.env.BASE_URL}>
-      <AppRoutes />
-    </BrowserRouter>
+    <>
+      {/* basename: en GitHub Pages las rutas cuelgan de /toko/ (ver vite.config.ts) */}
+      <BrowserRouter basename={import.meta.env.BASE_URL}>
+        <AppRoutes />
+      </BrowserRouter>
+      {intro ? <SplashScreen onDone={endIntro} /> : null}
+    </>
   )
 }
 
@@ -48,22 +55,6 @@ function Frame({ hiddenTabs }: { hiddenTabs: Tab[] }) {
       {activeTab ? <NavBar active={activeTab} onChange={navigate} hidden={hiddenTabs} /> : null}
     </>
   )
-}
-
-// Pantalla de carga en "/": oscura, luego clara, luego la de acceso.
-function SplashRoute() {
-  const routerNavigate = useNavigate()
-  const [dark, setDark] = useState(true)
-
-  useEffect(() => {
-    const timer = window.setTimeout(() => {
-      if (dark) setDark(false)
-      else routerNavigate(paths.access, { replace: true })
-    }, 1200)
-    return () => window.clearTimeout(timer)
-  }, [dark, routerNavigate])
-
-  return <SplashScreen dark={dark} />
 }
 
 // Guardia de una pantalla: si esta sesión no puede verla, la manda al chat
@@ -117,7 +108,7 @@ function AppRoutes() {
   return (
     <Routes>
       <Route element={<Frame hiddenTabs={guest ? ['calendar'] : []} />}>
-        <Route index element={<SplashRoute />} />
+        <Route index element={<Redirect to={pathOf(fallbackFor(session))} replace />} />
         <Route
           path={paths.access}
           element={
