@@ -101,69 +101,26 @@ body {
   min-height: 100%;
 }
 
-/* ---------- Pantalla de carga: azul → blanco → app (3 s en total) ---------- */
+/* ---------- Pantalla de carga: búho animado sobre azul (2.5 s) ----------
+   El movimiento del búho está en components/brand/SplashOwl.tsx. */
 .intro {
   position: fixed;
   z-index: 1000;
   inset: 0;
-  overflow: hidden;
-  background: #103357;
-  animation: introOut 400ms ease-in 2600ms forwards;
-}
-
-.intro-layer {
-  position: absolute;
-  inset: 0;
   display: flex;
   align-items: center;
   justify-content: center;
-}
-
-.intro-blue {
+  overflow: hidden;
   background: #103357;
-}
-
-.intro-white {
-  background: #ffffff;
-  clip-path: circle(0 at 50% 50%);
-  animation: introReveal 650ms cubic-bezier(0.65, 0, 0.35, 1) 1250ms forwards;
+  animation: introOut 200ms ease-out 2280ms forwards;
 }
 
 .intro-owl {
   display: block;
   width: calc(185.174 * var(--u));
   height: calc(180 * var(--u));
-}
-
-.intro-blue .intro-owl {
-  animation: introOwlIn 800ms cubic-bezier(0.34, 1.45, 0.5, 1) 100ms backwards;
-}
-
-.intro-white .intro-owl {
-  animation: introOwlPulse 620ms ease-in-out 1650ms;
-}
-
-@keyframes introOwlIn {
-  from {
-    opacity: 0;
-    transform: translateY(calc(26 * var(--u))) rotate(-12deg) scale(0.55);
-  }
-  to {
-    opacity: 1;
-    transform: none;
-  }
-}
-
-@keyframes introReveal {
-  to {
-    clip-path: circle(150vmax at 50% 50%);
-  }
-}
-
-@keyframes introOwlPulse {
-  45% {
-    transform: scale(1.07) rotate(-3deg);
-  }
+  overflow: visible;
+  shape-rendering: geometricPrecision;
 }
 
 @keyframes introOut {
@@ -173,16 +130,9 @@ body {
   }
 }
 
-/* Quien pide menos movimiento ve el búho blanco, sin animación */
 @media (prefers-reduced-motion: reduce) {
-  .intro,
-  .intro-white,
-  .intro-owl {
+  .intro {
     animation: none !important;
-  }
-
-  .intro-white {
-    clip-path: none;
   }
 }
 
