@@ -13,7 +13,8 @@ import {
   isSureFaq,
   matchFaq,
 } from './faq'
-import { directoryListReply, directoryReply, findDirectoryByName, findDirectoryEntry, findPersonByFullName } from './directory'
+import { answerCaeMenu, caeMenu, isCaeMenu, isCaeOnly } from './caeMenu'
+import { directoryListReply, directoryReply, findDirectoryByName, findDirectoryEntry, findPersonByFullName, wantsContact } from './directory'
 import { GUEST_LOCKED, guestLockedReply } from './guest'
 import { findReservationCard, reservationReply } from './reservations'
 import { findProcedureCard, procedureReply } from './procedures'
@@ -129,6 +130,13 @@ function route(request: string, pending: Pending, lastDomain: ChatTopic | null, 
   const team = teamReply(text)
   if (team) return team
 
+  // Menú del CAE ("CAE" a secas → ¿el mapa o el directorio?). Si escribe otra cosa, es una pregunta nueva.
+  if (isCaeMenu(pending)) {
+    const chosen = answerCaeMenu(text)
+    if (chosen) return chosen
+    pending = null
+  }
+
   // 1. Respuesta a una pregunta que Toko acaba de hacer
   if (pending) {
     const combined = `${pending.text} ${text}`
@@ -186,6 +194,12 @@ function route(request: string, pending: Pending, lastDomain: ChatTopic | null, 
   const personEntry = has('auditorio', 'elba', 'ramos') ? null : findPersonByFullName(request)
   const person = personEntry !== null
   if (personEntry && (ASKS_WAY.test(text) || has('donde'))) return done('support', directoryReply(personEntry))
+  // "CAE" a secas: ¿el mapa o el directorio? Y si pide su contacto, va directo a la tarjeta de contacto.
+  if (isCaeOnly(text)) return caeMenu()
+  if (namesUniqueBuilding(text) && wantsContact(request) && !ASKS_WAY.test(text)) {
+    const contact = findDirectoryEntry(request)
+    if (contact) return done('support', directoryReply(contact))
+  }
   if (!person && (ASKS_WAY.test(text) || looksForBuilding(text) || namesUniqueBuilding(text))) {
     const found = locationReply(text)
     if (found) return done('location', found.reply, found.waiting ? { domain: 'location', text } : null)

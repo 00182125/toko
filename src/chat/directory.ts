@@ -1,16 +1,18 @@
 import { directory, type DirectoryEntry } from '@/data/directory'
 import type { Reply } from '@/types/chat'
+import { saysCae } from './locations'
 import { normalizeText } from './normalize'
 
 // Directorio UCA: reconoce de qué oficina o persona pide el contacto y devuelve su tarjeta.
 
 // Palabras que dicen "quiero un contacto".
 const CONTACT_INTENT =
-  /(^| )(telefono|numero|correo|email|mail|contacto|contactar|llamar|llamo|comunicarme|comunicar|extension|ext|directorio|escribirle|escribir a|pagina web|hablar con|a quien)( |$)/
+  /(^| )(telefono|numero|correo|email|mail|contacto|contactar|contactarme|contactarlos|contactarlo|llamar|llamarles|llamo|comunicarme|comunicar|extension|ext|directorio|escribirle|escribir a|pagina web|hablar con|a quien)( |$)/
 
 // Mismo formato que las palabras clave de los temas: "=palabra" exacta, frase completa o inicio de palabra.
 function matches(text: string, alias: string): boolean {
   const words = text.split(' ')
+  if (alias === '=cae') return saysCae(text) // "cuándo cae el pago" no es el CAE
   if (alias.startsWith('=')) return words.includes(alias.slice(1))
   if (alias.includes(' ')) return ` ${text} `.includes(` ${alias} `) || ` ${text}`.includes(` ${alias}`)
   return words.some((word) => word.startsWith(alias))

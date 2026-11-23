@@ -361,6 +361,41 @@ if (verbose) console.log(suggestions.join('\n'))
   console.log(misses.slice(0, verbose ? misses.length : 10).join('\n'))
 }
 
+// 7b. Siglas de edificios: COP, CAE, CCU y CMR.
+{
+  const ways = [
+    'donde queda el {x}', 'donde esta el {x}', 'como llego al {x}', 'como llego el {x}', 'no se como llegar al {x}', 'quiero llegar al {x}',
+    'como se llega al {x}', 'por donde se va al {x}', 'llevame al {x}', 'necesito ir al {x}', 'ubicacion del {x}', 'mapa del {x}',
+    'tengo clase en el {x}', 'no encuentro el {x}', 'edificio del {x}',
+  ]
+  const targets: [string, string][] = [
+    ['COP', 'Centro de Orientación Profesional'], ['cop', 'Centro de Orientación Profesional'],
+    ['CAE', 'Centro de Asuntos Estudiantiles'], ['cae', 'Centro de Asuntos Estudiantiles'],
+    ['CCU', 'Centro Cultural Universitario y Centro de Servicio Social'], ['CMR', 'Centro Monseñor Romero'],
+  ]
+  let ok = 0
+  const wrong: string[] = []
+  for (const [word, name] of targets) for (const way of ways) {
+    const q = way.replace('{x}', word)
+    const r = routeMessage(q, null, null)
+    if (r.card?.kind === 'building' && r.card.building.name === name) ok++
+    else wrong.push(`  ✗ "${q}" → ${r.card?.kind === 'building' ? r.card.building.name : r.text.slice(0, 50)}`)
+  }
+  const only = ['CAE', 'cae', 'el CAE', 'el cae', 'CAE?', 'centro de asuntos estudiantiles']
+  const menus = only.filter((q) => routeMessage(q, null, null).pending?.text === 'menu|cae').length
+  const contacts = ['quiero contactarme con el CAE', 'quiero contactarme con el centro de asuntos estudiantiles', 'telefono del cae', 'correo del CAE', 'numero del cae', 'como contacto al cae', 'quiero hablar con el cae', 'quiero llamar al CAE']
+  const contactOk = contacts.filter((q) => { const c = routeMessage(q, null, null).card; return c?.kind === 'directory' && c.entry.id === 'cae' })
+  const menu = routeMessage('CAE', null, null).pending
+  const picks = [['1', 'building'], ['2', 'directory'], ['mapa', 'building'], ['directorio', 'directory'], ['donde queda', 'building'], ['su telefono', 'directory']]
+  const picked = picks.filter(([q, kind]) => routeMessage(q, menu, null).card?.kind === kind).length
+  const verbs = ['cuando cae el pago', 'que dia cae el feriado', 'se me cae la pagina', 'me cae bien toko', 'en que fecha cae el parcial', 'a que hora cae la nota']
+  const stolen = verbs.filter((q) => { const c = routeMessage(q, null, null); return (c.card?.kind === 'building' && c.card.building.name.includes('Asuntos')) || (c.card?.kind === 'directory' && c.card.entry.id === 'cae') || c.pending?.text === 'menu|cae' })
+  console.log(`\n7b. Siglas (${ways.length} formas × ${targets.length}): ${ok}/${ways.length * targets.length} · CAE solo pregunta ${menus}/${only.length} · contacto ${contactOk.length}/${contacts.length} · menú ${picked}/${picks.length} · "cae" como verbo confundido: ${stolen.length}/${verbs.length}`)
+  console.log(wrong.slice(0, 12).join('\n'))
+  if (contactOk.length < contacts.length) console.log(contacts.filter((q) => !contactOk.includes(q)).map((q) => `  ✗ contacto: "${q}"`).join('\n'))
+  if (stolen.length) console.log(stolen.map((q) => `  ✗ verbo: "${q}"`).join('\n'))
+}
+
 // 8. ICAS y MB: formas naturales de preguntar por ellos.
 {
   const ways = [

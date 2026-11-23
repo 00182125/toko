@@ -42,9 +42,15 @@ export const NOT_FOUND_BUILDING =
   'No encontré ese edificio. ¿Me dices su nombre? Por ejemplo: Biblioteca, Cafetería Central o Magna III.'
 
 // "icas" va como palabra completa: si no, "prácticas", "clínicas" o "matemáticas" serían el ICAS.
-const WHOLE_WORD = new Set(['icas', 'ikas', 'ycas', 'hicas', 'mb'])
+// Lo mismo con las siglas de los edificios: COP, CAE, CCU, CMR y MB.
+const WHOLE_WORD = new Set(['icas', 'ikas', 'ycas', 'hicas', 'mb', 'cop', 'cae', 'ccu', 'cmr'])
+// "cae" también es un verbo ("cuándo cae el pago", "se me cae"): es el CAE solo si se nombra como lugar.
+const CAE_AS_PLACE = /(^|(^| )(el|al|del|de|a|en|hasta|hacia|para|queda|esta|llego|llegar|ir|busco|buscando|encuentro|encuentra|ubicado|ubicada|edificio|centro|oficina) )cae( |$)/
 const hasWord = (text: string, word: string) =>
-  ` ${text} `.includes(` ${word} `) && !(word === 'mb' && /\d ?mb( |$)/.test(text)) // "5 mb" son megabytes
+  ` ${text} `.includes(` ${word} `) &&
+  !(word === 'mb' && /\d ?mb( |$)/.test(text)) && // "5 mb" son megabytes
+  !(word === 'cae' && !CAE_AS_PLACE.test(text))
+export const saysCae = (text: string) => hasWord(text, 'cae')
 // Los nombres que terminan en una letra ("edificio d", "aula a") también van completos:
 // si no, "edificio del MB" se leería como "edificio d".
 const hasAlias = (text: string, alias: string) =>
@@ -52,7 +58,10 @@ const hasAlias = (text: string, alias: string) =>
 
 // "ICAS" y "MB" solo pueden ser esos edificios: con nombrarlos ya se da su tarjeta,
 // sea como sea la frase ("tengo clase en el ICAS", "voy para el MB").
-export const namesUniqueBuilding = (text: string) => [...WHOLE_WORD].some((word) => hasWord(text, word))
+// (menos si pregunta qué es el CAE o cómo unirse: eso lo responde el banco de preguntas)
+const ABOUT_CAE = /(que es|que hace|para que|como me uno|unirme|grupo|asociacion|organizacion)/
+export const namesUniqueBuilding = (text: string) =>
+  [...WHOLE_WORD].some((word) => hasWord(text, word) && !(word === 'cae' && ABOUT_CAE.test(text)))
 
 export function findBuilding(text: string): Building | 'ask-magna' | null {
   // Magna: "magna 3", "magna iii", "tres"...
