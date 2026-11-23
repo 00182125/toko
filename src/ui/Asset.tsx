@@ -1,6 +1,6 @@
 import { assetUrl } from '@/config/assets'
 
-// Dibuja un archivo de public/assets por su nombre: <Asset name="d2168.svg" />
+// Dibuja un archivo de public/assets/icons por su nombre: <Asset name="d2168.svg" />
 export function Asset({
   name,
   className,

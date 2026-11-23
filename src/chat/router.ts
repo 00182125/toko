@@ -17,7 +17,7 @@ import { directoryListReply, directoryReply, findDirectoryByName, findDirectoryE
 import { GUEST_LOCKED, guestLockedReply } from './guest'
 import { findReservationCard, reservationReply } from './reservations'
 import { findProcedureCard, procedureReply } from './procedures'
-import { ASKS_WAY, NOT_FOUND_BUILDING, findBuilding, locationReply, looksForBuilding } from './locations'
+import { ASKS_WAY, NOT_FOUND_BUILDING, findBuilding, locationReply, looksForBuilding, namesUniqueBuilding } from './locations'
 import { SOON } from './messages'
 import { admissionsReply, isAdmissionsCard } from './admissions'
 import { identityReply } from './identity'
@@ -186,7 +186,7 @@ function route(request: string, pending: Pending, lastDomain: ChatTopic | null, 
   const personEntry = has('auditorio', 'elba', 'ramos') ? null : findPersonByFullName(request)
   const person = personEntry !== null
   if (personEntry && (ASKS_WAY.test(text) || has('donde'))) return done('support', directoryReply(personEntry))
-  if (!person && (ASKS_WAY.test(text) || looksForBuilding(text))) {
+  if (!person && (ASKS_WAY.test(text) || looksForBuilding(text) || namesUniqueBuilding(text))) {
     const found = locationReply(text)
     if (found) return done('location', found.reply, found.waiting ? { domain: 'location', text } : null)
   }

@@ -1,12 +1,11 @@
 import { useState } from 'react'
+import { buildingPhotos } from '@/data/buildingPhotos'
 import type { Building } from '@/data/buildings'
 import { Button } from '@/ui/Button'
 import { Card } from '@/ui/Card'
 import { Divider } from '@/ui/Divider'
 import { PhotoCarousel, useSwipe } from '@/ui/PhotoCarousel'
 import { MapOverlay } from './MapOverlay'
-
-const photos = [1, 2, 3].map((number) => ({ src: 'c824c.svg', caption: `Foto ${number} del edificio` }))
 
 const mapIcon = (
   <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
@@ -21,6 +20,7 @@ const mapIcon = (
 export function BuildingCard({ building }: { building: Building }) {
   const { name, directions } = building
   const [mapOpen, setMapOpen] = useState(false)
+  const photos = buildingPhotos(name)
   const { index, handlers } = useSwipe(photos.length)
 
   return (

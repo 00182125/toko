@@ -1,3 +1,5 @@
 /node_modules
 /dist
 .vscode
+# Fotos originales (238 MB): la app usa las copias optimizadas de public/assets/edificios
+/public/assets/Fotos

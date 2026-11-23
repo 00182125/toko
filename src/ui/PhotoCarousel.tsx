@@ -1,5 +1,4 @@
 import { useRef, useState } from 'react'
-import { Asset } from './Asset'
 
 // Maneja el deslizamiento con el dedo o el mouse: devuelve la foto actual
 // y los eventos que se le pegan al contenedor que se puede arrastrar.
@@ -48,10 +47,10 @@ export function PhotoCarousel({
         className="building-slides"
         style={{ width: `${photos.length * 100}%`, transform: `translateX(${(-index * 100) / photos.length}%)` }}
       >
-        {photos.map((photo) => (
+        {photos.map((photo, photoIndex) => (
           <div className="building-photo" key={photo.caption} style={{ flexBasis: `${100 / photos.length}%`, width: `${100 / photos.length}%` }}>
-            <Asset name={photo.src} />
-            <p>{photo.caption}</p>
+            {/* draggable=false: el dedo desliza el carrusel en vez de arrastrar la imagen */}
+            <img src={photo.src} alt={photo.caption} draggable={false} loading={photoIndex === 0 ? 'eager' : 'lazy'} decoding="async" />
           </div>
         ))}
       </div>

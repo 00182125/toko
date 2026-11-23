@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState, type CSSProperties, type FormEvent, type ReactNode } from 'react'
 
-const assets = '/assets'
+const assets = '/assets/icons'
 
 type Screen =
   | 'loading-dark'

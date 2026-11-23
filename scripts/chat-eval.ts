@@ -360,3 +360,31 @@ if (verbose) console.log(suggestions.join('\n'))
   console.log(`\n7. Cómo llegar a los ${buildingList.length} edificios (${ways.length} formas × cada nombre): ${ok}/${total}`)
   console.log(misses.slice(0, verbose ? misses.length : 10).join('\n'))
 }
+
+// 8. ICAS y MB: formas naturales de preguntar por ellos.
+{
+  const ways = [
+    '{x}', 'el {x}', 'edificio {x}', 'edificio del {x}', '{x} uca', 'donde queda el {x}', 'donde esta el {x}', 'donde es el {x}',
+    'a donde queda el {x}', 'hacia donde queda el {x}', 'por donde queda el {x}', 'en que parte de la uca esta el {x}',
+    'como llego al {x}', 'como llego a {x}', 'como llegar al {x}', 'como se llega al {x}', 'como hago para llegar al {x}',
+    'como le hago para llegar al {x}', 'como me voy al {x}', 'como voy al {x}', 'por donde se va al {x}', 'por donde agarro para el {x}',
+    'me dices donde esta el {x}', 'me dices como llegar al {x}', 'me ayudas a llegar al {x}', 'me puedes llevar al {x}',
+    'llevame al {x}', 'guiame al {x}', 'ubicame el {x}', 'ubicacion del {x}', 'mapa del {x}', 'indicaciones para el {x}',
+    'necesito ir al {x}', 'quiero ir al {x}', 'tengo que ir al {x}', 'voy para el {x}', 'tengo clase en el {x}',
+    'estoy perdido busco el {x}', 'no encuentro el {x}', 'ando buscando el {x}', 'oye toko donde queda el {x}',
+    'queda lejos el {x}', 'quiero ver el {x}', 'fotos del {x}', 'cual es el edificio {x}',
+  ]
+  const targets: [string, string][] = [['ICAS', 'Edificio del ICAS'], ['icas', 'Edificio del ICAS'], ['MB', 'Edificio P. Ignacio Martín-Baró, S.J.'], ['mb', 'Edificio P. Ignacio Martín-Baró, S.J.']]
+  let ok = 0
+  const wrong: string[] = []
+  for (const [word, name] of targets) for (const way of ways) {
+    const q = way.replace('{x}', word)
+    const r = routeMessage(q, null, null)
+    if (r.card?.kind === 'building' && r.card.building.name === name) ok++
+    else wrong.push(`  ✗ "${q}" → ${r.card?.kind === 'building' ? r.card.building.name : r.text.slice(0, 50)}`)
+  }
+  const safe = ['donde hago practicas', 'clinicas de la uca', 'preguntas basicas', 'materias academicas', 'el archivo pesa 5 mb', 'pesa 20mb']
+  const stolen = safe.filter((q) => { const c = routeMessage(q, null, null).card; return c?.kind === 'building' && /ICAS|Martín-Baró/.test(c.building.name) })
+  console.log(`\n8. ICAS y MB (${ways.length} formas × 4 escrituras): ${ok}/${ways.length * targets.length} · falsos positivos: ${stolen.length}/${safe.length}`)
+  console.log(wrong.slice(0, 12).join('\n'))
+}

@@ -41,6 +41,19 @@ const locationGroups: Array<{ words: string[]; ask: string }> = [
 export const NOT_FOUND_BUILDING =
   'No encontré ese edificio. ¿Me dices su nombre? Por ejemplo: Biblioteca, Cafetería Central o Magna III.'
 
+// "icas" va como palabra completa: si no, "prácticas", "clínicas" o "matemáticas" serían el ICAS.
+const WHOLE_WORD = new Set(['icas', 'ikas', 'ycas', 'hicas', 'mb'])
+const hasWord = (text: string, word: string) =>
+  ` ${text} `.includes(` ${word} `) && !(word === 'mb' && /\d ?mb( |$)/.test(text)) // "5 mb" son megabytes
+// Los nombres que terminan en una letra ("edificio d", "aula a") también van completos:
+// si no, "edificio del MB" se leería como "edificio d".
+const hasAlias = (text: string, alias: string) =>
+  WHOLE_WORD.has(alias) || / [a-d]$/.test(alias) ? hasWord(text, alias) : text.includes(alias)
+
+// "ICAS" y "MB" solo pueden ser esos edificios: con nombrarlos ya se da su tarjeta,
+// sea como sea la frase ("tengo clase en el ICAS", "voy para el MB").
+export const namesUniqueBuilding = (text: string) => [...WHOLE_WORD].some((word) => hasWord(text, word))
+
 export function findBuilding(text: string): Building | 'ask-magna' | null {
   // Magna: "magna 3", "magna iii", "tres"...
   if (text.includes('magna')) {
@@ -65,7 +78,7 @@ export function findBuilding(text: string): Building | 'ask-magna' | null {
   let bestLength = 0
   for (const b of buildingList) {
     for (const alias of b.aliases) {
-      if (text.includes(alias) && alias.length > bestLength) {
+      if (hasAlias(text, alias) && alias.length > bestLength) {
         best = b
         bestLength = alias.length
       }
