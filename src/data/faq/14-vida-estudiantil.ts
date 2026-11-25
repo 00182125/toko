@@ -627,5 +627,27 @@ El monto exacto depende de tu cuota y de tu carrera; lo ves en tu estado de cuen
         'vale la pena el interciclo por el precio',
       ],
     },
+    // ── Edificios ─────────────────────────────────────────────────────────
+    {
+      id: 'V29',
+      question: '¿Qué significa CEDITEC en la UCA?',
+      answer:
+        'CEDITEC significa Centro de Diseño, Innovación y Tecnología. Es un edificio y complejo de laboratorios de la Facultad de Ingeniería y Arquitectura (FIA), dedicado a la enseñanza práctica, la investigación, el prototipado y la vinculación con el sector productivo. Ahí hay talleres de fabricación y prototipado (impresión 3D, corte láser, carpintería, metalmecánica CNC, fundición y soldadura) y áreas de diseño y arquitectura (Centro de Diseño, Modelado y SIG, talleres de dibujo, simulación y aulas creativas del Departamento de Organización del Espacio). Antes se le conocía como "el gallinero". Si quieres saber cómo llegar, pregúntame "¿dónde queda CEDITEC?".',
+      variants: [
+        'que significa ceditec',
+        'que es ceditec',
+        'que es el ceditec',
+        'que quiere decir ceditec',
+        'ceditec que significa',
+        'que significan las siglas ceditec',
+        'que hay en el ceditec',
+        'para que sirve el ceditec',
+        'que se hace en el ceditec',
+        'de que facultad es el ceditec',
+        'que talleres hay en ceditec',
+        'que es el gallinero de la uca',
+        'por que le dicen gallinero al ceditec',
+      ],
+    },
   ],
 }

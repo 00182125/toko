@@ -16,6 +16,7 @@ import { vidaEstudiantilFaq } from './14-vida-estudiantil'
 import { permisosAudiovisualesFaq } from './15-permisos-audiovisuales'
 import { cambioCarreraFaq } from './16-cambio-carrera'
 import { reingresoFaq } from './17-reingreso'
+import { visitantesFaq } from './18-visitantes'
 
 export { faqTopics } from './topics'
 
@@ -39,6 +40,7 @@ export const faqRegulations: FaqRegulation[] = [
   permisosAudiovisualesFaq,
   cambioCarreraFaq,
   reingresoFaq,
+  visitantesFaq,
 ]
 
 // Todas las preguntas en una sola lista, con el reglamento al que pertenecen.

@@ -9,6 +9,7 @@ import {
   keywordTopic,
   faqOverview,
   faqReply,
+  isExternalFaq,
   isGoodFaq,
   isSureFaq,
   matchFaq,
@@ -201,6 +202,22 @@ function route(request: string, pending: Pending, lastDomain: ChatTopic | null, 
   const personEntry = has('auditorio', 'elba', 'ramos') ? null : findPersonByFullName(request)
   const person = personEntry !== null
   if (personEntry && (ASKS_WAY.test(text) || has('donde'))) return done('support', directoryReply(personEntry))
+  // Una pregunta idéntica a una guardada en los bancos se responde tal cual, aunque nombre un
+  // lugar ("¿Con quién me dirijo al llegar a la biblioteca como visitante?").
+  const stored = matchFaq(request)
+  if (stored && stored.kind === 'entry' && stored.closest >= 0.97 && stored.contentWords >= 2 && !isCaeOnly(text) && !admissionsReply(text) && (stored.contentWords >= 4 || !ASKS_WAY.test(text))) {
+    return done('rules', faqAnswer(stored).reply)
+  }
+  // Pregunta de alguien externo ("mi novia no es de la uca, ¿puede entrar?"): la guía de visitantes,
+  // salvo que pida claramente cómo llegar a un lugar (eso es el mapa).
+  if (isExternalFaq(stored, request) && !looksForBuilding(text) && !/(donde (queda|esta|se encuentra)|como (llego|llegar|se llega|hago para llegar)|por donde|llevame|indicaciones|ubicacion|mapa)/.test(text)) {
+    return done('rules', stored!.reply)
+  }
+  // "¿Qué es / qué significa CEDITEC?": qué es el edificio, no su mapa.
+  if (/(ceditec|gallinero)/.test(text) && /(que es|significa|quiere decir|siglas|que hay|que se hace|para que sirve|de que facultad|talleres|por que le dicen)/.test(text)) {
+    return done('rules', faqReply('entry:V29')!)
+  }
+
   // "CAE" a secas: ¿el mapa o el directorio? Y si pide su contacto, va directo a la tarjeta de contacto.
   if (isCaeOnly(text)) return caeMenu()
   if (namesUniqueBuilding(text) && wantsContact(request) && !ASKS_WAY.test(text)) {

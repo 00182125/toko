@@ -107,6 +107,33 @@ for (const e of faqEntries) {
 console.log(`\n2. Preguntas oficiales del PDF por el chat: ${exact}/${faqEntries.length}`)
 if (failed.length) console.log(failed.join('\n'))
 
+// 2c. Personas externas (guía de ingreso al campus): las formas de preguntar de cada pregunta,
+// más frases nuevas que no están guardadas. Algunas de lactancia las responde el reglamento de
+// lactancia (con más detalle), y eso también vale.
+{
+  const visitors = faqEntries.filter((e) => e.id.startsWith('E'))
+  let ok = 0
+  let total = 0
+  for (const e of visitors) for (const v of e.variants) {
+    total++
+    if (routeMessage(v, null, null).text === e.answer) ok++
+  }
+  const fresh: [string, string][] = [
+    ['oye y si no estudio en la uca puedo entrar igual', 'E'], ['mi novia no es de la uca puede entrar', 'E'], ['que necesita mi papa para entrar a la uca', 'E'],
+    ['un amigo de otra u quiere entrar que necesita', 'E'], ['necesito llevar dui para entrar?', 'E'], ['como saco carne de lector', 'E'],
+    ['puedo ir a la biblio aunque no estudie en la uca', 'E'], ['quiero llevar una clase de oyente', 'E'], ['cuanto me cobran de parqueo si vengo de visita', 'E'],
+    ['soy mama y vengo de visita donde puedo dar pecho', 'E'], ['puedo traer a mis alumnos del colegio a conocer la uca', 'E'],
+    ['que significa ceditec', 'V29'], ['que es el ceditec de la uca', 'V29'], ['ceditec que es', 'V29'],
+  ]
+  const answerId = (text: string) => faqEntries.find((e) => e.answer === text)?.id ?? '-'
+  const freshOk = fresh.filter(([q, want]) => { const id = answerId(routeMessage(q, null, null).text); return want === 'E' ? id.startsWith('E') : id === want })
+  const students = ['horario de la biblioteca', 'donde pago la mensualidad', 'puedo usar la sala de lactancia', 'cuanto cuesta el parqueo', 'como reservo una sala en la biblioteca']
+  const stolen = students.filter((q) => answerId(routeMessage(q, null, null).text).startsWith('E'))
+  console.log(`\n2c. Personas externas: formas de preguntar ${ok}/${total} · frases nuevas ${freshOk.length}/${fresh.length} · preguntas de estudiantes que se roba: ${stolen.length}/${students.length}`)
+  if (freshOk.length < fresh.length) console.log(fresh.filter((f) => !freshOk.includes(f)).map(([q]) => `  ✗ "${q}"`).join('\n'))
+  if (stolen.length) console.log(stolen.map((q) => `  ✗ robada: "${q}"`).join('\n'))
+}
+
 // 2b. Parciales diferidos: las 315 preguntas del banco por el chat completo,
 // y las mismas plantillas con materias que NO están en el banco.
 {

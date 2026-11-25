@@ -97,17 +97,24 @@ type Index = {
   idf: (feature: string) => number
 }
 
-let index: Index | null = null
+// Hay dos índices: el principal (reglamentos y guías de estudiantes) y el de personas externas
+// (guía de ingreso al campus, data/faq/18-visitantes.ts). Van separados porque el de visitantes
+// repite mucho "biblioteca", "lactancia" o "parqueo" y, mezclado, cambiaría el peso de esas
+// palabras para las preguntas de los estudiantes.
+const VISITORS = 'visitantes'
+type Part = 'main' | 'visitors'
+const indexes = new Map<Part, Index>()
 
-// El índice se arma una sola vez, la primera vez que se busca.
-function getIndex(): Index {
-  if (index) return index
+// Cada índice se arma una sola vez, la primera vez que se busca.
+function getIndex(part: Part = 'main'): Index {
+  const built = indexes.get(part)
+  if (built) return built
 
   const raw: Array<{ text: string; key: string }> = []
   const targets = new Map<string, Target>()
   const regulationById = new Map<string, string>()
 
-  for (const regulation of faqRegulations) {
+  for (const regulation of faqRegulations.filter((r) => (r.id === VISITORS) === (part === 'visitors'))) {
     for (const entry of regulation.entries) {
       const key = `entry:${entry.id}`
       regulationById.set(entry.id, regulation.id)
@@ -123,7 +130,7 @@ function getIndex(): Index {
       entry.variants.forEach((text) => raw.push({ text, key }))
     }
   }
-  for (const topic of faqTopics) {
+  for (const topic of part === 'main' ? faqTopics : []) {
     const key = `topic:${topic.id}`
     targets.set(key, {
       kind: 'topic',
@@ -186,7 +193,8 @@ function getIndex(): Index {
     counts.forEach((n, reg) => counts.set(reg, n / sum))
   })
 
-  index = { docs, targets, vectorize: (text) => vectorize(features(text)), regulationOf, stemCount, idf }
+  const index: Index = { docs, targets, vectorize: (text) => vectorize(features(text)), regulationOf, stemCount, idf }
+  indexes.set(part, index)
   return index
 }
 
@@ -220,11 +228,29 @@ function regulationSignal(request: string, idx: Index): Map<string, number> {
 //  exclude: texto a ignorar (solo para las pruebas: así no se encuentra a sí misma)
 //  shortTopicsOnly: con mensajes de 1 o 2 palabras, considerar solo temas generales
 //    (false para sugerir opciones, donde una pregunta puntual también sirve)
-export function matchFaq(
-  request: string,
-  { exclude, shortTopicsOnly = true }: { exclude?: string; shortTopicsOnly?: boolean } = {},
-): FaqMatch | null {
-  const idx = getIndex()
+type MatchOptions = { exclude?: string; shortTopicsOnly?: boolean }
+
+// La pregunta es de alguien de fuera de la UCA: visitantes, oyentes, egresados, proveedores...
+const EXTERNAL =
+  /(extern|visitante|de visita|vengo de visita|particular|no (es|son|soy|estudia|estudio|estudie|estudian) (de la uca|en la uca|alumn|estudiante)|aunque no (estudie|estudio|sea)|novi[oa]|amig[oa]|familiar|mi (papa|mama|hij[oa]|herman[oa]|espos[oa]|abuel[oa])|invitad|conocer la uca|entrar igual|(puede|pueden|puedo|dejan|deja) (entrar|ingresar|meter)|meter a mi|no soy (estudiante|alumno|de la uca)|no estudio (en la uca|ahi|aqui)|sin ser (estudiante|alumno)|si no estudio|oyente|lector ocasional|investigador|exalumn|egresad|graduad|ya me gradue|otra universidad|otra u |proveedor|extranjer|pasaporte|dui|porton|gafete|delegacion|colegio|mensajero|encomienda|delivery|uber|taxi|mascota|perro|sacaleches|gimnasio|piscina|capilla|pancarta|manifestacion|volante|artesania|entrar a la uca|entrar al campus|entrar a la universidad|ingresar al campus|ingresar a la uca)/
+
+export function matchFaq(request: string, options: MatchOptions = {}): FaqMatch | null {
+  const main = matchIn(getIndex('main'), request, options)
+  const visitor = matchIn(getIndex('visitors'), request, options)
+  if (!visitor) return main
+  // El banco de visitantes gana si es casi idéntico a una de sus preguntas,
+  // o si el mensaje habla de alguien externo y se parece tanto o más que la del banco principal.
+  const exact = visitor.closest >= 0.97 && (!main || main.closest < visitor.closest)
+  const external = EXTERNAL.test(normalizeText(request)) && (!main || visitor.score >= main.score - 0.05)
+  return exact || external ? visitor : main
+}
+
+// Respuesta del banco de visitantes para una pregunta claramente de alguien externo, aunque
+// esté redactada distinto a las guardadas ("mi novia no es de la uca, ¿puede entrar?").
+export const isExternalFaq = (match: FaqMatch | null, request: string): boolean =>
+  !!match && match.kind === 'entry' && match.id.startsWith('E') && match.score >= 0.35 && EXTERNAL.test(normalizeText(request))
+
+function matchIn(idx: Index, request: string, { exclude, shortTopicsOnly = true }: MatchOptions): FaqMatch | null {
   const query = idx.vectorize(request)
   if (query.size === 0) return null
   const skip = exclude ? normalizeText(exclude) : null
@@ -401,19 +427,24 @@ export function keywordTopic(request: string): string | null {
 // relacionadas, o cualquier pregunta de los reglamentos que abarca)
 export function faqBelongsTo(match: FaqMatch, topicId: string): boolean {
   if (match.kind === 'topic') return match.id === topicId
-  const topic = getIndex().targets.get(`topic:${topicId}`)
-  const entry = getIndex().targets.get(`entry:${match.id}`)
+  const topic = findTarget(`topic:${topicId}`)
+  const entry = findTarget(`entry:${match.id}`)
   if (!topic || !entry) return false
   const related = faqTopics.find((t) => t.id === topicId)?.related ?? []
   return related.includes(match.id) || entry.regulations.some((reg) => topic.regulations.includes(reg))
 }
 
 // Respuesta para "reglamento" a secas: la lista de reglamentos.
-export const faqOverview = (): Reply => getIndex().targets.get('topic:overview')!.reply
+export const faqOverview = (): Reply => findTarget('topic:overview')!.reply
 
 // Respuesta guardada por clave ("entry:P21" o "topic:harassment").
-export const faqReply = (key: string): Reply | null => getIndex().targets.get(key)?.reply ?? null
-export const faqQuestion = (key: string): string | null => getIndex().targets.get(key)?.question ?? null
+export const faqReply = (key: string): Reply | null => findTarget(key)?.reply ?? null
+export const faqQuestion = (key: string): string | null => findTarget(key)?.question ?? null
 
 // Todas las preguntas oficiales (para pruebas).
 export const faqOfficialQuestions = () => faqEntries.map((e) => ({ id: e.id, question: e.question, answer: e.answer }))
+
+// Busca una pregunta o tema guardado en cualquiera de los dos índices.
+function findTarget(key: string): Target | undefined {
+  return getIndex('main').targets.get(key) ?? getIndex('visitors').targets.get(key)
+}
