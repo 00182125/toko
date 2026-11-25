@@ -1799,19 +1799,10 @@ body {
   padding: calc(15 * var(--u)) calc(11 * var(--u)) 0 calc(19 * var(--u));
 }
 
-/* Todos los nombres de mes en el mismo lugar; se ve el del mes actual y, al deslizar,
-   uno se desvanece mientras aparece el siguiente. */
-.month-titles {
-  display: grid;
-  justify-items: start;
-}
-
 .month-title {
   display: flex;
-  grid-area: 1 / 1;
   align-items: center;
   gap: calc(4 * var(--u));
-  opacity: 0;
   white-space: nowrap;
 }
 

@@ -9,7 +9,7 @@ import { ScreenLayout } from '@/ui/ScreenLayout'
 // uno al lado del otro. Se pasa de mes deslizando hacia los lados, con las flechas o eligiendo
 // el mes en la lista que abre su nombre. Abre en el mes actual.
 // Como en el Figma, el encabezado queda fijo: solo los días y la leyenda se deslizan, y el nombre
-// del mes se desvanece hacia el siguiente al ritmo del deslizamiento.
+// del mes cambia al del mes visible, sin animación.
 export function CalendarScreen({ onBack }: { onBack: () => void }) {
   const today = new Date()
   const current = calendarMonths.findIndex(
@@ -20,18 +20,6 @@ export function CalendarScreen({ onBack }: { onBack: () => void }) {
   const [pickerOpen, setPickerOpen] = useState(false)
   const trackRef = useRef<HTMLDivElement>(null)
   const [height, setHeight] = useState<number>()
-  const titles = useRef<Array<HTMLSpanElement | null>>([])
-
-  // Opacidad de cada nombre de mes según cuánto se ha deslizado. Cada nombre se ve completo
-  // hasta un cuarto del camino y se cruza con el siguiente en la mitad del deslizamiento.
-  const fadeTitles = () => {
-    const track = trackRef.current
-    if (!track || track.clientWidth === 0) return
-    const progress = track.scrollLeft / track.clientWidth
-    titles.current.forEach((title, i) => {
-      if (title) title.style.opacity = String(Math.min(1, Math.max(0, 1.5 - 2 * Math.abs(progress - i))))
-    })
-  }
 
   // La tarjeta toma la altura del mes visible (un mes con 6 semanas o más eventos es más alto).
   useLayoutEffect(() => {
@@ -48,7 +36,6 @@ export function CalendarScreen({ onBack }: { onBack: () => void }) {
   useEffect(() => {
     const track = trackRef.current
     if (track) track.scrollLeft = start * track.clientWidth
-    fadeTitles()
   }, [start])
 
   const goTo = (target: number) => {
@@ -65,7 +52,6 @@ export function CalendarScreen({ onBack }: { onBack: () => void }) {
   const onScroll = () => {
     const track = trackRef.current
     if (!track || track.clientWidth === 0) return
-    fadeTitles()
     const visible = Math.round(track.scrollLeft / track.clientWidth)
     if (visible !== index) {
       setIndex(visible)
@@ -81,9 +67,6 @@ export function CalendarScreen({ onBack }: { onBack: () => void }) {
           <CalendarHeader
             months={calendarMonths}
             index={index}
-            titleRefs={calendarMonths.map((_, i) => (element: HTMLSpanElement | null) => {
-              titles.current[i] = element
-            })}
             onPrev={index > 0 ? () => goTo(index - 1) : undefined}
             onNext={index < calendarMonths.length - 1 ? () => goTo(index + 1) : undefined}
             onPickMonth={() => setPickerOpen((open) => !open)}
