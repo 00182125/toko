@@ -44,14 +44,28 @@ export function CalendarScreen({ onBack }: { onBack: () => void }) {
     if (track) track.scrollLeft = start * track.clientWidth
   }, [start])
 
+  // Mes elegido en el selector: se salta a él justo después de cerrarlo, cuando los meses
+  // ya volvieron a su tamaño (si se salta antes, mientras están encogidos, el salto se pierde).
+  const pendingJump = useRef<number | null>(null)
+  useLayoutEffect(() => {
+    const track = trackRef.current
+    const target = pendingJump.current
+    if (pickerOpen || target === null || !track) return
+    pendingJump.current = null
+    track.scrollLeft = target * track.clientWidth
+    setIndex(target)
+  }, [pickerOpen])
+
+  const pickMonth = (target: number) => {
+    pendingJump.current = target
+    setPickerOpen(false)
+  }
+
+  // Flechas: se desliza al mes de al lado.
   const goTo = (target: number) => {
     const track = trackRef.current
-    setPickerOpen(false)
     if (!track) return
-    // Al mes de al lado se desliza; a uno lejano (desde el selector) se salta directo, porque una
-    // animación larga se corta a medio camino al cambiar la altura de la tarjeta en cada mes.
-    const far = Math.abs(target - index) > 1
-    track.scrollTo({ left: target * track.clientWidth, behavior: far ? 'auto' : 'smooth' })
+    track.scrollTo({ left: target * track.clientWidth, behavior: 'smooth' })
   }
 
   // El mes visible sale de cuánto se deslizó el carrusel.
@@ -90,7 +104,7 @@ export function CalendarScreen({ onBack }: { onBack: () => void }) {
               <MonthCard key={item.name} item={item} today={today} />
             ))}
           </div>
-          {pickerOpen && <MonthPicker months={calendarMonths} index={index} onPick={goTo} />}
+          {pickerOpen && <MonthPicker months={calendarMonths} index={index} onPick={pickMonth} />}
         </div>
       </section>
     </ScreenLayout>

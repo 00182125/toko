@@ -1984,10 +1984,29 @@ body {
   opacity: 0.4;
 }
 
+/* Los años van uno al lado del otro y se desliza entre ellos, como en el calendario.
+   La cuadrícula llega hasta el borde de la tarjeta para que se vea pasar completa. */
+.picker-track {
+  display: flex;
+  margin: 0 calc(-19 * var(--u));
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+}
+
+.picker-track::-webkit-scrollbar {
+  display: none;
+}
+
 .picker-months {
   display: grid;
+  flex: 0 0 100%;
   grid-template-columns: repeat(3, 1fr);
   gap: calc(12 * var(--u));
+  padding: 0 calc(19 * var(--u));
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
 }
 
 .picker-month {
