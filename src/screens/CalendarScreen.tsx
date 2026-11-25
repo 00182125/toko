@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useRef, useState } from 'react'
+import { useEffect, useLayoutEffect, useRef, useState, type PointerEvent, type WheelEvent } from 'react'
 import { CalendarHeader } from '@/components/calendar/CalendarHeader'
 import { MonthCard } from '@/components/calendar/MonthCard'
 import { MonthPicker } from '@/components/calendar/MonthPicker'
@@ -6,20 +6,32 @@ import { ChatHeader } from '@/components/navigation/ChatHeader'
 import { calendarMonths } from '@/data/calendar'
 import { ScreenLayout } from '@/ui/ScreenLayout'
 
+// Cuánto hay que arrastrar (en proporción al ancho de la tarjeta) o qué tan rápido (px/ms)
+// para pasar de mes al soltar. Menos que eso, la tarjeta regresa al mes en que estaba.
+const SWIPE_DISTANCE = 0.18
+const SWIPE_SPEED = 0.35
+
 // Calendario académico (Figma: «Calendario - Fechas importantes»): una sola tarjeta y los meses
 // uno al lado del otro. Se pasa de mes deslizando hacia los lados, con las flechas o eligiendo
 // el mes en el selector que abre su nombre (año + cuadrícula de meses). Abre en el mes actual.
 // Como en el Figma, el encabezado queda fijo: solo los días y la leyenda se deslizan, y el nombre
 // del mes cambia al del mes visible, sin animación.
+//
+// El deslizamiento lo maneja la app (no el desplazamiento del navegador): la tarjeta sigue al
+// dedo y, al soltar, pasa exactamente un mes o regresa. Así, por fuerte que sea el gesto,
+// nunca salta dos meses ni parpadea por el impulso del navegador.
 export function CalendarScreen({ onBack }: { onBack: () => void }) {
   const today = new Date()
   const current = calendarMonths.findIndex(
     (item) => item.year === today.getFullYear() && item.month === today.getMonth(),
   )
-  const start = current >= 0 ? current : 0
-  const [index, setIndex] = useState(start)
+  const last = calendarMonths.length - 1
+  const [index, setIndex] = useState(current >= 0 ? current : 0)
   const [pickerOpen, setPickerOpen] = useState(false)
+  // Sin animación al cambiar de mes (salto desde el selector)
+  const [instant, setInstant] = useState(true)
   const trackRef = useRef<HTMLDivElement>(null)
+  const stripRef = useRef<HTMLDivElement>(null)
   const [height, setHeight] = useState<number>()
   // Al abrir o cerrar el selector, la tarjeta cambia de golpe (sin animar la altura),
   // para que no se vean los días encogiéndose detrás del selector.
@@ -30,7 +42,7 @@ export function CalendarScreen({ onBack }: { onBack: () => void }) {
   // La tarjeta toma la altura del mes visible (un mes con 6 semanas o más eventos es más alto).
   useLayoutEffect(() => {
     const measure = () => {
-      const panel = trackRef.current?.children[index] as HTMLElement | undefined
+      const panel = stripRef.current?.children[index] as HTMLElement | undefined
       if (panel) setHeight(panel.offsetHeight)
     }
     measure()
@@ -38,81 +50,85 @@ export function CalendarScreen({ onBack }: { onBack: () => void }) {
     return () => window.removeEventListener('resize', measure)
   }, [index])
 
-  // Al abrir, el carrusel se coloca en el mes actual sin animación.
+  // Tras un salto sin animación, los siguientes cambios de mes vuelven a deslizarse.
   useEffect(() => {
-    const track = trackRef.current
-    if (track) track.scrollLeft = start * track.clientWidth
-  }, [start])
+    if (!instant) return
+    const frame = requestAnimationFrame(() => setInstant(false))
+    return () => cancelAnimationFrame(frame)
+  }, [instant])
 
-  // Mes elegido en el selector: se salta a él justo después de cerrarlo, cuando los meses
-  // ya volvieron a su tamaño (si se salta antes, mientras están encogidos, el salto se pierde).
-  const pendingJump = useRef<number | null>(null)
-  useLayoutEffect(() => {
-    const track = trackRef.current
-    const target = pendingJump.current
-    if (pickerOpen || target === null || !track) return
-    pendingJump.current = null
-    swipeFrom.current = null // un salto desde el selector no es un deslizamiento
-    track.scrollLeft = target * track.clientWidth
-    setIndex(target)
-  }, [pickerOpen])
+  const show = (target: number, animate = true) => {
+    setInstant(!animate)
+    setIndex(Math.max(0, Math.min(last, target)))
+  }
 
+  // Mes elegido en el selector: se va directo a él, sin animación.
   const pickMonth = (target: number) => {
-    pendingJump.current = target
     setPickerOpen(false)
+    show(target, false)
   }
 
-  // Flechas: se desliza al mes de al lado.
-  const goTo = (target: number) => {
-    const track = trackRef.current
-    if (!track) return
-    track.scrollTo({ left: target * track.clientWidth, behavior: 'smooth' })
+  // ---- Deslizar con el dedo (o arrastrar con el mouse) ----
+  const drag = useRef<{ id: number; x: number; y: number; time: number; dx: number; horizontal: boolean | null } | null>(
+    null,
+  )
+  const moveStrip = (dx: number) => {
+    const strip = stripRef.current
+    if (strip) strip.style.transform = `translateX(calc(${-index * 100}% + ${dx}px))`
   }
 
-  // Un deslizamiento solo avanza un mes, aunque sea muy fuerte: se recuerda en qué mes empezó
-  // y el carrusel no pasa del mes anterior ni del siguiente a ese. Si el impulso quiere ir más
-  // lejos, se frena ahí y el mes encaja en la tarjeta.
-  const swipeFrom = useRef<number | null>(null)
-  const touching = useRef(false)
-  const settleTimer = useRef<number | undefined>(undefined)
-  useEffect(() => () => window.clearTimeout(settleTimer.current), [])
-  const anchor = () => {
-    const track = trackRef.current
-    if (track && track.clientWidth > 0) swipeFrom.current = Math.round(track.scrollLeft / track.clientWidth)
-  }
-  const onTouchStart = () => {
-    touching.current = true
-    anchor()
-  }
-  const onTouchEnd = () => {
-    touching.current = false
-  }
-  // Con rueda o trackpad (computadora) también cuenta como un deslizamiento.
-  const onWheel = () => {
-    if (swipeFrom.current === null) anchor()
+  const onPointerDown = (event: PointerEvent<HTMLDivElement>) => {
+    if (event.pointerType === 'mouse' && event.button !== 0) return
+    drag.current = { id: event.pointerId, x: event.clientX, y: event.clientY, time: event.timeStamp, dx: 0, horizontal: null }
   }
 
-  // El mes visible sale de cuánto se deslizó el carrusel.
-  const onScroll = () => {
-    const track = trackRef.current
-    if (!track || track.clientWidth === 0) return
-    const from = swipeFrom.current
-    if (from !== null) {
-      const min = Math.max(0, from - 1) * track.clientWidth
-      const max = Math.min(calendarMonths.length - 1, from + 1) * track.clientWidth
-      if (track.scrollLeft > max) track.scrollLeft = max
-      else if (track.scrollLeft < min) track.scrollLeft = min
+  const onPointerMove = (event: PointerEvent<HTMLDivElement>) => {
+    const state = drag.current
+    if (!state || state.id !== event.pointerId) return
+    const dx = event.clientX - state.x
+    const dy = event.clientY - state.y
+    // Primero se decide si el gesto es hacia los lados (mes) o hacia arriba/abajo (página).
+    if (state.horizontal === null) {
+      if (Math.abs(dx) < 8 && Math.abs(dy) < 8) return
+      state.horizontal = Math.abs(dx) > Math.abs(dy)
+      if (!state.horizontal) {
+        drag.current = null
+        return
+      }
+      event.currentTarget.setPointerCapture(event.pointerId)
+      stripRef.current?.classList.add('is-dragging')
     }
-    // Cuando el carrusel deja de moverse (y ya no hay dedo encima), el deslizamiento terminó.
-    window.clearTimeout(settleTimer.current)
-    settleTimer.current = window.setTimeout(() => {
-      if (!touching.current) swipeFrom.current = null
-    }, 160)
-    const visible = Math.round(track.scrollLeft / track.clientWidth)
-    if (visible !== index) {
-      setIndex(visible)
-      setPickerOpen(false)
-    }
+    // En el primer y el último mes, la tarjeta se resiste a ir más allá.
+    const atEdge = (index === 0 && dx > 0) || (index === last && dx < 0)
+    state.dx = atEdge ? dx / 3 : dx
+    moveStrip(state.dx)
+  }
+
+  const endDrag = (event: PointerEvent<HTMLDivElement>) => {
+    const state = drag.current
+    if (!state || state.id !== event.pointerId) return
+    drag.current = null
+    if (!state.horizontal) return
+    stripRef.current?.classList.remove('is-dragging')
+    const width = trackRef.current?.clientWidth || 1
+    const speed = state.dx / Math.max(1, event.timeStamp - state.time)
+    const far = Math.abs(state.dx) > width * SWIPE_DISTANCE || Math.abs(speed) > SWIPE_SPEED
+    // Solo un mes por gesto, hacia donde se deslizó.
+    const step = far ? (state.dx < 0 ? 1 : -1) : 0
+    const target = Math.max(0, Math.min(last, index + step))
+    // Se deja la tarjeta en el mes final (React no la toca si el mes no cambió).
+    if (stripRef.current) stripRef.current.style.transform = `translateX(${-target * 100}%)`
+    setInstant(false)
+    setIndex(target)
+  }
+
+  // Rueda o trackpad hacia los lados (computadora): un mes por gesto.
+  const wheelLock = useRef(0)
+  const onWheel = (event: WheelEvent<HTMLDivElement>) => {
+    if (Math.abs(event.deltaX) < Math.abs(event.deltaY) || Math.abs(event.deltaX) < 20) return
+    if (event.timeStamp < wheelLock.current) return
+    wheelLock.current = event.timeStamp + 600
+    show(index + (event.deltaX > 0 ? 1 : -1))
   }
 
   return (
@@ -123,8 +139,8 @@ export function CalendarScreen({ onBack }: { onBack: () => void }) {
           <CalendarHeader
             months={calendarMonths}
             index={index}
-            onPrev={index > 0 ? () => goTo(index - 1) : undefined}
-            onNext={index < calendarMonths.length - 1 ? () => goTo(index + 1) : undefined}
+            onPrev={index > 0 ? () => show(index - 1) : undefined}
+            onNext={index < last ? () => show(index + 1) : undefined}
             onPickMonth={() => setPickerOpen((open) => !open)}
             pickerOpen={pickerOpen}
           />
@@ -132,17 +148,23 @@ export function CalendarScreen({ onBack }: { onBack: () => void }) {
           <div
             className="month-track"
             ref={trackRef}
-            onScroll={onScroll}
-            onTouchStart={onTouchStart}
-            onTouchEnd={onTouchEnd}
-            onTouchCancel={onTouchEnd}
+            onPointerDown={onPointerDown}
+            onPointerMove={onPointerMove}
+            onPointerUp={endDrag}
+            onPointerCancel={endDrag}
             onWheel={onWheel}
             style={{ height: pickerOpen ? 0 : height, transition: toggled ? 'none' : undefined }}
             aria-hidden={pickerOpen}
           >
-            {calendarMonths.map((item) => (
-              <MonthCard key={item.name} item={item} today={today} />
-            ))}
+            <div
+              className={`month-strip ${instant ? 'is-instant' : ''}`}
+              ref={stripRef}
+              style={{ transform: `translateX(${-index * 100}%)` }}
+            >
+              {calendarMonths.map((item) => (
+                <MonthCard key={item.name} item={item} today={today} />
+              ))}
+            </div>
           </div>
           {pickerOpen && <MonthPicker months={calendarMonths} index={index} onPick={pickMonth} />}
         </div>

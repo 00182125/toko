@@ -1767,27 +1767,32 @@ body {
   box-shadow: 0 calc(4 * var(--u)) calc(16 * var(--u)) rgb(11 31 47 / 14%);
 }
 
+/* La app maneja el deslizamiento (no el desplazamiento del navegador): touch-action deja al
+   navegador solo el movimiento vertical de la página, y los meses se mueven con transform. */
 .month-track {
-  display: flex;
-  align-items: flex-start;
-  overflow-x: auto;
+  overflow: hidden;
+  touch-action: pan-y;
+  user-select: none;
+  -webkit-user-select: none;
   transition: height 260ms cubic-bezier(0.22, 1, 0.36, 1);
-  overscroll-behavior-x: contain;
-  scroll-snap-type: x mandatory;
-  scrollbar-width: none;
-  -webkit-overflow-scrolling: touch;
 }
 
-.month-track::-webkit-scrollbar {
-  display: none;
+.month-strip {
+  display: flex;
+  align-items: flex-start;
+  transition: transform 320ms cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: transform;
+}
+
+.month-strip.is-dragging,
+.month-strip.is-instant {
+  transition: none;
 }
 
 .month-panel {
   flex: 0 0 100%;
   min-width: 0;
   padding: 0 0 calc(18 * var(--u));
-  scroll-snap-align: start;
-  scroll-snap-stop: always;
 }
 
 /* Encabezado fijo: no se desliza con los meses */
