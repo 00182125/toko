@@ -1,4 +1,3 @@
-import type { Ref } from 'react'
 import {
   VIGILIA,
   calendarDayStyle,
@@ -7,29 +6,35 @@ import {
   eventRing,
   type CalendarMonth,
 } from '@/data/calendar'
-import { Button } from '@/ui/Button'
-import { Card } from '@/ui/Card'
+import { Asset } from '@/ui/Asset'
 
-// Un mes del calendario: nombre, cuadrícula de días con colores y leyenda de eventos.
-//  today: fecha de hoy (se marca con un círculo)
-//  onToday: acción del botón "Hoy"
+// Un mes del calendario (Figma: «Calendario» → «Panel · Noviembre 2026»):
+// nombre con selector, flechas de mes anterior/siguiente, cuadrícula y leyenda de eventos.
+// Los meses van uno al lado del otro y se pasa de uno a otro deslizando (ver CalendarScreen).
+//  today: fecha de hoy (se marca con un círculo oscuro)
+//  onPrev / onNext: flechas; sin función, la flecha se ve apagada (primer o último mes)
+//  onPickMonth: toque en el nombre del mes (abre la lista de meses)
 export function MonthCard({
   item,
   today,
-  onToday,
-  cardRef,
+  onPrev,
+  onNext,
+  onPickMonth,
+  pickerOpen = false,
 }: {
   item: CalendarMonth
   today: Date
-  onToday: () => void
-  cardRef?: Ref<HTMLElement>
+  onPrev?: () => void
+  onNext?: () => void
+  onPickMonth: () => void
+  pickerOpen?: boolean
 }) {
   const firstWeekday = new Date(item.year, item.month, 1).getDay()
   const daysInMonth = new Date(item.year, item.month + 1, 0).getDate()
-  const cells: Array<number | null> = [
-    ...Array.from({ length: firstWeekday }, () => null),
-    ...Array.from({ length: daysInMonth }, (_, index) => index + 1),
-  ]
+  const daysInPrevMonth = new Date(item.year, item.month, 0).getDate()
+  // Como en el Figma: los días del mes anterior y del siguiente completan las semanas, en gris.
+  const leading = Array.from({ length: firstWeekday }, (_, i) => daysInPrevMonth - firstWeekday + 1 + i)
+  const trailing = Array.from({ length: (7 - ((firstWeekday + daysInMonth) % 7)) % 7 }, (_, i) => i + 1)
 
   // Leyenda: eventos del mes en el orden en que aparecen.
   const legend: string[] = []
@@ -41,12 +46,26 @@ export function MonthCard({
   }
 
   return (
-    <Card variant="month" as="section" ref={cardRef}>
+    <section className="month-panel" aria-label={item.name}>
       <div className="month-head">
-        <h2>{item.name}</h2>
-        <Button variant="pill" onClick={onToday}>
-          Hoy
-        </Button>
+        <button
+          type="button"
+          className="month-picker"
+          onClick={onPickMonth}
+          aria-expanded={pickerOpen}
+          aria-haspopup="listbox"
+        >
+          <h2>{item.name}</h2>
+          <Asset name="c8e5d.svg" className={`month-picker-chevron ${pickerOpen ? 'is-open' : ''}`} />
+        </button>
+        <div className="month-arrows">
+          <button type="button" className="month-arrow" onClick={onPrev} disabled={!onPrev} aria-label="Mes anterior">
+            <Asset name="baea3.svg" />
+          </button>
+          <button type="button" className="month-arrow" onClick={onNext} disabled={!onNext} aria-label="Mes siguiente">
+            <Asset name="38fce.svg" />
+          </button>
+        </div>
       </div>
       <div className="month-grid">
         {['D', 'L', 'M', 'M', 'J', 'V', 'S'].map((letter, index) => (
@@ -54,8 +73,12 @@ export function MonthCard({
             {letter}
           </span>
         ))}
-        {cells.map((day, index) => {
-          if (day === null) return <span key={`blank-${index}`} />
+        {leading.map((day) => (
+          <span className="day-cell" key={`prev-${day}`}>
+            <span className="day-dot day-outside">{day}</span>
+          </span>
+        ))}
+        {Array.from({ length: daysInMonth }, (_, index) => index + 1).map((day) => {
           const isToday =
             item.year === today.getFullYear() && item.month === today.getMonth() && day === today.getDate()
           return (
@@ -63,12 +86,18 @@ export function MonthCard({
               <span
                 className={`day-dot ${isToday ? 'day-today' : ''}`}
                 style={isToday ? undefined : calendarDayStyle(item, calendarEventsFor(item, day))}
+                aria-current={isToday ? 'date' : undefined}
               >
                 {day}
               </span>
             </span>
           )
         })}
+        {trailing.map((day) => (
+          <span className="day-cell" key={`next-${day}`}>
+            <span className="day-dot day-outside">{day}</span>
+          </span>
+        ))}
       </div>
       <ul className="month-legend">
         {legend.map((part) => (
@@ -86,6 +115,6 @@ export function MonthCard({
           </li>
         ))}
       </ul>
-    </Card>
+    </section>
   )
 }

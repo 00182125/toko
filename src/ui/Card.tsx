@@ -1,12 +1,11 @@
 import type { ComponentPropsWithRef, ElementType } from 'react'
 
 // Cada variante usa el estilo (clase) de un tipo de tarjeta de la app.
-export type CardVariant = 'info' | 'building' | 'month' | 'donut' | 'metric-dark' | 'metric-blue'
+export type CardVariant = 'info' | 'building' | 'donut' | 'metric-dark' | 'metric-blue'
 
 const cardClass: Record<CardVariant, string> = {
   info: 'chat-info-card',
   building: 'building-card',
-  month: 'month-card',
   donut: 'donut-card',
   'metric-dark': 'metric-card metric-dark',
   'metric-blue': 'metric-card metric-blue',

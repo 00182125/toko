@@ -6,8 +6,7 @@ import type { ReactNode } from 'react'
 //  text       -> texto que se toca, sin fondo
 //  link       -> botón sin estilo propio (el que va dentro de una frase)
 //  card-action-> botón redondeado al pie de una tarjeta (usa tone para el color)
-//  pill       -> botón pequeño tipo píldora (Hoy)
-export type ButtonVariant = 'access' | 'primary' | 'text' | 'link' | 'card-action' | 'pill'
+export type ButtonVariant = 'access' | 'primary' | 'text' | 'link' | 'card-action'
 
 const baseClass: Record<ButtonVariant, string> = {
   access: 'access-button',
@@ -15,7 +14,6 @@ const baseClass: Record<ButtonVariant, string> = {
   text: 'text-action',
   link: '',
   'card-action': 'chat-card-action',
-  pill: 'today-pill',
 }
 
 // Estas variantes envuelven el texto en <span> para poder ponerle ícono al lado.
