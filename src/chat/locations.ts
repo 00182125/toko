@@ -43,7 +43,7 @@ export const NOT_FOUND_BUILDING =
 
 // "icas" va como palabra completa: si no, "prácticas", "clínicas" o "matemáticas" serían el ICAS.
 // Lo mismo con las siglas de los edificios: COP, CAE, CCU, CMR y MB.
-const WHOLE_WORD = new Set(['icas', 'ikas', 'ycas', 'hicas', 'mb', 'cop', 'cae', 'ccu', 'cmr'])
+const WHOLE_WORD = new Set(['icas', 'ikas', 'ycas', 'hicas', 'mb', 'cop', 'cae', 'ccu', 'cmr', 'gallinero'])
 // "cae" también es un verbo ("cuándo cae el pago", "se me cae"): es el CAE solo si se nombra como lugar.
 const CAE_AS_PLACE = /(^|(^| )(el|al|del|de|a|en|hasta|hacia|para|queda|esta|llego|llegar|ir|busco|buscando|encuentro|encuentra|ubicado|ubicada|edificio|centro|oficina) )cae( |$)/
 const hasWord = (text: string, word: string) =>

@@ -160,6 +160,13 @@ function route(request: string, pending: Pending, lastDomain: ChatTopic | null, 
     if (pending.domain === 'reservation') {
       const match = findReservationCard(combined)
       if (match.type === 'card') return done('reservation', reservationReply(match)!)
+      // Respuesta corta que aclara a medias ("una sala" → ¿en qué nivel?): sigue la misma conversación.
+      if (match.type === 'clarify' && text.split(' ').length <= 4 && findReservationCard(text).type !== 'card') {
+        const reply = reservationReply(match)!
+        if (reply.text !== reservationReply(findReservationCard(pending.text))?.text) {
+          return done('reservation', reply, { domain: 'reservation', text: combined })
+        }
+      }
     }
     // Menú de la biblioteca ("biblioteca" a secas → ¿qué quieres saber?)
     if (pending.domain === 'rules' && pending.text === 'menu|library') {

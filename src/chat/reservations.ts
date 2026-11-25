@@ -13,31 +13,39 @@ const EQUIPMENT = word(
     'mobiliario|muebles?|equipos?|equipo multimedia',
 )
 const SPORTS = /(futbol|deport|basquet|volei|seleccion|torneo|jugar)/
+// Los tres niveles del CRAI y las formas de nombrarlos ("segundo", "2", "la segunda", "2do").
+const LEVEL_WORDS: [string, string][] = [
+  ['crai-first-floor', 'primer|primero|primera|1|1ro|1er|uno|planta baja'],
+  ['crai-second-floor', 'segundo|segunda|2|2do|dos'],
+  ['crai-third-floor', 'tercer|tercero|tercera|3|3ro|3er|tres'],
+]
+const ROOM =
+  /(sala de reunion|sala en la biblioteca|sala de la biblioteca|sala del crai|sala en el crai|sala de estudio|sala grupal|sala para estudiar|cubiculo)/
 const BOOK = word('libros?|ejemplar(es)?|material bibliografico|prestamos?')
 
 export function findReservationCard(request: string): ReservationMatch {
   const text = normalizeText(request)
   const card = (id: string) => reservationCards.find((item) => item.id === id)!
 
-  if (text.includes('primer nivel') || text.includes('nivel 1')) {
-    return { type: 'card', card: card('crai-first-floor') }
-  }
-  if (text.includes('segundo nivel') || text.includes('nivel 2')) {
-    return { type: 'card', card: card('crai-second-floor') }
-  }
-  if (text.includes('tercer nivel') || text.includes('nivel 3')) {
-    return { type: 'card', card: card('crai-third-floor') }
+  // Nivel dicho completo: "segundo nivel", "nivel 2", "segundo piso", "piso dos"...
+  const level = (() => {
+    for (const [floor, words] of LEVEL_WORDS) {
+      if (new RegExp(`(^| )((${words}) (nivel|piso|planta)|(nivel|piso|planta) (${words}))( |$)`).test(text)) return floor
+    }
+    return null
+  })()
+  if (level) return { type: 'card', card: card(level) }
+  // Pide una sala del CRAI: si además trae solo el nivel ("segundo", "2", "la tercera"), ese es.
+  // (Toko pregunta "¿en qué nivel?" y la respuesta llega junto a lo que pidió antes)
+  const wantsRoom = ROOM.test(text) || (/(^| )salas?( |$)/.test(text) && /(crai|cry|biblio)/.test(text))
+  if (wantsRoom) {
+    const clean = text.replace(/(^| )(\d+|dos|tres|cuatro|cinco|seis) (personas?|horas?|estudiantes?|companeros?|amigos?)( |$)/g, ' ')
+    for (const [floor, words] of LEVEL_WORDS) {
+      if (new RegExp(`(^| )(${words})( |$)`).test(clean)) return { type: 'card', card: card(floor) }
+    }
   }
   if (
-    text.includes('sala de reunion') ||
-    text.includes('sala en la biblioteca') ||
-    text.includes('sala de la biblioteca') ||
-    text.includes('sala del crai') ||
-    text.includes('sala en el crai') ||
-    text.includes('sala de estudio') ||
-    text.includes('sala grupal') ||
-    text.includes('sala para estudiar') ||
-    text.includes('cubiculo')
+    wantsRoom
   ) {
     return {
       type: 'clarify',

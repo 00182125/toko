@@ -396,6 +396,52 @@ if (verbose) console.log(suggestions.join('\n'))
   if (stolen.length) console.log(stolen.map((q) => `  ✗ verbo: "${q}"`).join('\n'))
 }
 
+// 7c. Niveles del CRAI con respuestas cortas, y otros nombres de edificios (gallinero, comunicaciones).
+{
+  const levels: [string, string][] = [
+    ['segundo', 'crai-second-floor'], ['2', 'crai-second-floor'], ['segundo nivel', 'crai-second-floor'], ['el segundo', 'crai-second-floor'],
+    ['la segunda', 'crai-second-floor'], ['2do', 'crai-second-floor'], ['nivel 2', 'crai-second-floor'], ['segundo piso', 'crai-second-floor'],
+    ['dos', 'crai-second-floor'], ['en el segundo', 'crai-second-floor'], ['el 2', 'crai-second-floor'],
+    ['primero', 'crai-first-floor'], ['1', 'crai-first-floor'], ['el primer nivel', 'crai-first-floor'], ['planta baja', 'crai-first-floor'],
+    ['tercero', 'crai-third-floor'], ['3', 'crai-third-floor'], ['la tercera', 'crai-third-floor'], ['tercer piso', 'crai-third-floor'],
+  ]
+  const starts = ['quiero reservar una sala de estudio', 'reservar sala en la biblioteca', 'necesito un cubiculo', 'quiero una sala de reuniones del crai']
+  let ok = 0
+  const wrong: string[] = []
+  for (const start of starts) {
+    const first = routeMessage(start, null, null)
+    for (const [answer, id] of levels) {
+      const r = routeMessage(answer, first.pending, first.domain)
+      if (r.card?.kind === 'reservation' && r.card.card.id === id) ok++
+      else wrong.push(`  ✗ "${start}" → "${answer}" → ${r.card?.kind === 'reservation' ? r.card.card.id : r.text.slice(0, 50)}`)
+    }
+  }
+  // Desde el menú de la biblioteca: "biblioteca" → "2" (reservar) → "una sala" → "segundo"
+  let p = routeMessage('biblioteca', null, null)
+  for (const step of ['2', 'una sala']) p = routeMessage(step, p.pending, p.domain)
+  const fromMenu = routeMessage('segundo', p.pending, p.domain)
+  const menuOk = fromMenu.card?.kind === 'reservation' && fromMenu.card.card.id === 'crai-second-floor'
+  const people = routeMessage('quiero reservar una sala de estudio para 2 personas', null, null)
+  const peopleOk = people.card === undefined && /nivel/.test(people.text)
+  const ways = ['donde queda el {x}', 'como llego al {x}', 'como llegar a {x}', 'llevame a {x}', 'donde esta {x}', 'ubicacion de {x}', 'busco el {x}', 'quiero ir a {x}']
+  const names: [string, string][] = [
+    ['gallinero', 'CEDITEC'], ['GALLINERO', 'CEDITEC'], ['edificio de comunicaciones', 'Edificio Francisco Andrés Escobar'],
+    ['comunicaciones', 'Edificio Francisco Andrés Escobar'], ['audiovisuales', 'Edificio Francisco Andrés Escobar'],
+    ['edificio audiovisual', 'Edificio Francisco Andrés Escobar'], ['edificio de audiovisuales', 'Edificio Francisco Andrés Escobar'],
+    ['francisco escobar', 'Edificio Francisco Andrés Escobar'], ['edificio francisco escobar', 'Edificio Francisco Andrés Escobar'],
+  ]
+  let found = 0
+  for (const [n, name] of names) for (const way of ways) {
+    const q = way.replace('{x}', n)
+    const r = routeMessage(q, null, null)
+    if (r.card?.kind === 'building' && r.card.building.name === name) found++
+    else wrong.push(`  ✗ "${q}" → ${r.card?.kind === 'building' ? r.card.building.name : r.text.slice(0, 50)}`)
+  }
+  const unique = ['tengo clase en el gallinero', 'el gallinero', 'gallinero'].filter((q) => routeMessage(q, null, null).card?.kind === 'building').length
+  console.log(`\n7c. Niveles del CRAI (${starts.length} pedidos × ${levels.length} respuestas): ${ok}/${starts.length * levels.length} · desde el menú: ${menuOk ? 'sí' : 'no'} · "para 2 personas" no es el nivel 2: ${peopleOk ? 'sí' : 'no'} · edificios: ${found}/${ways.length * names.length} · gallinero suelto ${unique}/3`)
+  console.log(wrong.slice(0, 14).join('\n'))
+}
+
 // 8. ICAS y MB: formas naturales de preguntar por ellos.
 {
   const ways = [
