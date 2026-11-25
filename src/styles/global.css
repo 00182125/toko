@@ -1785,23 +1785,39 @@ body {
 .month-panel {
   flex: 0 0 100%;
   min-width: 0;
-  padding: calc(15 * var(--u)) 0 calc(18 * var(--u));
+  padding: 0 0 calc(18 * var(--u));
   scroll-snap-align: start;
   scroll-snap-stop: always;
 }
 
+/* Encabezado fijo: no se desliza con los meses */
 .month-head {
   display: flex;
-  height: calc(36 * var(--u));
+  height: calc(51 * var(--u));
   align-items: center;
   justify-content: space-between;
-  padding: 0 calc(11 * var(--u)) 0 calc(19 * var(--u));
+  padding: calc(15 * var(--u)) calc(11 * var(--u)) 0 calc(19 * var(--u));
+}
+
+/* Todos los nombres de mes en el mismo lugar; se ve el del mes actual y, al deslizar,
+   uno se desvanece mientras aparece el siguiente. */
+.month-titles {
+  display: grid;
+  justify-items: start;
+}
+
+.month-title {
+  display: flex;
+  grid-area: 1 / 1;
+  align-items: center;
+  gap: calc(4 * var(--u));
+  opacity: 0;
+  white-space: nowrap;
 }
 
 .month-picker {
   display: flex;
   align-items: center;
-  gap: calc(4 * var(--u));
   border: 0;
   background: none;
   padding: 0;

@@ -6,29 +6,12 @@ import {
   eventRing,
   type CalendarMonth,
 } from '@/data/calendar'
-import { Asset } from '@/ui/Asset'
 
-// Un mes del calendario (Figma: «Calendario» → «Panel · Noviembre 2026»):
-// nombre con selector, flechas de mes anterior/siguiente, cuadrícula y leyenda de eventos.
-// Los meses van uno al lado del otro y se pasa de uno a otro deslizando (ver CalendarScreen).
+// Un mes del calendario (Figma: «Calendario» → «Panel · Noviembre 2026»): cuadrícula de días
+// con colores y leyenda de eventos. El encabezado (nombre del mes y flechas) no va aquí: queda
+// fijo arriba de la tarjeta mientras los meses se deslizan debajo (ver CalendarHeader).
 //  today: fecha de hoy (se marca con un círculo oscuro)
-//  onPrev / onNext: flechas; sin función, la flecha se ve apagada (primer o último mes)
-//  onPickMonth: toque en el nombre del mes (abre la lista de meses)
-export function MonthCard({
-  item,
-  today,
-  onPrev,
-  onNext,
-  onPickMonth,
-  pickerOpen = false,
-}: {
-  item: CalendarMonth
-  today: Date
-  onPrev?: () => void
-  onNext?: () => void
-  onPickMonth: () => void
-  pickerOpen?: boolean
-}) {
+export function MonthCard({ item, today }: { item: CalendarMonth; today: Date }) {
   const firstWeekday = new Date(item.year, item.month, 1).getDay()
   const daysInMonth = new Date(item.year, item.month + 1, 0).getDate()
   const daysInPrevMonth = new Date(item.year, item.month, 0).getDate()
@@ -47,26 +30,6 @@ export function MonthCard({
 
   return (
     <section className="month-panel" aria-label={item.name}>
-      <div className="month-head">
-        <button
-          type="button"
-          className="month-picker"
-          onClick={onPickMonth}
-          aria-expanded={pickerOpen}
-          aria-haspopup="listbox"
-        >
-          <h2>{item.name}</h2>
-          <Asset name="c8e5d.svg" className={`month-picker-chevron ${pickerOpen ? 'is-open' : ''}`} />
-        </button>
-        <div className="month-arrows">
-          <button type="button" className="month-arrow" onClick={onPrev} disabled={!onPrev} aria-label="Mes anterior">
-            <Asset name="baea3.svg" />
-          </button>
-          <button type="button" className="month-arrow" onClick={onNext} disabled={!onNext} aria-label="Mes siguiente">
-            <Asset name="38fce.svg" />
-          </button>
-        </div>
-      </div>
       <div className="month-grid">
         {['D', 'L', 'M', 'M', 'J', 'V', 'S'].map((letter, index) => (
           <span className="weekday" key={`${letter}-${index}`}>
