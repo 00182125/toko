@@ -52,6 +52,7 @@ export function CalendarScreen({ onBack }: { onBack: () => void }) {
     const target = pendingJump.current
     if (pickerOpen || target === null || !track) return
     pendingJump.current = null
+    swipeFrom.current = null // un salto desde el selector no es un deslizamiento
     track.scrollLeft = target * track.clientWidth
     setIndex(target)
   }, [pickerOpen])
@@ -68,10 +69,45 @@ export function CalendarScreen({ onBack }: { onBack: () => void }) {
     track.scrollTo({ left: target * track.clientWidth, behavior: 'smooth' })
   }
 
+  // Un deslizamiento solo avanza un mes, aunque sea muy fuerte: se recuerda en qué mes empezó
+  // y el carrusel no pasa del mes anterior ni del siguiente a ese. Si el impulso quiere ir más
+  // lejos, se frena ahí y el mes encaja en la tarjeta.
+  const swipeFrom = useRef<number | null>(null)
+  const touching = useRef(false)
+  const settleTimer = useRef<number | undefined>(undefined)
+  useEffect(() => () => window.clearTimeout(settleTimer.current), [])
+  const anchor = () => {
+    const track = trackRef.current
+    if (track && track.clientWidth > 0) swipeFrom.current = Math.round(track.scrollLeft / track.clientWidth)
+  }
+  const onTouchStart = () => {
+    touching.current = true
+    anchor()
+  }
+  const onTouchEnd = () => {
+    touching.current = false
+  }
+  // Con rueda o trackpad (computadora) también cuenta como un deslizamiento.
+  const onWheel = () => {
+    if (swipeFrom.current === null) anchor()
+  }
+
   // El mes visible sale de cuánto se deslizó el carrusel.
   const onScroll = () => {
     const track = trackRef.current
     if (!track || track.clientWidth === 0) return
+    const from = swipeFrom.current
+    if (from !== null) {
+      const min = Math.max(0, from - 1) * track.clientWidth
+      const max = Math.min(calendarMonths.length - 1, from + 1) * track.clientWidth
+      if (track.scrollLeft > max) track.scrollLeft = max
+      else if (track.scrollLeft < min) track.scrollLeft = min
+    }
+    // Cuando el carrusel deja de moverse (y ya no hay dedo encima), el deslizamiento terminó.
+    window.clearTimeout(settleTimer.current)
+    settleTimer.current = window.setTimeout(() => {
+      if (!touching.current) swipeFrom.current = null
+    }, 160)
     const visible = Math.round(track.scrollLeft / track.clientWidth)
     if (visible !== index) {
       setIndex(visible)
@@ -97,6 +133,10 @@ export function CalendarScreen({ onBack }: { onBack: () => void }) {
             className="month-track"
             ref={trackRef}
             onScroll={onScroll}
+            onTouchStart={onTouchStart}
+            onTouchEnd={onTouchEnd}
+            onTouchCancel={onTouchEnd}
+            onWheel={onWheel}
             style={{ height: pickerOpen ? 0 : height, transition: toggled ? 'none' : undefined }}
             aria-hidden={pickerOpen}
           >
