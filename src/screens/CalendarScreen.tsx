@@ -1,13 +1,14 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { CalendarHeader } from '@/components/calendar/CalendarHeader'
 import { MonthCard } from '@/components/calendar/MonthCard'
+import { MonthPicker } from '@/components/calendar/MonthPicker'
 import { ChatHeader } from '@/components/navigation/ChatHeader'
 import { calendarMonths } from '@/data/calendar'
 import { ScreenLayout } from '@/ui/ScreenLayout'
 
 // Calendario académico (Figma: «Calendario - Fechas importantes»): una sola tarjeta y los meses
 // uno al lado del otro. Se pasa de mes deslizando hacia los lados, con las flechas o eligiendo
-// el mes en la lista que abre su nombre. Abre en el mes actual.
+// el mes en el selector que abre su nombre (año + cuadrícula de meses). Abre en el mes actual.
 // Como en el Figma, el encabezado queda fijo: solo los días y la leyenda se deslizan, y el nombre
 // del mes cambia al del mes visible, sin animación.
 export function CalendarScreen({ onBack }: { onBack: () => void }) {
@@ -20,6 +21,11 @@ export function CalendarScreen({ onBack }: { onBack: () => void }) {
   const [pickerOpen, setPickerOpen] = useState(false)
   const trackRef = useRef<HTMLDivElement>(null)
   const [height, setHeight] = useState<number>()
+  // Al abrir o cerrar el selector, la tarjeta cambia de golpe (sin animar la altura),
+  // para que no se vean los días encogiéndose detrás del selector.
+  const lastOpen = useRef(pickerOpen)
+  const toggled = lastOpen.current !== pickerOpen
+  lastOpen.current = pickerOpen
 
   // La tarjeta toma la altura del mes visible (un mes con 6 semanas o más eventos es más alto).
   useLayoutEffect(() => {
@@ -42,7 +48,7 @@ export function CalendarScreen({ onBack }: { onBack: () => void }) {
     const track = trackRef.current
     setPickerOpen(false)
     if (!track) return
-    // Al mes de al lado se desliza; a uno lejano (desde la lista) se salta directo, porque una
+    // Al mes de al lado se desliza; a uno lejano (desde el selector) se salta directo, porque una
     // animación larga se corta a medio camino al cambiar la altura de la tarjeta en cada mes.
     const far = Math.abs(target - index) > 1
     track.scrollTo({ left: target * track.clientWidth, behavior: far ? 'auto' : 'smooth' })
@@ -72,28 +78,19 @@ export function CalendarScreen({ onBack }: { onBack: () => void }) {
             onPickMonth={() => setPickerOpen((open) => !open)}
             pickerOpen={pickerOpen}
           />
-          <div className="month-track" ref={trackRef} onScroll={onScroll} style={{ height }}>
+          {/* Con el selector abierto, los meses se encogen a 0 (sin perder en qué mes iban) */}
+          <div
+            className="month-track"
+            ref={trackRef}
+            onScroll={onScroll}
+            style={{ height: pickerOpen ? 0 : height, transition: toggled ? 'none' : undefined }}
+            aria-hidden={pickerOpen}
+          >
             {calendarMonths.map((item) => (
               <MonthCard key={item.name} item={item} today={today} />
             ))}
           </div>
-          {pickerOpen && (
-            <ul className="month-picker-list" role="listbox" aria-label="Elegir mes">
-              {calendarMonths.map((item, monthIndex) => (
-                <li key={item.name}>
-                  <button
-                    type="button"
-                    role="option"
-                    aria-selected={monthIndex === index}
-                    className={monthIndex === index ? 'is-current' : undefined}
-                    onClick={() => goTo(monthIndex)}
-                  >
-                    {item.name}
-                  </button>
-                </li>
-              ))}
-            </ul>
-          )}
+          {pickerOpen && <MonthPicker months={calendarMonths} index={index} onPick={goTo} />}
         </div>
       </section>
     </ScreenLayout>

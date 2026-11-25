@@ -1825,16 +1825,15 @@ body {
 .month-picker-chevron {
   width: calc(16 * var(--u));
   height: calc(16 * var(--u));
-  transition: transform 200ms ease-out;
-}
-
-.month-picker-chevron.is-open {
-  transform: rotate(180deg);
 }
 
 .month-arrows {
   display: flex;
   gap: calc(4 * var(--u));
+}
+
+.month-arrows[hidden] {
+  display: none;
 }
 
 .month-arrow {
@@ -1941,46 +1940,81 @@ body {
   border-radius: calc(18 * var(--u));
 }
 
-/* Lista de meses que abre el nombre del mes */
-.month-picker-list {
-  position: absolute;
-  z-index: 2;
-  top: calc(56 * var(--u));
-  left: calc(12 * var(--u));
+/* Selector de mes y año (Figma «Vista=Selector 2026»): reemplaza los meses dentro de la tarjeta */
+.month-picker-panel {
   display: flex;
-  max-height: calc(300 * var(--u));
   flex-direction: column;
-  overflow-y: auto;
-  border-radius: calc(12 * var(--u));
-  background: #ffffff;
-  padding: calc(6 * var(--u));
-  box-shadow: 0 calc(4 * var(--u)) calc(16 * var(--u)) rgb(11 31 47 / 18%);
-  list-style: none;
-  scrollbar-width: none;
-  animation: fadeUp 180ms ease-out;
+  gap: calc(20 * var(--u));
+  padding: calc(16 * var(--u)) calc(19 * var(--u)) calc(24 * var(--u));
+  animation: fadeUp 200ms ease-out;
 }
 
-.month-picker-list::-webkit-scrollbar {
-  display: none;
+.picker-year-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
-.month-picker-list button {
-  width: 100%;
+.picker-year {
+  color: #193657;
+  font-family: 'Inter:Semi Bold', Inter, sans-serif;
+  font-size: calc(20 * var(--u));
+  font-weight: 600;
+}
+
+.picker-year-arrow {
+  display: flex;
+  width: calc(36 * var(--u));
+  height: calc(36 * var(--u));
+  align-items: center;
+  justify-content: center;
   border: 0;
-  border-radius: calc(8 * var(--u));
-  background: none;
-  padding: calc(9 * var(--u)) calc(14 * var(--u));
-  color: #10232c;
+  border-radius: calc(18 * var(--u));
+  background: #f3f5f5;
+  cursor: pointer;
+}
+
+.picker-year-arrow img {
+  width: calc(10 * var(--u));
+  height: calc(14 * var(--u));
+}
+
+.picker-year-arrow:disabled {
+  cursor: default;
+  opacity: 0.4;
+}
+
+.picker-months {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: calc(12 * var(--u));
+}
+
+.picker-month {
+  height: calc(56 * var(--u));
+  border: 0;
+  border-radius: calc(16 * var(--u));
+  background: #f3f5f5;
+  color: #07181f;
   cursor: pointer;
   font-family: 'Inter:Medium', Inter, sans-serif;
-  font-size: calc(14 * var(--u));
+  font-size: calc(16 * var(--u));
   font-weight: 500;
-  text-align: left;
+  transition: background-color 150ms ease-out;
 }
 
-.month-picker-list button.is-current {
+.picker-month:active:not(:disabled) {
   background: #e1edf3;
-  color: #193657;
+}
+
+.picker-month:disabled {
+  cursor: default;
+  opacity: 0.4;
+}
+
+.picker-month.is-selected {
+  background: #0f2b45;
+  color: #ffffff;
 }
 
 .calendar-cta {
