@@ -2161,7 +2161,7 @@ body {
 }
 
 .donut-card {
-  border: 0.7px solid #cdd1d2;
+  /* sin borde: la sombra separa la tarjeta del fondo */
   border-radius: calc(16 * var(--u));
   background: #ffffff;
   padding: calc(18 * var(--u)) calc(19 * var(--u)) calc(16 * var(--u));
@@ -3315,6 +3315,9 @@ button:active:not(:disabled):not(.help-head):not(.suggest-head):not(.switch) {
   .primary-action {
     height: calc(44 * var(--u));
     flex: 0 0 calc(44 * var(--u));
+    /* texto de los botones más pequeño (en el teléfono es 13) */
+    font-size: calc(12 * var(--u));
+    line-height: calc(16 * var(--u));
   }
 
   .access-button img {
@@ -3334,6 +3337,165 @@ button:active:not(:disabled):not(.help-head):not(.suggest-head):not(.switch) {
     width: 92px;
   }
 
+  /* Dashboard y Análisis de Contenido (administrativo): panel blanco con sombra sobre el
+     fondo gris, título a la izquierda y el contenido repartido en columnas. */
+  .app-frame:has(.dashboard-body) {
+    padding: 16px;
+    background: #f3f5f5;
+  }
+
+  .app-frame.app-frame:has(.dashboard-body) .app-panel {
+    width: 100%;
+    max-width: 1040px;
+    margin: 0 auto;
+    overflow: hidden;
+    border-radius: 20px;
+    background: #ffffff;
+    box-shadow: 0 4px 24px rgb(11 31 47 / 8%), 0 1px 3px rgb(11 31 47 / 6%);
+  }
+
+  .app-panel main:has(.dashboard-body) {
+    max-width: 800px;
+    margin: 0 auto;
+  }
+
+  .app-panel main:has(.dashboard-body) .page-header {
+    padding: 36px 40px 8px;
+  }
+
+  .app-panel main:has(.dashboard-body) .page-header h1 {
+    margin: 0 0 0 8px;
+    font-size: 20px;
+    line-height: 28px;
+    text-align: left;
+  }
+
+  .app-panel main:has(.dashboard-body) .page-header .page-icon {
+    display: none;
+  }
+
+  /* Filas: cifras, título, lista, espacio que empuja el botón hasta abajo, botón */
+  .app-panel .dashboard-body {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-rows: auto auto auto 1fr auto;
+    column-gap: 20px;
+    padding: 20px 48px 32px;
+  }
+
+  .app-panel .dashboard-body > * {
+    grid-column: 1 / -1;
+  }
+
+  /* El botón abajo, a todo el ancho; alto y texto iguales a los demás botones de computadora
+     (44 de alto y texto de 12, ver .primary-action arriba) */
+  .app-panel .dashboard-body > .primary-action {
+    grid-column: 1 / -1;
+    justify-self: center;
+    /* más angosto y centrado: el mismo ancho que los botones de la tarjeta de acceso */
+    width: min(100%, 352px);
+  }
+
+  /* Dashboard: las dos cifras lado a lado */
+  .app-panel .dashboard-body > .metric-card {
+    grid-column: auto;
+    height: 128px;
+    margin-bottom: 20px;
+    padding: 18px 20px;
+  }
+
+  .app-panel .dashboard-body .activity-list li {
+    padding: 10px 4px;
+  }
+
+  /* Análisis de contenido: la gráfica a la izquierda y la tabla a la derecha */
+  /* Análisis: la gráfica a la izquierda; a la derecha el título, la tabla y debajo el botón
+     de exportar (del ancho de esa columna, más bajo) */
+  .app-panel .dashboard-body:has(.donut-card) {
+    grid-template-columns: minmax(0, 370px) minmax(0, 1fr);
+    grid-template-rows: auto auto auto 1fr;
+    column-gap: 28px;
+  }
+
+  .app-panel .dashboard-body:has(.donut-card) > .activity-title,
+  .app-panel .dashboard-body:has(.donut-card) > .query-table {
+    grid-column: 2;
+  }
+
+  .app-panel .dashboard-body:has(.donut-card) > .settings-spacer {
+    grid-row: 4;
+    grid-column: 1 / -1;
+  }
+
+  .app-panel .dashboard-body:has(.donut-card) > .primary-action {
+    grid-row: 3;
+    grid-column: 2;
+    align-self: start;
+    margin-top: 20px;
+  }
+
+  /* La gráfica ocupa también la fila flexible: así no separa el título de la tabla */
+  .app-panel .dashboard-body > .donut-card {
+    grid-row: 1 / span 4;
+    grid-column: 1;
+    align-self: start;
+    border: 0;
+    box-shadow: 0 4px 20px rgb(11 31 47 / 8%);
+  }
+
+  .app-panel .dashboard-body:has(.donut-card) > .activity-title {
+    margin-top: 0;
+  }
+
+  /* Acceso, inicio de sesión, crear cuenta y recuperar contraseña: dentro de una tarjeta blanca
+     centrada sobre el fondo gris (sin borde, esquinas redondeadas y una sombra ligera). */
+  .app-frame:has(.access-screen, .auth-screen) {
+    display: grid;
+    place-items: center;
+    padding: 32px 16px;
+    /* gris del sistema de diseño (Figma: campos y flechas) */
+    background: #f3f5f5;
+  }
+
+  .app-frame:has(.access-screen, .auth-screen) .app-panel {
+    width: 400px;
+    max-width: 100%;
+    height: min(760px, calc(100dvh - 64px));
+    margin: 0;
+    overflow: hidden;
+    border-radius: 28px;
+    background: #ffffff;
+    box-shadow: 0 12px 40px rgb(11 31 47 / 8%), 0 1px 3px rgb(11 31 47 / 5%);
+  }
+
+  /* Si el contenido es más alto que la tarjeta (crear cuenta), se desplaza dentro de ella */
+  .app-panel .access-screen,
+  .app-panel .auth-screen {
+    overflow-y: auto;
+    scrollbar-width: none;
+  }
+
+  .app-panel .access-screen::-webkit-scrollbar,
+  .app-panel .auth-screen::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Márgenes medidos respecto a la tarjeta, no a la pantalla */
+  .app-panel .access-content {
+    padding-top: 56px;
+    padding-bottom: 40px;
+  }
+
+  .app-panel .auth-content {
+    padding-top: 56px;
+    padding-bottom: 32px;
+  }
+
+  .app-panel .back-button {
+    top: 20px;
+    left: 16px;
+  }
+
   .app-frame:not(.with-tabs) .app-panel {
     max-width: 430px;
     margin: 0 auto;
@@ -3344,7 +3506,7 @@ button:active:not(:disabled):not(.help-head):not(.suggest-head):not(.switch) {
     grid-template-columns: 232px minmax(0, 1fr);
     gap: 16px;
     padding: 16px;
-    background: #f3f6f7;
+    background: #f3f5f5;
   }
 
   /* Menú lateral */
