@@ -2,7 +2,6 @@ import { useEffect, useState, type FormEvent } from 'react'
 import { CodeInput } from '@/components/auth/CodeInput'
 import { Logo } from '@/components/brand/Logo'
 import { ShyToko } from '@/components/brand/ShyToko'
-import type { Navigate } from '@/types/navigation'
 import { Asset } from '@/ui/Asset'
 import { Button } from '@/ui/Button'
 import { IconButton } from '@/ui/IconButton'
@@ -12,12 +11,14 @@ import { TextField } from '@/ui/TextField'
 // Recuperar contraseña, en tres pasos dentro de la misma pantalla:
 //  1. email    → escribe su correo y toca "Enviar enlace" (burbuja: "Revisa el código…")
 //  2. code     → escribe el código de 6 dígitos que le llegó
-//  3. password → nueva contraseña + confirmarla → "Cambiar contraseña" → iniciar sesión
+//  3. password → nueva contraseña + confirmarla → "Cambiar contraseña" → regresa a donde estaba
+//  onExit: salir de la pantalla (flecha en el primer paso, o al terminar). Regresa a donde
+//    venía: Ajustes, o el inicio de sesión de estudiante o de administrativo.
 type Step = 'email' | 'code' | 'password'
 
 const CODE_LENGTH = 6
 const TOAST_DURATION = 3200
-// Después de cambiar la contraseña, se ve la burbuja un momento y pasa a iniciar sesión.
+// Después de cambiar la contraseña, se ve la burbuja un momento y regresa a donde estaba.
 const DONE_DELAY = 1600
 
 const errorIcon = (
@@ -28,7 +29,7 @@ const errorIcon = (
   </svg>
 )
 
-export function RecoveryScreen({ navigate }: { navigate: Navigate }) {
+export function RecoveryScreen({ onExit }: { onExit: () => void }) {
   const [step, setStep] = useState<Step>('email')
   const [email, setEmail] = useState('')
   const [code, setCode] = useState('')
@@ -51,12 +52,12 @@ export function RecoveryScreen({ navigate }: { navigate: Navigate }) {
     return () => window.clearTimeout(timer)
   }, [toast])
 
-  // Contraseña cambiada: un momento para leer la burbuja y luego a iniciar sesión.
+  // Contraseña cambiada: un momento para leer la burbuja y luego regresa a donde estaba.
   useEffect(() => {
     if (!done) return
-    const timer = window.setTimeout(() => navigate('login-student'), DONE_DELAY)
+    const timer = window.setTimeout(onExit, DONE_DELAY)
     return () => window.clearTimeout(timer)
-  }, [done, navigate])
+  }, [done, onExit])
 
   const goTo = (next: Step) => {
     setError('')
@@ -66,7 +67,7 @@ export function RecoveryScreen({ navigate }: { navigate: Navigate }) {
   const back = () => {
     if (step === 'password') goTo('code')
     else if (step === 'code') goTo('email')
-    else navigate('login-student')
+    else onExit()
   }
 
   const submit = (event: FormEvent) => {

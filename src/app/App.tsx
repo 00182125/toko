@@ -41,6 +41,8 @@ function useScreenNavigate(): Navigate {
 }
 
 // Marco común: animación de entrada al cambiar de URL y barra inferior cuando corresponde.
+// En computadora (1024 px o más), las pantallas con pestañas se ven con la barra como menú lateral
+// a la izquierda y el contenido en un panel a la derecha (ver "Computadora" en global.css).
 //  hiddenTabs: pestañas que esta sesión no puede usar (el invitado no tiene Calendario)
 function Frame({ hiddenTabs }: { hiddenTabs: Tab[] }) {
   const { pathname } = useLocation()
@@ -48,12 +50,15 @@ function Frame({ hiddenTabs }: { hiddenTabs: Tab[] }) {
   const activeTab = tabFromPath(pathname)
 
   return (
-    <>
-      <div className="screen-enter" key={pathname}>
-        <Outlet />
-      </div>
+    <div className={`app-frame ${activeTab ? 'with-tabs' : ''}`}>
       {activeTab ? <NavBar active={activeTab} onChange={navigate} hidden={hiddenTabs} /> : null}
-    </>
+      {/* El panel no cambia al navegar; solo su contenido se anima al entrar */}
+      <div className="app-panel" data-tab={activeTab ?? undefined}>
+        <div className="screen-enter" key={pathname}>
+          <Outlet />
+        </div>
+      </div>
+    </div>
   )
 }
 
@@ -75,6 +80,13 @@ function AppRoutes() {
   // Pregunta que Toko no entendió y la persona quiere sugerir (llega desde el chat a Ayuda).
   const suggestion = (location.state as { suggest?: string } | null)?.suggest
   const suggestQuestion = (question: string) => routerNavigate(paths.help, { state: { suggest: question } })
+  // Salir de "Recuperar contraseña": vuelve a la pantalla de antes (Ajustes, o el inicio de sesión
+  // de estudiante o de administrativo). Si se abrió directo con la URL, va al inicio de sesión.
+  const leaveRecovery = useCallback(() => {
+    const step = (window.history.state as { idx?: number } | null)?.idx ?? 0
+    if (step > 0) routerNavigate(-1)
+    else navigate('login-student')
+  }, [routerNavigate, navigate])
   const { session, start, end } = useSession()
   const guest = session === 'guest'
 
@@ -133,7 +145,7 @@ function AppRoutes() {
           path={paths.signup}
           element={<AuthScreen key="signup" mode="signup" navigate={navigate} onAuthenticated={enter} />}
         />
-        <Route path={paths.recovery} element={<RecoveryScreen navigate={navigate} />} />
+        <Route path={paths.recovery} element={<RecoveryScreen onExit={leaveRecovery} />} />
         <Route
           path={paths.home}
           element={guard(
@@ -149,7 +161,7 @@ function AppRoutes() {
             />,
           )}
         />
-        <Route path={paths.calendar} element={guard('calendar', <CalendarScreen onBack={() => navigate('home')} />)} />
+        <Route path={paths.calendar} element={guard('calendar', <CalendarScreen />)} />
         <Route
           path={paths.help}
           element={guard('help', <HelpScreen guest={guest} onSuggest={saveSuggestion} suggestion={suggestion} />)}

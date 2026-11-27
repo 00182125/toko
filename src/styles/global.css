@@ -68,7 +68,9 @@
   position: relative;
   width: 100%;
   min-width: 0;
-  max-width: 900px;
+  /* Máximo 430 px (el mismo tope de --u): en tablet y computadora la app se ve como en el
+     teléfono, centrada, en vez de estirar botones e imágenes a todo el ancho. */
+  max-width: 430px;
   height: 100dvh;
   min-height: 0;
   overflow: hidden;
@@ -83,13 +85,8 @@ body {
   overscroll-behavior: none;
 }
 
-/* En computadora la app (máx. 900 px) sigue centrada sobre el fondo gris */
-@media (min-width: 901px) {
-  :root,
-  body {
-    background: #e6e8e9;
-  }
-}
+/* En pantallas más anchas que un teléfono, el fondo blanco ocupa toda la pantalla y el
+   contenido (máx. 430 px) queda centrado, sin franjas ni cortes a los lados. */
 
 .access-screen,
 .auth-screen,
@@ -163,7 +160,7 @@ body {
 
 .toko-logo {
   position: relative;
-  width: 28%;
+  width: 22%;
   height: auto;
   aspect-ratio: 96.604 / 34.815;
   flex: 0 0 auto;
@@ -199,10 +196,16 @@ body {
   min-height: 0;
 }
 
-/* Pantalla de acceso: en pantallas de 400 px o menos, la imagen ocupa el 70% */
+/* Pantalla de acceso: el búho es el protagonista (más grande que en el login) */
+.selector-toko {
+  width: 60%;
+  max-height: 36dvh;
+}
+
+/* En pantallas de 400 px o menos, la imagen ocupa el 66% */
 @media (max-width: 400px) {
   .selector-toko {
-    width: 70%;
+    width: 66%;
   }
 }
 
@@ -216,15 +219,16 @@ body {
 }
 
 .access-actions {
-  gap: calc(12 * var(--u));
+  gap: calc(20 * var(--u));
 }
 
 .access-button,
 .primary-action {
   display: flex;
   width: 100%;
-  height: calc(56 * var(--u));
-  flex: 0 0 calc(56 * var(--u));
+  /* 44 px de alto (antes 56): más ligeros y con más aire entre ellos */
+  height: calc(44 * var(--u));
+  flex: 0 0 calc(44 * var(--u));
   align-items: center;
   justify-content: center;
   border-radius: 999px;
@@ -239,8 +243,8 @@ body {
 }
 
 .access-button img {
-  width: calc(24 * var(--u));
-  height: calc(24 * var(--u));
+  width: calc(20 * var(--u));
+  height: calc(20 * var(--u));
 }
 
 .student-access {
@@ -266,9 +270,10 @@ body {
   gap: calc(4 * var(--u));
   color: #5b676b;
   font-family: 'Inter:Regular', Inter, sans-serif;
-  font-size: calc(14 * var(--u));
+  /* 12 px (antes 14): enlaces secundarios, más discretos que los botones */
+  font-size: calc(12 * var(--u));
   font-weight: 400;
-  line-height: calc(20 * var(--u));
+  line-height: calc(18 * var(--u));
   white-space: nowrap;
 }
 
@@ -280,9 +285,9 @@ body {
 .text-action {
   color: #2e7da6;
   font-family: 'Inter:Medium', Inter, sans-serif;
-  font-size: calc(14 * var(--u));
+  font-size: calc(12 * var(--u));
   font-weight: 500;
-  line-height: calc(20 * var(--u));
+  line-height: calc(18 * var(--u));
 }
 
 .back-button {
@@ -1403,7 +1408,8 @@ body {
 }
 
 .full-map-window {
-  width: min(84%, 70dvh);
+  /* 84% del ancho del teléfono (330 de 393), también en computadora */
+  width: min(calc(330 * var(--u)), 84vw, 70dvh);
   aspect-ratio: 1;
   overflow: hidden;
   border-radius: calc(28 * var(--u));
@@ -1495,11 +1501,13 @@ body {
   background: #ffffff;
 }
 
+/* La flecha de regresar queda en el mismo lugar que la del inicio de sesión (.back-button):
+   6% del alto desde arriba y 4.07% del ancho desde la izquierda. */
 .page-header {
   display: flex;
   flex: 0 0 auto;
   align-items: center;
-  padding: 6.5dvh 6.1% 0 4.07%;
+  padding: 6dvh 6.1% 0 4.07%;
 }
 
 .page-header h1 {
@@ -1750,7 +1758,8 @@ body {
   flex: 1;
   flex-direction: column;
   overflow-y: auto;
-  padding: calc(12 * var(--u)) 6.1% calc(16 * var(--u));
+  /* abajo deja espacio para la barra de navegación del teléfono */
+  padding: calc(12 * var(--u)) 6.1% calc(112 * var(--u));
   scrollbar-width: none;
 }
 
@@ -3266,5 +3275,291 @@ button:active:not(:disabled):not(.help-head):not(.suggest-head):not(.switch) {
     animation-duration: 1ms !important;
     animation-delay: 0ms !important;
     transition-duration: 1ms !important;
+  }
+}
+
+/* ============================================================
+   Computadora (1024 px o más)
+   Solo cambia la vista de computadora; en el teléfono todo queda igual.
+   · Pantallas con pestañas (Chat, Calendario, Ayuda, Ajustes): menú lateral a la izquierda
+     (la barra de abajo se vuelve una columna con el logo) y el contenido en un panel blanco
+     a la derecha, centrado en un ancho cómodo de lectura.
+   · Acceso, inicio de sesión y demás: la columna de 430 px centrada, como en el teléfono.
+   ============================================================ */
+
+.app-frame,
+.app-panel {
+  width: 100%;
+  height: 100%;
+}
+
+.nav-brand,
+.nav-foot {
+  display: none;
+}
+
+@media (min-width: 1024px) {
+  #root {
+    max-width: none;
+  }
+
+  .app-frame:not(.with-tabs) .app-panel {
+    max-width: 430px;
+    margin: 0 auto;
+  }
+
+  .app-frame.with-tabs {
+    display: grid;
+    grid-template-columns: 232px minmax(0, 1fr);
+    gap: 16px;
+    padding: 16px;
+    background: #f3f6f7;
+  }
+
+  /* Menú lateral */
+  .with-tabs .nav-wrap {
+    position: static;
+    display: flex;
+    min-height: 0;
+    flex-direction: column;
+    padding: 20px 8px 12px;
+    pointer-events: auto;
+  }
+
+  .with-tabs .nav-brand {
+    display: block;
+    padding: 0 12px 32px;
+  }
+
+  .with-tabs .nav-brand .toko-logo {
+    width: 92px;
+  }
+
+  .with-tabs .nav-bar {
+    display: flex;
+    height: auto;
+    flex-direction: column;
+    gap: 4px;
+    border-radius: 0;
+    padding: 0;
+    background: none;
+    box-shadow: none;
+  }
+
+  .with-tabs .nav-pill {
+    top: 0;
+    bottom: auto;
+    left: 0;
+    width: 100%;
+    height: 44px;
+    border-radius: 12px;
+    transform: translateY(calc(var(--i, 0) * 48px));
+  }
+
+  .with-tabs .nav-tab {
+    height: 44px;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 12px;
+    border-radius: 12px;
+    padding: 0 14px;
+    transition: background-color 150ms ease-out, color 200ms ease-out;
+  }
+
+  .with-tabs .nav-tab:hover:not(.nav-tab-active) {
+    background: #e8eef1;
+  }
+
+  .with-tabs .nav-tab span {
+    font-size: 14px;
+    line-height: 20px;
+  }
+
+  .with-tabs .nav-foot {
+    display: block;
+    margin-top: auto;
+    padding: 0 14px;
+    color: #8a9599;
+    font-family: 'Inter:Regular', Inter, sans-serif;
+    font-size: 12px;
+    line-height: 16px;
+  }
+
+  /* Panel del contenido */
+  .with-tabs .app-panel {
+    min-height: 0;
+    overflow: hidden;
+    border-radius: 20px;
+    background: #ffffff;
+    /* Sin borde: una sombra suave separa el panel del fondo */
+    box-shadow: 0 4px 24px rgb(11 31 47 / 8%), 0 1px 3px rgb(11 31 47 / 6%);
+  }
+
+  .with-tabs .screen-enter > main {
+    max-width: 760px;
+    margin: 0 auto;
+  }
+
+  .with-tabs .app-panel[data-tab='calendar'] .screen-enter > main {
+    max-width: 480px;
+  }
+
+  .with-tabs .app-panel[data-tab='settings'] .screen-enter > main {
+    max-width: 640px;
+  }
+
+  /* Ajustes: el perfil arriba, sin fondo (foto a la izquierda, nombre y correo a la derecha)
+     y las opciones debajo, a todo el ancho. Sin flecha de regresar (el menú lateral ya lleva
+     a las otras pantallas). */
+  .with-tabs .screen-enter > main:has(.settings-body) {
+    max-width: 920px;
+  }
+
+  /* Encabezados de las pantallas con pestañas (Ajustes, Notificaciones): todos con la flecha
+     y el título en el mismo lugar */
+  .with-tabs .page-header {
+    padding: 40px 48px 8px;
+  }
+
+  .with-tabs main:has(.settings-body) .page-header .chat-back,
+  .with-tabs main:has(.settings-body) .page-header .page-icon {
+    display: none;
+  }
+
+  .with-tabs main:has(.settings-body) .page-header h1 {
+    margin: 0;
+    font-size: 24px;
+    line-height: 32px;
+    text-align: left;
+  }
+
+  .with-tabs .settings-body {
+    padding: 16px 48px 40px;
+  }
+
+  .with-tabs .settings-body > .profile {
+    display: grid;
+    grid-template-columns: 96px minmax(0, 1fr);
+    align-items: center;
+    column-gap: 24px;
+    row-gap: 4px;
+    margin-bottom: 8px;
+    padding: 16px 0 8px;
+  }
+
+  .with-tabs .settings-body > .profile .profile-avatar {
+    grid-row: 1 / span 2;
+    width: 96px;
+  }
+
+  .with-tabs .settings-body > .profile h2 {
+    align-self: end;
+    font-size: 22px;
+    line-height: 28px;
+  }
+
+  .with-tabs .settings-body > .profile p {
+    align-self: start;
+    color: #5b676b;
+    font-family: 'Inter:Regular', Inter, sans-serif;
+    font-size: 14px;
+    font-weight: 400;
+  }
+
+  /* Invitado: el aviso en la misma franja (candado, texto y botón a la derecha) */
+  .with-tabs .settings-body > .guest-banner {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    align-items: center;
+    column-gap: 20px;
+    row-gap: 4px;
+    margin-bottom: 8px;
+    border-radius: 20px;
+    padding: 24px 28px;
+    text-align: left;
+  }
+
+  .with-tabs .settings-body > .guest-banner > .guest-banner-icon {
+    grid-row: 1 / span 2;
+  }
+
+  .with-tabs .settings-body > .guest-banner > h2 {
+    align-self: end;
+  }
+
+  .with-tabs .settings-body > .guest-banner > p {
+    grid-column: 2;
+    align-self: start;
+  }
+
+  .with-tabs .settings-body > .guest-banner > button {
+    grid-row: 1 / span 2;
+    grid-column: 3;
+    width: auto;
+    padding: 0 28px;
+  }
+
+  .with-tabs .settings-body .settings-title {
+    margin: 24px 0 4px;
+    font-size: 13px;
+    line-height: 18px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  .with-tabs .settings-body .settings-row {
+    border-radius: 12px;
+    padding: 12px 12px;
+    margin: 0 -12px;
+    width: calc(100% + 24px);
+  }
+
+  .with-tabs .settings-body .settings-row:hover {
+    background: #f3f6f7;
+  }
+
+  /* Sin barra abajo: fuera el espacio que se le dejaba */
+  .with-tabs .with-nav {
+    padding-bottom: 0;
+  }
+
+  .with-tabs .chat-header {
+    padding-top: 28px;
+  }
+
+  /* Búho de bienvenida y tarjetas del chat: el tamaño del teléfono, no el ancho de la columna */
+  .with-tabs .waving-toko {
+    width: 150px;
+  }
+
+  .with-tabs .chat-messages .chat-info-card,
+  .with-tabs .chat-messages .building-card,
+  .with-tabs .chat-messages .directory-card,
+  .with-tabs .chat-messages .suggest-question-card {
+    max-width: 360px;
+  }
+
+  .with-tabs .help-scroll {
+    padding-top: 40px;
+    padding-bottom: 40px;
+  }
+
+  /* Ayuda: las tarjetas en dos columnas; la de sugerir una pregunta ocupa todo el ancho.
+     Cada tarjeta crece sola al abrirse, sin estirar a la de al lado. */
+  .with-tabs .help-cards {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: start;
+    gap: 14px;
+  }
+
+  .with-tabs .help-cards > :first-child {
+    grid-column: 1 / -1;
+  }
+
+  .with-tabs .calendar-body {
+    padding-top: 24px;
+    padding-bottom: 24px;
   }
 }

@@ -20,7 +20,8 @@ const SWIPE_SPEED = 0.35
 // El deslizamiento lo maneja la app (no el desplazamiento del navegador): la tarjeta sigue al
 // dedo y, al soltar, pasa exactamente un mes o regresa. Así, por fuerte que sea el gesto,
 // nunca salta dos meses ni parpadea por el impulso del navegador.
-export function CalendarScreen({ onBack }: { onBack: () => void }) {
+// Sin flecha de regresar: al chat se vuelve con la barra de navegación (o el menú lateral).
+export function CalendarScreen() {
   const today = new Date()
   const current = calendarMonths.findIndex(
     (item) => item.year === today.getFullYear() && item.month === today.getMonth(),
@@ -133,8 +134,8 @@ export function CalendarScreen({ onBack }: { onBack: () => void }) {
 
   return (
     <ScreenLayout variant="chat">
-      <ChatHeader onBack={onBack} />
-      <section className="calendar-body" style={{ paddingBottom: 'calc(112 * var(--u))' }}>
+      <ChatHeader />
+      <section className="calendar-body">
         <div className="calendar-card">
           <CalendarHeader
             months={calendarMonths}
