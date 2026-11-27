@@ -160,7 +160,7 @@ body {
 
 .toko-logo {
   position: relative;
-  width: 22%;
+  width: 28%;
   height: auto;
   aspect-ratio: 96.604 / 34.815;
   flex: 0 0 auto;
@@ -196,16 +196,10 @@ body {
   min-height: 0;
 }
 
-/* Pantalla de acceso: el búho es el protagonista (más grande que en el login) */
-.selector-toko {
-  width: 60%;
-  max-height: 36dvh;
-}
-
-/* En pantallas de 400 px o menos, la imagen ocupa el 66% */
+/* Pantalla de acceso: en pantallas de 400 px o menos, la imagen ocupa el 70% */
 @media (max-width: 400px) {
   .selector-toko {
-    width: 66%;
+    width: 70%;
   }
 }
 
@@ -219,16 +213,15 @@ body {
 }
 
 .access-actions {
-  gap: calc(20 * var(--u));
+  gap: calc(12 * var(--u));
 }
 
 .access-button,
 .primary-action {
   display: flex;
   width: 100%;
-  /* 44 px de alto (antes 56): más ligeros y con más aire entre ellos */
-  height: calc(44 * var(--u));
-  flex: 0 0 calc(44 * var(--u));
+  height: calc(56 * var(--u));
+  flex: 0 0 calc(56 * var(--u));
   align-items: center;
   justify-content: center;
   border-radius: 999px;
@@ -243,8 +236,8 @@ body {
 }
 
 .access-button img {
-  width: calc(20 * var(--u));
-  height: calc(20 * var(--u));
+  width: calc(24 * var(--u));
+  height: calc(24 * var(--u));
 }
 
 .student-access {
@@ -270,10 +263,9 @@ body {
   gap: calc(4 * var(--u));
   color: #5b676b;
   font-family: 'Inter:Regular', Inter, sans-serif;
-  /* 12 px (antes 14): enlaces secundarios, más discretos que los botones */
-  font-size: calc(12 * var(--u));
+  font-size: calc(14 * var(--u));
   font-weight: 400;
-  line-height: calc(18 * var(--u));
+  line-height: calc(20 * var(--u));
   white-space: nowrap;
 }
 
@@ -285,9 +277,9 @@ body {
 .text-action {
   color: #2e7da6;
   font-family: 'Inter:Medium', Inter, sans-serif;
-  font-size: calc(12 * var(--u));
+  font-size: calc(14 * var(--u));
   font-weight: 500;
-  line-height: calc(18 * var(--u));
+  line-height: calc(20 * var(--u));
 }
 
 .back-button {
@@ -3301,6 +3293,45 @@ button:active:not(:disabled):not(.help-head):not(.suggest-head):not(.switch) {
 @media (min-width: 1024px) {
   #root {
     max-width: none;
+  }
+
+  /* Acceso, inicio de sesión y recuperar contraseña: en computadora, logo más pequeño,
+     búho más grande y botones y enlaces más pequeños y separados. En el teléfono se quedan
+     los tamaños del Figma. */
+  .toko-logo {
+    width: 22%;
+  }
+
+  .selector-toko {
+    width: 60%;
+    max-height: 36dvh;
+  }
+
+  .access-actions {
+    gap: calc(20 * var(--u));
+  }
+
+  .access-button,
+  .primary-action {
+    height: calc(44 * var(--u));
+    flex: 0 0 calc(44 * var(--u));
+  }
+
+  .access-button img {
+    width: calc(20 * var(--u));
+    height: calc(20 * var(--u));
+  }
+
+  .account-link,
+  .account-link button,
+  .text-action {
+    font-size: calc(12 * var(--u));
+    line-height: calc(18 * var(--u));
+  }
+
+  /* El logo del menú lateral mantiene su tamaño */
+  .with-tabs .nav-brand .toko-logo {
+    width: 92px;
   }
 
   .app-frame:not(.with-tabs) .app-panel {
